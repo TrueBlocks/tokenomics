@@ -1,0 +1,184 @@
+require(tidyverse)
+require(scales)
+#require(dplyr)
+#require(magrittr)
+
+#------------------------------------------------------------
+# sugar for some named blocks
+bn.HOMESTEAD      <- 1150000
+bn.BYZANTIUM      <- 4370000
+bn.CONSTANTINOPLE <- 7280000
+bn.MUIRGLACIER    <- 9200000
+ts.BYZANTIUM         <- 1508131331
+ts.CONSTANTINOPLE    <- 1551383524
+ts.MUIRGLACIER       <- 1577953849
+# some constants
+const.BIN_SIZE    <- 200
+const.PERIOD_SIZE <- 100000
+const.SAMPLE_SIZE <- 50000
+const.DANGER_ZONE <- 38
+
+#------------------------------------------------------------
+# read in the data (blocknumber,timestamp,difficulty), removing blocks prior to HOMESTEAD
+#
+# block.bin - puts blocks in bukcets of width BIN_SIZE
+# block.fake - the fake block number as per the difficulty calc
+# period - the difficulty bomb's current period (relative to block.fake)
+# bomb - the actual bomb's value at the block
+df <- read_csv('data/difficulty.csv') %>%
+#  filter(blocknumber >= bn.HOMESTEAD) %>%
+  mutate(block.bin = floor(blocknumber / const.BIN_SIZE) * const.BIN_SIZE) %>%
+  mutate(fake.block =
+           ifelse(blocknumber >= bn.MUIRGLACIER,
+                  blocknumber - (3000000 + 2000000 + 4000000),
+                  ifelse(blocknumber >= bn.CONSTANTINOPLE,
+                         blocknumber - (3000000 + 2000000),
+                         ifelse(blocknumber >= bn.BYZANTIUM,
+                                blocknumber - 3000000,
+                                blocknumber) + 1))
+  ) %>%
+  mutate(period = floor(fake.block / const.PERIOD_SIZE)) %>%
+  mutate(period.scaled = period * 100000) %>%
+  mutate(bomb = 2 ^ period) %>%
+  
+  mutate(parent.difficulty = lag(difficulty)) %>%
+  mutate(parent.ts = lag(timestamp)) %>%
+  
+  mutate(diff.delta = parent.difficulty - difficulty) %>%
+  mutate(ts.delta = parent.ts - timestamp) %>%
+  
+  mutate(diff.sensitivity = diff.delta / difficulty) %>%
+  mutate(ts.sensitivity = ts.delta / timestamp) %>%
+  
+  mutate(era =
+           ifelse(blocknumber <= bn.BYZANTIUM,
+                  'timeframe 1 (pre-byzantium)',
+                  ifelse(blocknumber <= bn.MUIRGLACIER,
+                         'timeframe 2 (post-byzantium)',
+                         'timeframe 3 (post-muir)')
+           )
+  )
+
+# sample every SAMPLE_SIZE block
+sample <- df %>% sample_frac(.005) %>% arrange(blocknumber)
+head(sample)
+grouped_sample <- sample %>% group_by(block.bin)
+head(grouped_sample, 3)
+
+#------------------------------------------------------------
+chart_title <- "Block Number / Fake Block Number / Bomb Period"
+source <- "Source: Mainnet, November 23, 2019"
+x_vals <- sample$timestamp
+x_label <- "Date"
+y_vals <- sample$block.bin
+y_label <- "Real / Fake BN"
+source(file="../common/chart_defaults.R")
+#------------------------------------------------------------
+fakeBlock <- grouped_sample %>%
+  ggplot(aes(x = timestamp, cey.lab = 1)) +
+  geom_line(aes(y = block.bin,  color='blocknumber')) +
+  geom_line(aes(y = fake.block, color='fake.block')) +
+  geom_line(aes(y = period.scaled, color='period')) +
+  geom_hline(yintercept = (const.DANGER_ZONE * 100000), color="darkgray", linetype="dashed") +
+  geom_vline(xintercept = ts.BYZANTIUM, color="lightgray", linetype="dashed") +
+  geom_vline(xintercept = ts.CONSTANTINOPLE, color="lightgray", linetype="dashed") +
+  geom_vline(xintercept = ts.MUIRGLACIER, color="lightgray", linetype="dashed") +
+  labels + anno1 + anno2 +
+  theme + xaxis + yaxis
+fakeBlock
+
+#------------------------------------------------------------
+chart_title <- "Difficulty Delta and Difficulty Bomb per Block"
+source <- "Source: Mainnet, November 23, 2019"
+x_vals <- sample$diff
+x_label <- "Block Number"
+y_vals <- sample$block.bin
+y_label <- "Difficulty Delta / Bomb"
+source(file="../common/chart_defaults.R")
+#------------------------------------------------------------
+plot_DeltaDiffPerBlock <- grouped_sample %>%
+  ggplot(aes(x=block.bin)) +
+  geom_line(aes(y=diff.delta), colour='salmon') +
+  geom_vline(xintercept = bn.BYZANTIUM, color="lightgray", linetype="dashed") +
+  geom_vline(xintercept = bn.CONSTANTINOPLE, color="lightgray", linetype="dashed") +
+  geom_vline(xintercept = bn.MUIRGLACIER, color="lightgray", linetype="dashed") +
+  geom_line(aes(y=bomb), colour='black') + 
+  labels + anno1 + anno2 +
+  theme + xaxis + yaxis
+plot_DeltaDiffPerBlock
+
+#------------------------------------------------------------
+chart_title <- "Difficulty Sensitivity per Block"
+source <- "Source: Mainnet, November 23, 2019"
+x_vals <- sample$diff.sensitivity
+x_label <- "Block Number"
+y_vals <- sample$block.bin
+y_label <- "Difficulty Sensitivity"
+source(file="../common/chart_defaults.R")
+#------------------------------------------------------------
+plot_SensitivityPerBlock <- grouped_sample %>%
+  ggplot(aes(x=blocknumber)) +
+  geom_line(aes(y=diff.sensitivity), color='salmon') +
+  geom_hline(yintercept = 0, color = "yellow") +
+  theme + labels
+plot_SensitivityPerBlock
+
+grouped_df <- df %>% group_by(block.bin)
+grouped_sum_df <- grouped_df %>%
+  summarize(sum.difficulty = sum(difficulty, na.rm=T), sum.diff.delta = sum(diff.delta, na.rm=T))
+gathered <- grouped_sum_df %>%
+  mutate(percent.delta = sum.diff.delta / sum.difficulty) %>%
+  gather(key = vars, value = val, -block.bin)
+
+gathered %>%
+  ggplot(aes(x=block.bin, y = val)) +
+  geom_line() +
+  facet_wrap(facets = 'vars', scales = 'free', ncol = 1)
+
+point_size = 1.0
+sample %>%
+  filter(abs(ts.delta) < 100) %>%
+  ggplot(aes(y=diff.sensitivity, x = ts.delta, color = blocknumber)) +
+  geom_point(size = point_size) + 
+  scale_color_gradientn(colours = rainbow(5), labels = comma) +
+  scale_x_continuous(breaks = -1:5 * 100)
+
+min.sensitivity = min(sample$diff.sensitivity)
+max.sensitivity = max(sample$diff.sensitivity)
+mid.sensitivity = (min.sensitivity + max.sensitivity) / 2
+
+sample %>%
+  ggplot(aes(y = diff.sensitivity, x = period, color=diff.sensitivity)) +
+  scale_colour_gradient2(low = "green",
+                         mid = "blue",
+                         high = "orange",
+                         midpoint = mid.sensitivity,
+                         space = "Lab",
+                         na.value = "grey50",
+                         guide = "colourbar"
+  ) +
+  geom_point(size = point_size * 2) + 
+  facet_wrap(facets = 'era', nrow = 3) +
+  geom_vline(xintercept = const.DANGER_ZONE)
+
+sample %>%
+  ggplot(aes(y = diff.sensitivity, x = period, color=block.bin)) +
+  scale_colour_gradient2(low = "green",
+                         mid = "blue",
+                         high = "orange",
+                         midpoint = max(sample$blocknumber) / 2,
+                         space = "Lab",
+                         na.value = "grey50",
+                         guide = "colourbar"
+  ) +
+  geom_point(size = point_size * 
+               ifelse(sample$blocknumber > bn.MUIRGLACIER, 6, 
+                      ifelse(sample$blocknumber > bn.BYZANTIUM, 0, 0))) + 
+  geom_point(size = point_size * 
+               ifelse(sample$blocknumber > bn.MUIRGLACIER, 0, 
+                      ifelse(sample$blocknumber > bn.BYZANTIUM, 3, 0))) + 
+  geom_point(size = point_size * 
+               ifelse(sample$blocknumber > bn.MUIRGLACIER, 0, 
+                      ifelse(sample$blocknumber > bn.BYZANTIUM, 0, 1))) + 
+  geom_vline(xintercept = const.DANGER_ZONE)
+
