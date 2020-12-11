@@ -6,7 +6,6 @@
 old-stuff
 tmp-images
 *.json
-*.png
 *.csv
 *.mwb
 *.gz
@@ -15,4 +14,3 @@ tmp-images
 *.log
 *.pdf
 *.tab
-*.svg
