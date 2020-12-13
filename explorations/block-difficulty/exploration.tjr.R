@@ -1,3 +1,4 @@
+# This file is in the public domain
 require(tidyverse)
 require(scales)
 require(dplyr)
@@ -19,8 +20,8 @@ difficulty <- read_csv('difficulty-generated-1a.csv') %>%
   mutate(parent.difficulty = lag(difficulty)) %>%
   mutate(parent.ts = lag(timestamp)) %>%
   
-  mutate(diff.delta = parent.difficulty - difficulty) %>%
-  mutate(ts.delta = parent.ts - timestamp) %>%
+  mutate(diff.delta = difficulty - parent.difficulty) %>%
+  mutate(ts.delta = timestamp - parent.ts) %>%
 
   mutate(diff.sensitivity = diff.delta / difficulty) %>%
   mutate(ts.sensitivity = ts.delta / timestamp)
@@ -41,7 +42,7 @@ difficulty %>%
   sample_n(sample_size) %>%
   group_by(block.bin) %>%
   ggplot(aes(x=block.number)) +
-  geom_line(aes(y=-diff.sensitivity, color='diff.sensitivity'))
+  geom_line(aes(y=diff.sensitivity, color='diff.sensitivity'))
 
 difficulty %>%
   group_by(block.bin) %>%
@@ -72,7 +73,7 @@ difficulty %>%
   ggplot(aes(x=block.bin, y=sd)) +
   geom_line()
 
-point_size = 2.0
+point_size = 1.0
 difficulty %>%
   sample_n(sample_size) %>%
   ggplot(aes(y=diff.sensitivity, x = ts.delta, color = block.number)) +
@@ -87,14 +88,14 @@ difficulty %>%
   scale_colour_gradient2(low = "red", mid = "green", high = "blue", midpoint = byzantium.block, space = "Lab", na.value = "grey50", guide = "colourbar") +
   geom_point(size = point_size) + 
   facet_wrap(facets = 'era', nrow = 2) +
-  geom_vline(xintercept = 42)
+  geom_vline(xintercept = 39)
 
 difficulty %>%
   sample_n(sample_size) %>%
-  ggplot(aes(y = -diff.sensitivity, x = period, color=block.number)) +
+  ggplot(aes(y = diff.sensitivity, x = period, color=block.number)) +
   scale_colour_gradient2(low = "red", mid = "green", high = "blue", midpoint = byzantium.block, space = "Lab", na.value = "grey50", guide = "colourbar") +
   geom_point(size = point_size) + 
-  geom_vline(xintercept = 42)
+  geom_vline(xintercept = 39)
 
 
 

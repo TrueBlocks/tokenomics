@@ -1,3 +1,4 @@
+# This file is in the public domain
 library(readr)
 require(tidyverse)
 require(scales)

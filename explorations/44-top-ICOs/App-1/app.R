@@ -1,3 +1,4 @@
+# This file is in the public domain
 require(tidyverse)
 require(jsonlite)
 require(scales)
