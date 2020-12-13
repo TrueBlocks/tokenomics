@@ -1,4 +1,3 @@
-# This file is in the public domain
 require(readxl)
 require(dplyr)
 require(ggplot2)

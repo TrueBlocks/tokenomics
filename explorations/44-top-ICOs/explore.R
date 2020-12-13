@@ -1,4 +1,3 @@
-# This file is in the public domain
 # This R script shows movements in ICO token ownership over time.
 # It is also a good example of how to work with JSON data from QuickBlocks.
 
