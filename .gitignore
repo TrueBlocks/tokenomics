@@ -4,7 +4,8 @@
 .RData
 .Ruserdata
 .DS_Store
-
+data
+output.html
 old-stuff
 
 tmp-images
