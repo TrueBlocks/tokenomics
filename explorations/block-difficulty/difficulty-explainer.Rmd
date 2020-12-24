@@ -1,0 +1,25 @@
+---
+title: "Difficulty Explainer"
+date: "11/8/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+```{r}
+
+homestead.block <- 1150000
+byzantium.block <- 4370000
+
+bomb <- tibble(block.number = c(0:7000000)) %>%
+  mutate(bomb = ifelse(block.number >= byzantium.block,
+                       2^(floor(abs((block.number - 3000000 + 1)/100000))-2),
+                       2^(floor(abs((block.number + 1)/100000))-2)))
+
+difficulty <- read_csv('difficulty-generated-1a.csv') %>%
+  left_join(bomb) 
+```

@@ -17,7 +17,7 @@ df <- read_csv('data-columns/ethereum-mainnet/combines/by-blocknumber/block-time
   mutate(ts.diff = timestamp - lag(timestamp))
   
 
-sample <- df %>%  sample_frac(0.0005)
+sample <- df %>%  sample_frac(0.05)
 chart_title <- "Raw Difficulty (sampled 1 in 100)"
 source <- "Source: Tokenomics™ by TrueBlocks"
 x_vals <- sample$timestamp

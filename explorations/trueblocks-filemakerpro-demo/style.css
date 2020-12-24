@@ -1,0 +1,43 @@
+h1 {
+  font-size: 2em;
+  border-bottom: 1px solid #CCC;
+  padding-bottom: .5em;
+}
+
+h2, h3, h4 {
+  font-size: 1.3em;
+}
+
+h1.title {
+  font-size: 1.3em;
+}
+
+div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 20px;}
+
+div.blue p {
+  margin:0;
+  padding:0;
+}
+
+.logo {
+  width: 120px;
+  margin: 0 auto;
+  text-align:center;
+}
+
+.header {
+  margin: 0 auto;
+  text-align: center;
+}
+
+.header h1 {
+  font-size: 1.3em;
+  border-bottom: 0;
+  padding-bottom: initial;
+}
+
+.header ul {
+  list-style-type: none;
+  margin:0;
+  padding:0;
+}

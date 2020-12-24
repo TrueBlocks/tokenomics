@@ -1,0 +1,67 @@
+---
+title: "Exploring Ethereum Foundation Tip Jar Data"
+author: "Ed Mazurek"
+date: "3/12/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+source('etherTip.init.R')
+```
+
+- replaced known contract addresses with readable string
+- parsed out the function calls into `fn.name` and `args[0:10]` (needs work).
+
+Makes the data a lot more readable:
+
+```{r}
+etherTip.fns %>%
+  filter(is.fn.call, have.abi) %>%
+  select(from, to, fn.name) %>% print(n = 10, width = Inf)
+```
+
+## Visualizations
+
+### Frequency of function calls
+
+```{r message=FALSE}
+etherTip.fns %>%
+  filter(have.abi) %>%
+  ggplot(aes(x = datesh, fill = fn.name)) + 
+  geom_histogram()
+```
+
+### Frequency of function calls but easier to see
+
+- Much easier to identify where proposals are happening, ownership transfer, etc.
+
+```{r message=FALSE, fig.height = 8, fig.width = 11}
+etherTip.fns %>%
+  filter(have.abi) %>%
+  ggplot(aes(x = datesh, fill = fn.name)) + 
+  facet_wrap(facets= 'fn.name') +
+  labs(title = 'Function call count') + 
+  geom_histogram()
+```
+
+
+### functions on unicorn token vs foundation tip jar contract
+
+- filtered on transactions with either the unicorn token OR foundation tip jar in the "to" field.
+- makes me think we should be treating these contracts separately (I think you mentioned the same thing)
+
+```{r message=FALSE}
+etherTip.fns %>%
+  filter(have.abi) %>%
+  filter(to %in% names(special.addr)) %>%
+  ggplot(aes(x = datesh, fill = fn.name)) +
+  facet_wrap('to', nrow = 2) +
+  geom_histogram()
+```
+
+### other possibilities
+
+- unicorn tokens still owned by original owner
+- cumulative sum of all ether transferred into the tip jar contract
+- (a lot more)

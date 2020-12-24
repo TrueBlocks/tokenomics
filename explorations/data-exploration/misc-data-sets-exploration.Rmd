@@ -1,0 +1,33 @@
+---
+title: "Jay data sets 1"
+author: "Ed Mazurek"
+description: "Rough Brainstorming & Data Exploring"
+date: "3/1/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+require(readr)
+require(tidyr)
+require(dplyr)
+require(ggplot2)
+
+contracts <- read_csv('../../other_data/Contracts.csv')
+tokensByWeek <- read_delim('../../other_data/tokensByWeek.txt', '|') %>%
+  mutate(date = as.Date(date))
+```
+
+```{r}
+tokensByWeek %>%
+  ggplot(aes(x = date, y = nTrans)) +
+  geom_line()
+```
+
+```{r fig.width=10, fig.height=6}
+tokensByWeek %>%
+  gather(key = type, value = val, -date, -blockNum) %>%
+  mutate(val = as.integer(val)) %>%
+  ggplot(aes(x = date, y = val, color = type)) + geom_line() +
+  facet_wrap(facets = 'type', scales = 'free_y')
+```

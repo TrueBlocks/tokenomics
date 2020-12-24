@@ -1,0 +1,102 @@
+---
+title: "Sharing the burden"
+author: "Ed Mazurek"
+date: "9/10/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Sharing the burden
+
+Don't know if what we've done is mathematically true to make sharing the burden more likely. 
+
+Try a random thing on 100 addresses (`chifra list <address>`).
+
+Chifra list could return the list of files in the index. (aka chifra list --files).
+
+You can use getBlock --uniqTx to get the addresses.
+
+
+```{r}
+# get a random block
+block <- sample(5e6:8e6, 1)
+data <- curl_fetch_memory(paste0(config$apiProvider, "/blocks?block_list=", block, "&uniq")) %>%
+  pluck('content') %>%
+  rawToChar() %>%
+  read_tsv(col_names = c('block', 'txId', 'traceId', 'address', 'reason'))
+
+
+appearances <- tibble()
+
+for (address in data$address[1:10]) {
+  tmp <- fromJSON(paste0(config$apiProvider, "/list?addr_list=", address)) %>%
+    pluck('data') %>%
+    pluck(1)
+  appearances <- appearances %>% bind_rows(tmp)
+}
+
+
+# TODO: ensure that the breaks are going by floor, not by nearest.
+appearances <- appearances %>%
+  mutate(which = pmap_int(list(blockNumber), function(x) {index.breaks[[which.min(abs(x - index.breaks))]]}))
+
+# data2 %>% pluck('data') %>% pluck(1) %>% select(blockNumber) %>% mutate(bin = blockNumber / 1000) ggplot(aes(x=blockNumber)) + geom_histogram(bins = 1000000)
+
+appearances %>%
+  mutate(blockBin = floor(blockNumber/100000)*100000) %>%
+  group_by(address, blockBin) %>%
+  summarize(density = n()) %>%
+  ggplot(aes(x=blockBin, y = address)) + 
+  geom_tile(aes(fill = density)) +
+   viridis::scale_fill_viridis(name = "log(n occurrences)", trans="pseudo_log", option = "A", labels=scales::comma) +
+  theme_minimal(base_size=8)
+
+appearances %>%
+  mutate(blockBin = floor(blockNumber/100000)*100000) %>%
+  group_by(address, blockBin) %>%
+  summarize(density = n()) %>%
+  ggplot(aes(x=blockBin, y = density)) + 
+  geom_line() +
+  facet_wrap(facets = "address", ncol = 1, scales = "fixed")
+
+appearances %>%
+  mutate(blockBin = floor(blockNumber/100000)*100000) %>%
+  group_by(address, blockBin) %>%
+  summarize(density = n()) %>%
+  filter(!(address %in% c("0x0e69d0a2bbb30abcb7e5cfea0e4fde19c00a8d47", "0x957cd4ff9b3894fc78b5134a8dc72b032ffbc464"))) %>%
+  ggplot(aes(x=blockBin, y = density, color = address)) + 
+  geom_line()
+
+appearances %>%
+  mutate(blockBin = floor(blockNumber/100000)*100000) %>%
+  group_by(address, blockBin) %>%
+  summarize(density = n()) %>%
+ggplot(aes(x=blockBin, y = density)) + 
+  geom_line() +
+  facet_wrap(facets = "address", ncol = 1, scales = "fixed")
+
+appearances %>%
+  group_by(address) %>%
+  summarize(density = n())
+
+appearances %>%
+  mutate(blockBin = floor(blockNumber/100000)*100000) %>%
+  group_by(address, blockBin) %>%
+  summarize(density = n()) %>%
+  ungroup() %>%
+  arrange(desc(density))
+
+
+appearances %>%
+  group_by(address, which) %>%
+  filter(blockNumber > 4e6 & blockNumber < 5e6) %>%
+  summarize(density = n()) %>%
+  ggplot(aes(x=as.factor(which), y = address), color = 'white') + 
+  geom_tile(aes(fill = density)) +
+  viridis::scale_fill_viridis(name = "log(n occurrences)", trans="pseudo_log", option = "A", labels=scales::comma) +
+  theme_minimal(base_size=8)
+
+```
