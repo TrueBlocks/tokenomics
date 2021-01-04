@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VariablesViewState
+   version = "1.0">
+   <ContextStates>
+      <ContextState
+         contextName = "visit(std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt; &gt; const&amp;, void*):grants.cpp">
+         <PersistentStrings>
+            <PersistentString
+               value = "txs[0]">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "getBlock(CBlock&amp;, string_q const&amp;, string_q const&amp;):node.cpp">
+         <PersistentStrings>
+            <PersistentString
+               value = "receipt.gasUsed">
+            </PersistentString>
+            <PersistentString
+               value = "block.transactions[i].gas">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "forEveryNonEmptyBlockInMemory(bool (*)(CBlock&amp;, void*), void*, unsigned long, unsigned long):node.cpp">
+         <PersistentStrings>
+            <PersistentString
+               value = "done">
+            </PersistentString>
+            <PersistentString
+               value = "i&lt;nBlocks">
+            </PersistentString>
+            <PersistentString
+               value = "blocks[i]">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+   </ContextStates>
+</VariablesViewState>

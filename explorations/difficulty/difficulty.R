@@ -25,7 +25,7 @@ const.DANGER_ZONE <- 38
 # block.fake - the fake block number as per the difficulty calc
 # period - the difficulty bomb's current period (relative to block.fake)
 # bomb - the actual bomb's value at the block
-df <- read_csv('data/difficulty.csv') %>%
+df <- read_csv('store/difficulty/difficulty.csv') %>%
 #  filter(blocknumber >= bn.HOMESTEAD) %>%
   mutate(block.bin = floor(blocknumber / const.BIN_SIZE) * const.BIN_SIZE) %>%
   mutate(fake.block =
@@ -172,11 +172,11 @@ sample %>%
                          guide = "colourbar"
   ) +
   geom_point(size = point_size * 
-               ifelse(sample$blocknumber > bn.MUIRGLACIER, 6, 
+               ifelse(sample$blocknumber > bn.MUIRGLACIER, 4, 
                       ifelse(sample$blocknumber > bn.BYZANTIUM, 0, 0))) + 
   geom_point(size = point_size * 
                ifelse(sample$blocknumber > bn.MUIRGLACIER, 0, 
-                      ifelse(sample$blocknumber > bn.BYZANTIUM, 3, 0))) + 
+                      ifelse(sample$blocknumber > bn.BYZANTIUM, 2, 0))) + 
   geom_point(size = point_size * 
                ifelse(sample$blocknumber > bn.MUIRGLACIER, 0, 
                       ifelse(sample$blocknumber > bn.BYZANTIUM, 0, 1))) + 
