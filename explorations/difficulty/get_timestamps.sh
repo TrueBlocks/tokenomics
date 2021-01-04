@@ -11,3 +11,4 @@ whenBlock --no_header 2019-01-01 2>/dev/null
 whenBlock --no_header 2019-07-01 2>/dev/null
 whenBlock --no_header 2020-01-01 2>/dev/null
 whenBlock --no_header 2020-07-01 2>/dev/null
+whenBlock --no_header 2021-01-01 2>/dev/null
