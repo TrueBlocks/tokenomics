@@ -8,10 +8,12 @@ require(scales)
 bn.HOMESTEAD      <- 1150000
 bn.BYZANTIUM      <- 4370000
 bn.CONSTANTINOPLE <- 7280000
+bn.ISTANBUL       <- 9069000
 bn.MUIRGLACIER    <- 9200000
-ts.BYZANTIUM         <- 1508131331
-ts.CONSTANTINOPLE    <- 1551383524
-ts.MUIRGLACIER       <- 1577953849
+ts.BYZANTIUM      <- 1508131331
+ts.ISTANBUL       <- 1575764709
+ts.CONSTANTINOPLE <- 1551383524
+ts.MUIRGLACIER    <- 1577953849
 # some constants
 const.BIN_SIZE    <- 200
 const.PERIOD_SIZE <- 100000
@@ -82,6 +84,7 @@ fakeBlock <- grouped_sample %>%
   geom_hline(yintercept = (const.DANGER_ZONE * 100000), color="darkgray", linetype="dashed") +
   geom_vline(xintercept = ts.BYZANTIUM, color="lightgray", linetype="dashed") +
   geom_vline(xintercept = ts.CONSTANTINOPLE, color="lightgray", linetype="dashed") +
+  geom_vline(xintercept = ts.ISTANBUL, color="lightgray", linetype="dashed") +
   geom_vline(xintercept = ts.MUIRGLACIER, color="lightgray", linetype="dashed") +
   labels + anno1 + anno2 +
   theme + xaxis + yaxis
@@ -101,6 +104,7 @@ plot_DeltaDiffPerBlock <- grouped_sample %>%
   geom_line(aes(y=diff.delta), colour='salmon') +
   geom_vline(xintercept = bn.BYZANTIUM, color="lightgray", linetype="dashed") +
   geom_vline(xintercept = bn.CONSTANTINOPLE, color="lightgray", linetype="dashed") +
+  geom_vline(xintercept = bn.ISTANBUL, color="lightgray", linetype="dashed") +
   geom_vline(xintercept = bn.MUIRGLACIER, color="lightgray", linetype="dashed") +
   geom_line(aes(y=bomb), colour='black') + 
   labels + anno1 + anno2 +
