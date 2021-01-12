@@ -1,27 +1,28 @@
 # Using this repo
 
-These instructions assume you have RStudio installed on your machine and that your command line is currently in the folder containing this README file.
+These instructions assume that you've cloned this repo, you have RStudio installed on your machine, and that your command line 
+is currently in the folder containing this README file (./explorations/difficuly).
 
-First, download the data to the local folder (copy the following as a single line):
+First, download the data to the current folder (copy the following as a single line):
 
 ```
 curl --output difficulty.csv.gz https://gateway.pinata.cloud/ipfs/QmdmkCJ7iRbmSLJzhEq3Cg6cPQj3oFStvAoE3G1rbhgmUw
 ```
 
-Unzip the downloaded file:
+Next, unzip the downloaded file:
 
 ```
 gunzip difficulty.csv.gz
 ```
 
-Move it to its correct location:
+Next, move the data to where it belongs:
 
 ```
 mkdir -p store/difficulty/
 mv difficulty.csv store/difficulty
 ```
 
-Open the R script:
+Finally, open the R script:
 
 ```
 open difficulty.R
