@@ -1,4 +1,4 @@
-# Using this repo
+# Investigating Ethereum Difficulty Data
 
 These instructions assume that you've cloned this repo, you have RStudio installed on your machine, and that your command line 
 is currently in the folder containing this README file (./explorations/difficuly).
