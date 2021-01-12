@@ -1,4 +1,6 @@
 # Tokenomics
 A repo for analyses about ethereum, turbo-geth, and trueblocks.
 
-Updated
+## Repos of interest:
+
+[Difficulty projections](./explorations/difficulty)
