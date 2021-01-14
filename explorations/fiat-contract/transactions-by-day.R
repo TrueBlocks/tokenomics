@@ -5,16 +5,16 @@ require(dplyr)
 require(magrittr)
 
 transactions <- read_csv("transactions.csv")
+head(transactions)
 
 block.dates <- data.frame(transactions$blocknumber, as.Date(transactions$date))
-
-block.dates %>% head() %>% View()
+head(block.dates)
 
 block.dates <-
   block.dates %>%
-  mutate(date = as.Date(date)) %>%
-  group_by(date) %>%
+  group_by(as.Date.transactions.date) %>%
   count(date)
+head(block.dates)
 
 block.dates <- block.dates %>%
   filter(n != 222) %>%

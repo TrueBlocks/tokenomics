@@ -12,7 +12,7 @@ par(las=2)
 #df <- read.csv(file, TRUE, ",", "\"", ".", TRUE, "#", stringsAsFactors = FALSE)
 file <- url("http://localhost:8080/export?addrs=0x00000000219ab540356cBB839Cbe05303d7705Fa")
 df <- fromJSON(file)
-View(df)
+#View(df)
 df <- df$data
 graphed <- df %>%
   mutate(observation = 1:n())

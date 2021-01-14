@@ -1,7 +1,5 @@
 require(tidyverse)
 require(scales)
-#require(dplyr)
-#require(magrittr)
 
 #------------------------------------------------------------
 # sugar for some named blocks
@@ -23,10 +21,10 @@ const.DANGER_ZONE <- 38
 #------------------------------------------------------------
 # read in the data (blocknumber,timestamp,difficulty), removing blocks prior to HOMESTEAD
 #
-# block.bin - puts blocks in bukcets of width BIN_SIZE
+# block.bin  - puts blocks in bukcets of width BIN_SIZE
 # block.fake - the fake block number as per the difficulty calc
-# period - the difficulty bomb's current period (relative to block.fake)
-# bomb - the actual bomb's value at the block
+# period     - the difficulty bomb's current period (relative to block.fake)
+# bomb       - the actual bomb's value at the block
 df <- read_csv('store/difficulty/difficulty.csv') %>%
 #  filter(blocknumber >= bn.HOMESTEAD) %>%
   mutate(block.bin = floor(blocknumber / const.BIN_SIZE) * const.BIN_SIZE) %>%
@@ -61,9 +59,11 @@ df <- read_csv('store/difficulty/difficulty.csv') %>%
            )
   )
 
-# sample every SAMPLE_SIZE block
+# sample the data otherwise it's too big
 sample <- df %>% sample_frac(.005) %>% arrange(blocknumber)
 head(sample)
+
+# group by block bin
 grouped_sample <- sample %>% group_by(block.bin)
 head(grouped_sample, 3)
 

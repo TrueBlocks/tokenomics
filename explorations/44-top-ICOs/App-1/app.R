@@ -9,6 +9,7 @@ data <- read_json(path = paste0('./jsondata/00_newbium-0x814964b1bceaf24e26296d0
   jsonlite::flatten() %>%
   as_data_frame() %>%
   mutate(fn.name = map_chr(articulatedTx, 'name', .default = NA))
+head(data)
 
 in.out <- data %>%
   filter(fn.name == 'transfer', !isError) %>%
@@ -16,6 +17,7 @@ in.out <- data %>%
   mutate(transfer.to = map_chr(transfer.values, 1)) %>%
   mutate(transfer.amount = map_chr(transfer.values, 2) %>% as.integer()) %>%
   select(timestamp, from, transfer.to, transfer.amount)
+head(in.out)
 
 in.out.cum <- in.out %>% 
   gather(key = 'address.type', value = 'address', 2:3) %>%
@@ -24,6 +26,7 @@ in.out.cum <- in.out %>%
   summarize(transfer.amount = sum(transfer.amount)) %>%
   mutate(cumBalance = cumsum(transfer.amount)) %>%
   ungroup()
+head(in.out.cum)
 
 timestamps <- in.out.cum %>% distinct(timestamp)
 addresses <- in.out.cum %>% distinct(address)
@@ -39,6 +42,7 @@ addInitialSupplyBalance = function(data) {
     )) %>%
     return()
 }
+head(addInitialSupplyBalance)
 
 in.out.cum.with.zeroes <- in.out %>%
   gather(key = 'address.type', value = 'address', 2:3) %>%
