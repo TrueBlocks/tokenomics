@@ -86,6 +86,7 @@ fakeBlock <- grouped_sample %>%
   geom_vline(xintercept = ts.CONSTANTINOPLE, color="lightgray", linetype="dashed") +
   geom_vline(xintercept = ts.ISTANBUL, color="lightgray", linetype="dashed") +
   geom_vline(xintercept = ts.MUIRGLACIER, color="lightgray", linetype="dashed") +
+  geom_vline(xintercept = 1610764421, color="blue", linetype="dashed") +
   labels + anno1 + anno2 +
   theme + xaxis + yaxis
 fakeBlock

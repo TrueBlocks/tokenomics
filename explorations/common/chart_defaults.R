@@ -31,11 +31,11 @@ xaxis <-
     breaks = c(1451606392, 1467331197, 1483228771, 1498867196,
                1514764787, 1530403186, 1546300782, 1561939196,
                1577836785, 1593561580, 1609372788, 1625097583,
-               1622505600),
+               1640995202),
     labels = c("Jan 16", "Jul 16", "Jan 17", "Jul 17",
                "Jan 18", "Jul 18", "Jan 19", "Jul 19",
                "Jan 20", "Jul 20", "Jan 21", "Jul 21",
-               "Jun 21"),
+               "Jan 22"),
   )
 
 #------------------------------------------------------------
@@ -55,7 +55,7 @@ anno1 <-
   annotate("text",
            x = ((floor(max(x_vals) / 10000000) * 10000000) - 10000000), y = min(y_vals),
            label= source,
-           fontface = "bold.italic", size = 5, color = "gray70"
+           fontface = "bold.italic", size = 3, color = "gray70"
   )
 
 #------------------------------------------------------------
@@ -63,6 +63,6 @@ anno2 <-
   annotate("text",
            x = min(x_vals) + 22500000, y = ceiling(max(y_vals) / 500) * 500,
            label= "Produced for the Tokenomics™ website by TrueBlocks, LLC",
-           fontface = "bold.italic", size = 5, color = "gray70"
+           fontface = "bold.italic", size = 3, color = "gray70"
   )
 
