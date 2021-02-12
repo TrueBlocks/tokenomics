@@ -2,15 +2,26 @@
 require('tidyverse')
 require('jsonlite')
 
-## select an Ethereum address
-address <- "0xab5801a7d398351b8be11c439e05c5b3259aec9b%200x1db3439a222c519ab44bb1144fc28167b4fa6ee6"
+vitalik1 <- "0xab5801a7d398351b8be11c439e05c5b3259aec9b"
+vatalik2 <- "0x1db3439a222c519ab44bb1144fc28167b4fa6ee6"
+trueblocks <- "0xf503017d7baf7fbc0fff7492b751025c6a78179b"
 
-## Create a url to one of the TrueBlocks API endpoints
-url <- paste0("http://localhost:8080/export?addrs=", address, "&statements&write_txs&write_traces")
+getTransactionList <- function(addr) {
+  binSize = 25000
+  cmd = "list"
+  addr_part <- paste0("?addrs=", addr)
+  options_part <- "" #paste0("&statements", "&write_txs", "&write_traces")
+  url <- paste0("http://localhost:8080/", cmd, addr_part, options_part)
+  jsonData <- url %>% fromJSON(simplifyVector = TRUE)
+  df = jsonData["data"]$data %>% as_data_frame() %>%
+    mutate(blockBin = floor(blockNumber / binSize) * binSize)
+}
 
-## Get the data from TrueBlock
-jsonData <- url %>% fromJSON(simplifyVector = TRUE)
-origDf = jsonData["data"]$data %>% as_data_frame()
+origDf = getTransactionList(vitalik2)
+#View(origDf)
+
+origDf %>% ggplot() +
+  geom_bar(aes(x=blockBin))
 
 ## Let's look at the data a bit
 head(origDf)
@@ -20,7 +31,6 @@ origDf %>%
   ggplot(aes(x=blockNumber, y = begBal)) +
   geom_point() +
   labs(yaxis="")
-
 
 #df <- df %>% filter(ether > 1)
 df <- origDf %>% mutate(tx_type = ifelse(from == address, "from", ifelse(to == address, "to", "other")))

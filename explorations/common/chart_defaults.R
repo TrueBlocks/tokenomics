@@ -8,10 +8,9 @@ theme <-
     panel.background = element_rect(fill = "snow1"),
     panel.border = element_rect(linetype = "dashed", fill = NA),
     title = element_text(size = 18, face = "bold"),
-    axis.text.x = element_text(size = 12),
-    axis.text.y = element_text(angle = 90, vjust = 1, size = 12),
-    axis.ticks.y = element_blank(),
-    legend.text = element_text(size = 14)
+    axis.text.x = element_text(size = 10),
+    axis.text.y = element_text(angle = 90, vjust = 1, size = 10),
+    legend.text = element_text(size = 12)
   );
 
 #       0	1438269960	2015-07-30 15:26:00 UTC
@@ -51,18 +50,27 @@ labels <-
   )
 
 #------------------------------------------------------------
+x_range <- max(x_vals) - min(x_vals)
+x_range
+y_range <- max(y_vals) - min(y_vals)
+y_range
+
+#------------------------------------------------------------
+anno1.x = floor(min(x_vals) + x_range * anno1.x.pct)
+anno1.y = floor(min(y_vals) + y_range * anno1.y.pct)
 anno1 <-
   annotate("text",
-           x = ((floor(max(x_vals) / 10000000) * 10000000) - 10000000), y = min(y_vals),
-           label= source,
-           fontface = "bold.italic", size = 3, color = "gray70"
+           x = anno1.x, y = anno1.y,
+           label= anno1.text,
+           fontface = "italic", size = 3, color = "gray70"
   )
 
 #------------------------------------------------------------
+anno2.x = floor(min(x_vals) + x_range * anno2.x.pct)
+anno2.y = floor(min(y_vals) + y_range * anno2.y.pct)
 anno2 <-
   annotate("text",
-           x = min(x_vals) + 22500000, y = ceiling(max(y_vals) / 500) * 500,
-           label= "Produced for the Tokenomics™ website by TrueBlocks, LLC",
-           fontface = "bold.italic", size = 3, color = "gray70"
+           x = anno2.x, y = anno2.y,
+           label= anno2.text,
+           fontface = "italic", size = 3, color = "gray70"
   )
-

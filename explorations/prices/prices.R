@@ -1,8 +1,11 @@
 require(tidyverse)
+require(lubridate)
 require(scales)
 
 #------------------------------------------------------------
-df <- read_csv('./data/prices.csv')
+df <- read.csv("./store/prices.csv", sep=",", header=TRUE) %>%
+  mutate(date = ymd_hms(str_replace(date, "T", " "))) %>%
+  sample_frac(.1)
 
 #------------------------------------------------------------
 chart_title <- "Ether Price in USD (Daily)"
@@ -27,9 +30,9 @@ plot <- df %>%
 plot
 
 #------------------------------------------------------------
-fn <- "daily_price_history.png"
+fn <- "./images/daily_price_history.png"
 
 #------------------------------------------------------------
-jpeg(paste("./images/", fn), width = 1200, height = 700)
+jpeg(fn, width = 1200, height = 700)
 plot
 dev.off()

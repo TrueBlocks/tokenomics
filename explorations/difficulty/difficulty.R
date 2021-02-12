@@ -25,8 +25,8 @@ const.DANGER_ZONE <- 38
 # block.fake - the fake block number as per the difficulty calc
 # period     - the difficulty bomb's current period (relative to block.fake)
 # bomb       - the actual bomb's value at the block
-df <- read_csv('store/difficulty/difficulty.csv') %>%
-#  filter(blocknumber >= bn.HOMESTEAD) %>%
+df <- read_csv('store/difficulty.csv') %>%
+  #  filter(blocknumber >= bn.HOMESTEAD) %>%
   mutate(block.bin = floor(blocknumber / const.BIN_SIZE) * const.BIN_SIZE) %>%
   mutate(fake.block =
            ifelse(blocknumber >= bn.MUIRGLACIER,
@@ -62,21 +62,30 @@ df <- read_csv('store/difficulty/difficulty.csv') %>%
 # sample the data otherwise it's too big
 sample <- df %>% sample_frac(.005) %>% arrange(blocknumber)
 head(sample)
+tail(sample)
 
 # group by block bin
-grouped_sample <- sample %>% group_by(block.bin)
-head(grouped_sample, 3)
+blockBinSample <- sample %>% group_by(block.bin)
+head(blockBinSample)
+tail(blockBinSample)
+
+latest <- max(blockBinSample$timestamp)
 
 #------------------------------------------------------------
 chart_title <- "Block Number / Fake Block Number / Bomb Period"
-source <- "Source: Mainnet, November 23, 2019"
 x_vals <- sample$timestamp
 x_label <- "Date"
 y_vals <- sample$block.bin
 y_label <- "Real / Fake BN"
+anno1.text <- "Source: Ethereum mainnet"
+anno1.x.pct = .15
+anno1.y.pct = .01
+anno2.text <- "Produced for Tokenomics™ by TrueBlocks, LLC"
+anno2.x.pct = .15
+anno2.y.pct = .99
 source(file="../common/chart_defaults.R")
 #------------------------------------------------------------
-fakeBlock <- grouped_sample %>%
+fakeBlock <- blockBinSample %>%
   ggplot(aes(x = timestamp, cey.lab = 1)) +
   geom_line(aes(y = block.bin,  color='blocknumber')) +
   geom_line(aes(y = fake.block, color='fake.block')) +
@@ -86,21 +95,25 @@ fakeBlock <- grouped_sample %>%
   geom_vline(xintercept = ts.CONSTANTINOPLE, color="lightgray", linetype="dashed") +
   geom_vline(xintercept = ts.ISTANBUL, color="lightgray", linetype="dashed") +
   geom_vline(xintercept = ts.MUIRGLACIER, color="lightgray", linetype="dashed") +
-  geom_vline(xintercept = 1610764421, color="blue", linetype="dashed") +
+  geom_vline(xintercept = latest, color="blue", linetype="dashed") +
   labels + anno1 + anno2 +
   theme + xaxis + yaxis
 fakeBlock
 
 #------------------------------------------------------------
 chart_title <- "Difficulty Delta and Difficulty Bomb per Block"
-source <- "Source: Mainnet, November 23, 2019"
-x_vals <- sample$diff
+x_vals <- blockBinSample$block.bin
 x_label <- "Block Number"
-y_vals <- sample$block.bin
+y_vals <- blockBinSample$diff.delta
 y_label <- "Difficulty Delta / Bomb"
+
+anno1.text <- "Source: Ethereum mainnet"
+anno1.x.pct = .1
+anno2.text <- "Produced for Tokenomics™ by TrueBlocks, LLC"
+anno2.x.pct = .1
 source(file="../common/chart_defaults.R")
 #------------------------------------------------------------
-plot_DeltaDiffPerBlock <- grouped_sample %>%
+plot_DeltaDiffPerBlock <- blockBinSample %>%
   ggplot(aes(x=block.bin)) +
   geom_line(aes(y=diff.delta), colour='salmon') +
   geom_vline(xintercept = bn.BYZANTIUM, color="lightgray", linetype="dashed") +
@@ -114,14 +127,13 @@ plot_DeltaDiffPerBlock
 
 #------------------------------------------------------------
 chart_title <- "Difficulty Sensitivity per Block"
-source <- "Source: Mainnet, November 23, 2019"
 x_vals <- sample$diff.sensitivity
 x_label <- "Block Number"
 y_vals <- sample$block.bin
 y_label <- "Difficulty Sensitivity"
 source(file="../common/chart_defaults.R")
 #------------------------------------------------------------
-plot_SensitivityPerBlock <- grouped_sample %>%
+plot_SensitivityPerBlock <- blockBinSample %>%
   ggplot(aes(x=blocknumber)) +
   geom_line(aes(y=diff.sensitivity), color='salmon') +
   geom_hline(yintercept = 0, color = "yellow") +
@@ -130,7 +142,10 @@ plot_SensitivityPerBlock
 
 grouped_df <- df %>% group_by(block.bin)
 grouped_sum_df <- grouped_df %>%
-  summarize(sum.difficulty = sum(difficulty, na.rm=T), sum.diff.delta = sum(diff.delta, na.rm=T))
+  summarize(
+    sum.difficulty = sum(difficulty, na.rm=T),
+    sum.diff.delta = sum(diff.delta, na.rm=T)
+  )
 gathered <- grouped_sum_df %>%
   mutate(percent.delta = sum.diff.delta / sum.difficulty) %>%
   gather(key = vars, value = val, -block.bin)
