@@ -579,5 +579,8 @@ const char* STR_DISPLAY_GRANT =
 
 //---------------------------------------------------------------------------
 // EXISTING_CODE
+bool sortGrantsByAddress(const CGrant& g1, const CGrant& g2) {
+    return g1.admin_address < g2.admin_address;
+}
 // EXISTING_CODE
 }  // namespace qblocks

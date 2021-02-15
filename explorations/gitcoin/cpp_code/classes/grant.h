@@ -199,5 +199,6 @@ extern const char* STR_DISPLAY_GRANT;
 
 //---------------------------------------------------------------------------
 // EXISTING_CODE
+bool sortGrantsByAddress(const CGrant& g1, const CGrant& g2);
 // EXISTING_CODE
 }  // namespace qblocks

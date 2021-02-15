@@ -15,12 +15,13 @@ df <- df %>%
 df <- df %>% filter(epoch != "E-01")
 df <- df %>% filter(epoch != "E-02")
 df <- df %>% filter(epoch != "E-03")
+#df <- df %>% filter(epoch != "E-04")
 #%>% filter(epoch != "E-02")
 
 #df <- df %>% filter(cmd == "acctExport")
 #df <- df %>% filter(id > 10000)
 
-#df <- df %>% filter(date > ymd_hms("2021-01-01 00:00:00"))
+#df <- df %>% filter(date > ymd_hms("2021-02-13 00:00:00"))
 head(df)
 tail(df)
 

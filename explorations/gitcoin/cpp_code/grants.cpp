@@ -13,12 +13,34 @@
 #include "utillib.h"
 #include "classes/grant.h"
 
+class COptions : public COptionsBase {
+public:
+    COptions(void) : COptionsBase() {
+        CAccountName name;
+        getNamedAccount(name, "0x0000000000000000000000000000000010101010");
+    }
+    bool parseArguments(string_q& command) override;
+    void Init(void) override;
+};
+
+bool COptions::parseArguments(string_q& command) { return true; }
+void COptions::Init(void) {}
+
 //----------------------------------------------------------------
+extern string_q cleanup(CAccountName& name, const CGrant& grant);
 extern string_q postpareString(const string_q &str);
 extern string_q prepareString(const string_q &str);
 extern bool loadGrants(CGrantArray& grants);
 int main(int argc, char *argv[])
 {
+    string_q commands;
+    COptions options;
+    options.parseArguments(commands);
+    
+    size_t max = 5;
+    if (argc > 1)
+        max = str_2_Uint(argv[1]);
+    CAccountName::registerClass();
     CGrant::registerClass();
     CMetaData::registerClass();
     CCounter::registerClass();
@@ -26,17 +48,67 @@ int main(int argc, char *argv[])
     COrganization::registerClass();
     CPoint2d::registerClass();
     CPoint3d::registerClass();
+    
+    manageFields("CAccountName:tags,address,name,symbol,source,decimals,description,is_custom,is_prefund,is_contract,is_erc20,is_erc721", true);
 
     CGrantArray grants;
     loadGrants(grants);
-//    for (auto grant : grants) {
-//        cout << grant << endl;
-//        printf("");
-//    }
-    
+
 #if 0
-    //          if (!contains(file, "913.json")) //   913
-    //             continue;
+    sort(grants.begin(), grants.end());
+    cout << "#!/usr/bin/env bash" << endl << endl;
+    for (auto g : grants) {
+        if (!g.slug.empty() && !isZeroAddr(g.admin_address)) {
+            cout << "./file.1 " << g.admin_address << " " << "\"Grant " << g.grant_id << " " << g.title << "\"";
+            cout << " \"31-Gitcoin Grants:Grant\" \"http://gitcoin.co/grants/" << g.grant_id;
+            cout << "/" << g.slug << "\"" << endl;
+        }
+//            cout << "./file.1 " << g.grant_id << " " << g.slug << endl;
+    }
+#else
+#if 0
+    sort(grants.begin(), grants.end(), sortGrantsByAddress);
+    CAddressArray addrs;
+    ostringstream os;
+    os << "chifra list ";
+    size_t cnt = 0;
+    for (auto grant : grants) {
+        if (isAddress(grant.admin_address)) {
+            if (++cnt > max)
+                break;
+            addrs.push_back(grant.admin_address);
+            os << grant.admin_address << " ";
+            if (addrs.size() == 13) {
+                cout << os.str() << endl;
+                addrs.clear();
+                os.clear();
+                os.str("");
+                os << "chifra list ";
+            }
+        }
+    }
+    if (os.str() != "chifra list ")
+        cout << os.str() << endl;
+#else
+#if 1
+    for (auto grant : grants) {
+        if (!grant.slug.empty() && !isZeroAddr(grant.admin_address)) {
+            CAccountName acct;
+            if (!options.getNamedAccount(acct, grant.admin_address)) { // not found
+                string_q name = cleanup(acct, grant);
+                cout << "addName ";
+                cout << "\"" << grant.admin_address << "\" ";
+                cout << "\"" << name << "\" ";
+                cout << "\"31-Gitcoin Grants:Grant\" ";
+                cout << "\"https://gitcoin.co/grants/" << grant.grant_id << "/" << grant.slug << "\" ";
+                // cout << "\"" << acct.symbol << "\" ";
+                // cout << "\"" << (acct.decimals ? uint_2_Str(acct.decimals) : "") << "\" ";
+                // cout << "\"" << acct.description << "\"";
+                cout << endl;
+            }
+        }
+    }
+#else
     string_q contents = prepareString(asciiFileToString(file));
     CGrant grant;
     if (contents == "[]\n") {
@@ -59,13 +131,15 @@ int main(int argc, char *argv[])
     // if (file > "./data/1500.json")
     //     break;
 #endif
-//    for (uint32_t pk = 2196 ; pk <= 2200 ; pk++) {
-//        ostringstream os;
-//        os << "curl -s \"https://gitcoin.co/api/v0.1/grants/?pk=" << pk << "\" | jq . >data/" << pk << ".json";
-//        system(os.str().c_str());
-//        usleep(500000);
-//        cerr << pk << endl;
-//    }
+#endif
+#endif
+    //    for (uint32_t pk = 2196 ; pk <= 2200 ; pk++) {
+    //        ostringstream os;
+    //        os << "curl -s \"https://gitcoin.co/api/v0.1/grants/?pk=" << pk << "\" | jq . >data/" << pk << ".json";
+    //        system(os.str().c_str());
+    //        usleep(500000);
+    //        cerr << pk << endl;
+    //    }
 
     return 0;
 }
@@ -469,4 +543,53 @@ bool loadGrants(CGrantArray& grants) {
     sort(grants.begin(), grants.end());
 
     return true;
+}
+
+string_q cleanup(CAccountName& acct, const CGrant& grant) {
+    string_q in = grant.title;
+    string_q ret = "Grant " + padNum4(grant.grant_id) + " " + toProper(in);
+    CStringArray replaces = {
+        " Ryo -> RYO ",
+        " Avado-> AVADO",
+        " On -> on ",
+        " Or -> or ",
+        " By -> by ",
+        " Iot -> IOT ",
+        " dao -> DAO ",
+        " Dao -> DAO ",
+        " Of -> of ",
+        " For -> for ",
+        " The -> the ",
+        " With -> with ",
+        " And -> and ",
+        " At -> at ",
+        "rDai->rDai",
+        "Defi->DeFi",
+        "ethereum->Ethereum",
+        // ":: -> ",
+        // " -  -> ",
+        // " : -> ",
+    };
+    for (auto to : replaces) {
+        replace(to, "->", "|");
+        string_q from = nextTokenClear(to, '|');
+        replace(ret, from, to);
+        replace(acct.name, from, to);
+    }
+    ostringstream source;
+    source << "https://gitcoin.co/grants/" << grant.grant_id << "/" << grant.slug;
+    string_q ss = source.str();
+    if (!acct.source.empty() && acct.source != ss) {
+//        cout << "acct.source: " << acct.source << endl;
+//        cout << "source.str:  " << ss << endl;
+        uint64_t id1 = str_2_Uint(substitute(acct.source, "https://gitcoin.co/grants/", ""));
+        uint64_t id2 = str_2_Uint(substitute(ss, "https://gitcoin.co/grants/", ""));
+        if (id1 < id2)
+            acct.description = acct.source;
+    }
+//    if (!name.empty() && name != ret) {
+//        ret += (" (previous: " + name + ")");
+//        printf("");
+//    }
+    return ret;
 }
