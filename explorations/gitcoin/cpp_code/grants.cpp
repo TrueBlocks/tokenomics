@@ -26,8 +26,21 @@ public:
 bool COptions::parseArguments(string_q& command) { return true; }
 void COptions::Init(void) {}
 
+string_q getURL(const address_t& addr) {
+    static map<address_t, string_q> theMap;
+    if (theMap.empty()) {
+        CStringArray lines;
+        asciiFileToLines("./url.txt", lines);
+        for (auto line : lines) {
+            CStringArray parts;
+            explode(parts, line, '\t');
+            theMap[parts[0]] = parts[1];
+        }
+    }
+    return theMap[addr];
+}
 //----------------------------------------------------------------
-extern string_q cleanup(CAccountName& name, const CGrant& grant);
+extern string_q cleanName(CAccountName& name, const CGrant& grant);
 extern string_q postpareString(const string_q &str);
 extern string_q prepareString(const string_q &str);
 extern bool loadGrants(CGrantArray& grants);
@@ -37,9 +50,6 @@ int main(int argc, char *argv[])
     COptions options;
     options.parseArguments(commands);
     
-    size_t max = 5;
-    if (argc > 1)
-        max = str_2_Uint(argv[1]);
     CAccountName::registerClass();
     CGrant::registerClass();
     CMetaData::registerClass();
@@ -53,6 +63,27 @@ int main(int argc, char *argv[])
 
     CGrantArray grants;
     loadGrants(grants);
+    // uint32_t cnt = 0;
+    // for (auto a : options.namedAccounts)
+    // {
+    //     if (a.tags == "31-Gitcoin Grants:Grant") {
+    //         for (auto g : grants) {
+    //             if (g.admin_address == a.address) {
+    //                 ostringstream n;
+    //                 n << "\t" << "Grant " << padNum4(g.grant_id) << " " << g.title;
+    //                 ostringstream o;
+    //                 o << "\t" << a.name;
+    //                 if (toLower(n.str()) != toLower(o.str())) {
+    //                     cout << (cnt++) << ". " << a.address << endl;
+    //                     cout << n.str() << endl;
+    //                     cout << o.str() << endl;
+    //                     cout << endl;
+    //                 }
+    //             }
+    //         }
+    //         cout << string_q(120, '-') << endl;
+    //     }
+    // }
 
 #if 0
     sort(grants.begin(), grants.end());
@@ -94,17 +125,22 @@ int main(int argc, char *argv[])
     for (auto grant : grants) {
         if (!grant.slug.empty() && !isZeroAddr(grant.admin_address)) {
             CAccountName acct;
-            if (!options.getNamedAccount(acct, grant.admin_address)) { // not found
-                string_q name = cleanup(acct, grant);
-                cout << "addName ";
-                cout << "\"" << grant.admin_address << "\" ";
-                cout << "\"" << name << "\" ";
-                cout << "\"31-Gitcoin Grants:Grant\" ";
-                cout << "\"https://gitcoin.co/grants/" << grant.grant_id << "/" << grant.slug << "\" ";
-                // cout << "\"" << acct.symbol << "\" ";
-                // cout << "\"" << (acct.decimals ? uint_2_Str(acct.decimals) : "") << "\" ";
-                // cout << "\"" << acct.description << "\"";
-                cout << endl;
+            if (!options.getNamedAccount(acct, grant.admin_address)) {
+                if (true) { //grant.grant_id != 184) {
+                    string_q name = cleanName(acct, grant);
+                    string_q slug = "https://gitcoin.co/grants/" + uint_2_Str(grant.grant_id) + "/" + grant.slug;
+                    if (true) { // name != acct.name) {
+                        cout << "addName ";
+                        cout << "\"" << grant.admin_address << "\" ";
+                        cout << "\"" << name << "\" ";
+                        cout << "\"" << "31-Gitcoin Grants:Grant" << "\" ";
+                        cout << "\"" << slug << "\" ";
+                        cout << "\"\" ";
+                        cout << "\"\" ";
+                        cout << "\"" << getURL(grant.admin_address) << "\"";
+                        cout << endl;
+                    }
+                }
             }
         }
     }
@@ -500,9 +536,10 @@ string_q prepareString(const string_q &str)
 
 //----------------------------------------------------------------
 bool loadGrant(CGrant& grant, const string_q& filename) {
+    time_q jsonTime = fileLastModifyDate(filename);
+
     string_q binFile = substitute(filename, ".json", ".bin");
-    if (fileExists(binFile)) {
-        cerr << "binary: " << binFile << "    \r"; cerr.flush();
+    if (fileExists(binFile) && fileLastModifyDate(binFile) > jsonTime) {
         CArchive archive(READING_ARCHIVE);
         if (archive.Lock(binFile, modeReadOnly, LOCK_NOWAIT)) {
             archive >> grant;
@@ -510,7 +547,6 @@ bool loadGrant(CGrant& grant, const string_q& filename) {
             return true;
         }
     } else {
-        cerr << "json: " << filename << "    \r"; cerr.flush();
         string_q contents = trim(trim(asciiFileToString(filename), '['), ']');
         if (grant.parseJson3(contents)) {
             CArchive archive(WRITING_ARCHIVE);
@@ -545,51 +581,30 @@ bool loadGrants(CGrantArray& grants) {
     return true;
 }
 
-string_q cleanup(CAccountName& acct, const CGrant& grant) {
-    string_q in = grant.title;
-    string_q ret = "Grant " + padNum4(grant.grant_id) + " " + toProper(in);
-    CStringArray replaces = {
-        " Ryo -> RYO ",
-        " Avado-> AVADO",
-        " On -> on ",
-        " Or -> or ",
-        " By -> by ",
-        " Iot -> IOT ",
-        " dao -> DAO ",
-        " Dao -> DAO ",
-        " Of -> of ",
-        " For -> for ",
-        " The -> the ",
-        " With -> with ",
-        " And -> and ",
-        " At -> at ",
-        "rDai->rDai",
-        "Defi->DeFi",
-        "ethereum->Ethereum",
-        // ":: -> ",
-        // " -  -> ",
-        // " : -> ",
-    };
-    for (auto to : replaces) {
-        replace(to, "->", "|");
-        string_q from = nextTokenClear(to, '|');
-        replace(ret, from, to);
-        replace(acct.name, from, to);
+string_q cleanName(CAccountName& acct, const CGrant& grant) {
+    CStringArray corrections = {"for", "the", "on", "in", "with", "as", "at", "and", "by", "in", "to", "of", "a", "is", "it", "or"};
+
+    uint64_t id = grant.grant_id;
+    string_q ret = toProper(grant.title); // countOf(acct.name, ' ') == 0 ? acct.name : toProper(acct.name);
+    if (startsWith(ret, "Grant ")) {
+        replace(ret, "Grant ", "");
+        // id = str_2_Uint(nextTokenClear(ret, ' '));
+        nextTokenClear(ret, ' ');
     }
-    ostringstream source;
-    source << "https://gitcoin.co/grants/" << grant.grant_id << "/" << grant.slug;
-    string_q ss = source.str();
-    if (!acct.source.empty() && acct.source != ss) {
-//        cout << "acct.source: " << acct.source << endl;
-//        cout << "source.str:  " << ss << endl;
-        uint64_t id1 = str_2_Uint(substitute(acct.source, "https://gitcoin.co/grants/", ""));
-        uint64_t id2 = str_2_Uint(substitute(ss, "https://gitcoin.co/grants/", ""));
-        if (id1 < id2)
-            acct.description = acct.source;
+    ret = "Grant " + padNum4(id) + " " + ret;
+    for (auto c : corrections) {
+        replaceAll(ret, " " + toProper(c) + " ", " " + toLower(c) + " ");
+        replaceAll(ret, "\t" + toProper(c) + " ", "\t" + toLower(c) + " ");
+        replaceAll(ret, " " + toProper(c) + "\t", " " + toLower(c) + "\t");
     }
-//    if (!name.empty() && name != ret) {
-//        ret += (" (previous: " + name + ")");
-//        printf("");
-//    }
+    CStringArray caps = {"Dao", "Dai", "Q.e.d.", "Iot", "Kernel"};
+    for (auto c : caps) {
+        replaceAll(ret, c, toUpper(c));
+    }
+    CStringArray changes = {"Defi|DeFi", "Rdai|rDAI"};
+    for (auto c : changes) {
+        string_q f = nextTokenClear(c, '|');
+        replaceAll(ret, f, c);
+    }
     return ret;
 }
