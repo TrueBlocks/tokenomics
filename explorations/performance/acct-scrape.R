@@ -9,17 +9,20 @@ df <- read.csv("./store/performance_scraper.csv", sep=",", header=TRUE) %>%
 df <- df %>%
   mutate(id = row_number())
 
-df <- df %>% filter(BIN != 4)
+df <- df %>% filter(BIN == 4)
+df <- df %>% filter(id > 2500)
+#View(df)
+#head(df)
+#tail(df)
+#df <- df %>% filter(BIN != 2)
 head(df)
-tail(df)
-df <- df %>% filter(BIN != 2)
-head(df)
-tail(df)
+#tail(df)
 
 df <- df %>%
   mutate(PCTSKIPPED = (NSKIPPED * 1.0) / NFILES) %>%
   mutate(PCTFALSE = (NFALSEPOSITIVE * 1.0) / NFILES)
 #df <- df %>% filter(PCTFALSE < .1)
 df %>% ggplot() +
-  geom_point(aes(x = id, y = PCTSKIPPED, col = PCTFALSE))
+  geom_point(aes(x = id, y = PCTSKIPPED, color = NCHECKED)) +
+  facet_wrap(~BIN)
 str(df)

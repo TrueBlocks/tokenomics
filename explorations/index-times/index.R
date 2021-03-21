@@ -1,10 +1,16 @@
 library(tidyverse)
 library(lubridate)
 
-setwd("/Users/jrush/Development/tokenomics/explorations/performance")
+setwd("/Users/jrush/Development/tokenomics/explorations/index-times")
+df <- read.csv("list.txt", sep="|", header=TRUE) %>% mutate(d1 = str_replace(str_replace(str_replace(date, "Dec ", "2020-12-"), "Jan ", "2021-01-"), "Feb ", "2021-02-"))
 
-df <- read.csv("./store/performance.csv", sep=",", header=TRUE) %>%
-    mutate(date = ymd_hms(str_replace(date, "T", " ")))
+df <- df %>% mutate(date = ymd_hm(d1))
+
+head(filter(df, df$date > "2021-01-31"), 2)
+
+df <- df %>% select(date, start)                          
+df %>% plot()                        
+                          
 #df <- read.csv("./store/performance_failed.csv", sep=",", header=TRUE) %>%
 #  mutate(date = ymd_hms(str_replace(date, "T", " ")))
 df <- df %>%
@@ -12,18 +18,14 @@ df <- df %>%
   mutate(totSecs = ifelse(group == "all", totSecs / 18, totSecs)) %>%
   filter(cmd != "getBloom")
 
-df <- df %>% filter(epoch != "E-01")
-df <- df %>% filter(epoch != "E-02")
-df <- df %>% filter(epoch != "E-03")
-df <- df %>% filter(epoch != "E-04")
-#df <- df %>% filter(epoch != "E-05")
-#df <- df %>% filter(epoch != "E-06")
+#df <- df %>% filter(epoch != "E-01")
+#df <- df %>% filter(epoch != "E-02")
+#df <- df %>% filter(epoch != "E-03")
+#df <- df %>% filter(epoch != "E-04")
 df <- df %>% filter(epoch != "F-01")
 df <- df %>% filter(epoch != "F-02")
 df <- df %>% filter(epoch != "F-03")
 df <- df %>% filter(epoch != "F-04")
-df <- df %>% filter(epoch != "F-05")
-df <- df %>% filter(epoch != "F-06")
 #%>% filter(epoch != "E-02")
 
 #df <- df %>% filter(cmd == "acctExport")
