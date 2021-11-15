@@ -3,20 +3,35 @@ require(scales)
 
 #------------------------------------------------------------
 # sugar for some named blocks
-bn.HOMESTEAD      <- 1150000
-bn.BYZANTIUM      <- 4370000
-bn.CONSTANTINOPLE <- 7280000
-bn.ISTANBUL       <- 9069000
-bn.MUIRGLACIER    <- 9200000
-ts.BYZANTIUM      <- 1508131331
-ts.ISTANBUL       <- 1575764709
-ts.CONSTANTINOPLE <- 1551383524
-ts.MUIRGLACIER    <- 1577953849
+bn.HOMESTEAD       <- 1150000
+
+bn.BYZANTIUM       <- 4370000
+ts.BYZANTIUM       <- 1508131331
+off.BYZANTIUM      <- 3000000
+
+bn.CONSTANTINOPLE  <- 7280000
+ts.CONSTANTINOPLE  <- 1551383524
+off.CONSTANTINOPLE <- off.BYZANTIUM + 2000000
+
+bn.ISTANBUL        <- 9069000
+ts.ISTANBUL        <- 1575764709
+
+bn.MUIRGLACIER     <- 9200000
+ts.MUIRGLACIER     <- 1577953849
+off.MUIRGLACIER    <- off.CONSTANTINOPLE + 4000000
+
+bn.BERLIN          <- 12244000
+ts.BERLIN          <- 1618481223
+
+bn.LONDON          <- 12965000
+ts.LONDON          <- 1628166822
+off.LONDON         <- off.MUIRGLACIER + 700000
+
 # some constants
-const.BIN_SIZE    <- 200
-const.PERIOD_SIZE <- 100000
-const.SAMPLE_SIZE <- 50000
-const.DANGER_ZONE <- 38
+const.BIN_SIZE     <- 200
+const.PERIOD_SIZE  <- 100000
+const.SAMPLE_SIZE  <- 50000
+const.DANGER_ZONE  <- 38
 
 #------------------------------------------------------------
 # read in the data (blocknumber,timestamp,difficulty), removing blocks prior to HOMESTEAD
@@ -29,14 +44,19 @@ df <- read_csv('store/difficulty.csv') %>%
   #  filter(blocknumber >= bn.HOMESTEAD) %>%
   mutate(block.bin = floor(blocknumber / const.BIN_SIZE) * const.BIN_SIZE) %>%
   mutate(fake.block =
-           ifelse(blocknumber >= bn.MUIRGLACIER,
-                  blocknumber - (3000000 + 2000000 + 4000000),
-                  ifelse(blocknumber >= bn.CONSTANTINOPLE,
-                         blocknumber - (3000000 + 2000000),
-                         ifelse(blocknumber >= bn.BYZANTIUM,
-                                blocknumber - 3000000,
-                                blocknumber) + 1))
-  ) %>%
+           ifelse(blocknumber >= bn.LONDON,
+                  blocknumber - off.LONDON,
+                  ifelse(blocknumber >= bn.MUIRGLACIER,
+                         blocknumber - off.MUIRGLACIER,
+                         ifelse(blocknumber >= bn.CONSTANTINOPLE,
+                                blocknumber - off.CONSTANTINOPLE,
+                                ifelse(blocknumber >= bn.BYZANTIUM,
+                                       blocknumber - off.BYZANTIUM,
+                                       blocknumber) + 1
+                                )
+                         )
+                  )
+         ) %>%
   mutate(period = floor(fake.block / const.PERIOD_SIZE)) %>%
   mutate(period.scaled = period * 100000) %>%
   mutate(bomb = 2 ^ period) %>%
@@ -55,9 +75,13 @@ df <- read_csv('store/difficulty.csv') %>%
                   'timeframe 1 (pre-byzantium)',
                   ifelse(blocknumber <= bn.MUIRGLACIER,
                          'timeframe 2 (post-byzantium)',
-                         'timeframe 3 (post-muir)')
-           )
-  )
+                         ifelse(blocknumber <= bn.LONDON,
+                                'timeframe 3 (post-muir)',
+                                'timeframe 4 (post-london)'
+                                )
+                         )
+                  )
+         )
 
 # sample the data otherwise it's too big
 sample <- df %>% sample_frac(.005) %>% arrange(blocknumber)
@@ -69,7 +93,7 @@ blockBinSample <- sample %>% group_by(block.bin)
 head(blockBinSample)
 tail(blockBinSample)
 
-latest <- max(blockBinSample$timestamp)
+latest <- max(sample$timestamp)
 
 #------------------------------------------------------------
 chart_title <- "Block Number / Fake Block Number / Bomb Period"
@@ -95,12 +119,42 @@ fakeBlock <- blockBinSample %>%
   geom_vline(xintercept = ts.CONSTANTINOPLE, color="lightgray", linetype="dashed") +
   geom_vline(xintercept = ts.ISTANBUL, color="lightgray", linetype="dashed") +
   geom_vline(xintercept = ts.MUIRGLACIER, color="lightgray", linetype="dashed") +
+  geom_vline(xintercept = ts.BERLIN, color="lightgray", linetype="dashed") +
+  geom_vline(xintercept = ts.LONDON, color="lightgray", linetype="dashed") +
   geom_vline(xintercept = latest, color="blue", linetype="dashed") +
   labels + anno1 + anno2 +
   theme + xaxis + yaxis
 fakeBlock
 
 #------------------------------------------------------------
+chart_title <- "Difficulty and Difficulty Bomb per Block"
+x_vals <- blockBinSample$block.bin
+x_label <- "Block Number"
+y_vals <- blockBinSample$diff.delta
+y_label <- "Difficulty / Bomb"
+
+anno1.text <- "Source: Ethereum mainnet"
+anno1.x.pct = .1
+anno1.y.pct = .4
+anno2.text <- "Produced for Tokenomics™ by TrueBlocks, LLC"
+anno2.x.pct = .1
+anno2.y.pct = .4
+source(file="../common/chart_defaults.R")
+#------------------------------------------------------------
+plot_DeltaDiffPerBlock <- blockBinSample %>%
+  ggplot(aes(x=block.bin)) +
+  geom_line(aes(y=difficulty), colour='goldenrod') + 
+  geom_line(aes(y=bomb * 200), colour='black') + 
+  geom_vline(xintercept = bn.BYZANTIUM, color="lightgray", linetype="dashed") +
+  geom_vline(xintercept = bn.CONSTANTINOPLE, color="lightgray", linetype="dashed") +
+  geom_vline(xintercept = bn.ISTANBUL, color="lightgray", linetype="dashed") +
+  geom_vline(xintercept = bn.MUIRGLACIER, color="lightgray", linetype="dashed") +
+  geom_vline(xintercept = bn.BERLIN, color="lightgray", linetype="dashed") +
+  geom_vline(xintercept = bn.LONDON, color="lightgray", linetype="dashed") +
+  labels + anno1 + anno2 +
+  theme + xaxis + yaxis
+plot_DeltaDiffPerBlock
+
 chart_title <- "Difficulty Delta and Difficulty Bomb per Block"
 x_vals <- blockBinSample$block.bin
 x_label <- "Block Number"
@@ -112,7 +166,6 @@ anno1.x.pct = .1
 anno2.text <- "Produced for Tokenomics™ by TrueBlocks, LLC"
 anno2.x.pct = .1
 source(file="../common/chart_defaults.R")
-#------------------------------------------------------------
 plot_DeltaDiffPerBlock <- blockBinSample %>%
   ggplot(aes(x=block.bin)) +
   geom_line(aes(y=diff.delta), colour='salmon') +
@@ -120,25 +173,27 @@ plot_DeltaDiffPerBlock <- blockBinSample %>%
   geom_vline(xintercept = bn.CONSTANTINOPLE, color="lightgray", linetype="dashed") +
   geom_vline(xintercept = bn.ISTANBUL, color="lightgray", linetype="dashed") +
   geom_vline(xintercept = bn.MUIRGLACIER, color="lightgray", linetype="dashed") +
+  geom_vline(xintercept = bn.BERLIN, color="lightgray", linetype="dashed") +
+  geom_vline(xintercept = bn.LONDON, color="lightgray", linetype="dashed") +
   geom_line(aes(y=bomb), colour='black') + 
   labels + anno1 + anno2 +
   theme + xaxis + yaxis
 plot_DeltaDiffPerBlock
 
 #------------------------------------------------------------
-chart_title <- "Difficulty Sensitivity per Block"
-x_vals <- sample$diff.sensitivity
-x_label <- "Block Number"
-y_vals <- sample$block.bin
-y_label <- "Difficulty Sensitivity"
-source(file="../common/chart_defaults.R")
+#chart_title <- "Difficulty Sensitivity per Block"
+#x_vals <- sample$diff.sensitivity
+#x_label <- "Block Number"
+#y_vals <- sample$block.bin
+#y_label <- "Difficulty Sensitivity"
+#source(file="../common/chart_defaults.R")
 #------------------------------------------------------------
-plot_SensitivityPerBlock <- blockBinSample %>%
-  ggplot(aes(x=blocknumber)) +
-  geom_line(aes(y=diff.sensitivity), color='salmon') +
-  geom_hline(yintercept = 0, color = "yellow") +
-  theme + labels
-plot_SensitivityPerBlock
+#plot_SensitivityPerBlock <- blockBinSample %>%
+#  ggplot(aes(x=blocknumber)) +
+#  geom_line(aes(y=diff.sensitivity), color='salmon') +
+#  geom_hline(yintercept = 0, color = "yellow") +
+#  theme + labels
+#plot_SensitivityPerBlock
 
 grouped_df <- df %>% group_by(block.bin)
 grouped_sum_df <- grouped_df %>%
@@ -150,18 +205,18 @@ gathered <- grouped_sum_df %>%
   mutate(percent.delta = sum.diff.delta / sum.difficulty) %>%
   gather(key = vars, value = val, -block.bin)
 
-gathered %>%
-  ggplot(aes(x=block.bin, y = val)) +
-  geom_line() +
-  facet_wrap(facets = 'vars', scales = 'free', ncol = 1)
+#gathered %>%
+#  ggplot(aes(x=block.bin, y = val)) +
+#  geom_line() +
+#  facet_wrap(facets = 'vars', scales = 'free', ncol = 1)
 
 point_size = 1.0
-sample %>%
-  filter(abs(ts.delta) < 100) %>%
-  ggplot(aes(y=diff.sensitivity, x = ts.delta, color = blocknumber)) +
-  geom_point(size = point_size) + 
-  scale_color_gradientn(colours = rainbow(5), labels = comma) +
-  scale_x_continuous(breaks = -1:5 * 100)
+#sample %>%
+#  filter(abs(ts.delta) < 100) %>%
+#  ggplot(aes(y=diff.sensitivity, x = ts.delta, color = blocknumber)) +
+#  geom_point(size = point_size) + 
+#  scale_color_gradientn(colours = rainbow(5), labels = comma) +
+#  scale_x_continuous(breaks = -1:5 * 100)
 
 min.sensitivity = min(sample$diff.sensitivity)
 max.sensitivity = max(sample$diff.sensitivity)
