@@ -27,6 +27,10 @@ bn.LONDON          <- 12965000
 ts.LONDON          <- 1628166822
 off.LONDON         <- off.MUIRGLACIER + 700000
 
+bn.ARROW           <- 13773000
+ts.ARROW           <- 1639022046
+off.ARROW          <- off.LONDON + 1000000
+
 # some constants
 const.BIN_SIZE     <- 200
 const.PERIOD_SIZE  <- 100000
@@ -40,23 +44,26 @@ const.DANGER_ZONE  <- 38
 # block.fake - the fake block number as per the difficulty calc
 # period     - the difficulty bomb's current period (relative to block.fake)
 # bomb       - the actual bomb's value at the block
-df <- read_csv('store/difficulty.csv') %>%
+df <- read_csv('/Volumes/Tokenomics Data/difficulty/difficulty.csv') %>%
   #  filter(blocknumber >= bn.HOMESTEAD) %>%
   mutate(block.bin = floor(blocknumber / const.BIN_SIZE) * const.BIN_SIZE) %>%
   mutate(fake.block =
-           ifelse(blocknumber >= bn.LONDON,
-                  blocknumber - off.LONDON,
-                  ifelse(blocknumber >= bn.MUIRGLACIER,
-                         blocknumber - off.MUIRGLACIER,
-                         ifelse(blocknumber >= bn.CONSTANTINOPLE,
-                                blocknumber - off.CONSTANTINOPLE,
-                                ifelse(blocknumber >= bn.BYZANTIUM,
-                                       blocknumber - off.BYZANTIUM,
-                                       blocknumber) + 1
-                                )
-                         )
-                  )
-         ) %>%
+           ifelse(blocknumber >= bn.ARROW,
+                  blocknumber - off.ARROW,
+                  ifelse(blocknumber >= bn.LONDON,
+                         blocknumber - off.LONDON,
+                         ifelse(blocknumber >= bn.MUIRGLACIER,
+                                blocknumber - off.MUIRGLACIER,
+                                ifelse(blocknumber >= bn.CONSTANTINOPLE,
+                                       blocknumber - off.CONSTANTINOPLE,
+                                       ifelse(blocknumber >= bn.BYZANTIUM,
+                                              blocknumber - off.BYZANTIUM,
+                                              blocknumber) + 1
+                                             )
+                                       )
+                               )
+                        )
+                  ) %>%
   mutate(period = floor(fake.block / const.PERIOD_SIZE)) %>%
   mutate(period.scaled = period * 100000) %>%
   mutate(bomb = 2 ^ period) %>%
@@ -77,11 +84,14 @@ df <- read_csv('store/difficulty.csv') %>%
                          'timeframe 2 (post-byzantium)',
                          ifelse(blocknumber <= bn.LONDON,
                                 'timeframe 3 (post-muir)',
-                                'timeframe 4 (post-london)'
+                                ifelse(blocknumber <= bn.ARROW,
+                                       'timeframe 3 (post-london)',
+                                       'timeframe 4 (post-arrow)'
                                 )
                          )
                   )
-         )
+           )
+     )
 
 # sample the data otherwise it's too big
 sample <- df %>% sample_frac(.005) %>% arrange(blocknumber)
@@ -94,6 +104,8 @@ head(blockBinSample)
 tail(blockBinSample)
 
 latest <- max(sample$timestamp)
+curFake <- tail(sample$fake.block, n=1)
+latestPeriod <- floor(curFake / 100000)
 
 #------------------------------------------------------------
 chart_title <- "Block Number / Fake Block Number / Bomb Period"
@@ -255,5 +267,6 @@ sample %>%
   geom_point(size = point_size * 
                ifelse(sample$blocknumber > bn.MUIRGLACIER, 0, 
                       ifelse(sample$blocknumber > bn.BYZANTIUM, 0, 1))) + 
-  geom_vline(xintercept = const.DANGER_ZONE)
+  geom_vline(xintercept = const.DANGER_ZONE) +
+  geom_vline(linetype = 'dotdash', xintercept = latestPeriod)
 

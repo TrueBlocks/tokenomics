@@ -13,7 +13,8 @@ cat store/difficulty-009000000-009999999.txt | tr '\t' ',' >>store/difficulty.cs
 cat store/difficulty-010000000-010999999.txt | tr '\t' ',' >>store/difficulty.csv ; echo "11000000"
 cat store/difficulty-011000000-011999999.txt | tr '\t' ',' >>store/difficulty.csv ; echo "12000000"
 cat store/difficulty-012000000-012999999.txt | tr '\t' ',' >>store/difficulty.csv ; echo "13000000"
-cat store/difficulty-013000000-013999999.txt | tr '\t' ',' >>store/difficulty.csv 
+cat store/difficulty-013000000-013999999.txt | tr '\t' ',' >>store/difficulty.csv ; echo "14000000"
+cat store/difficulty-014000000-014999999.txt | tr '\t' ',' >>store/difficulty.csv 
 #; echo "projected"
 # cat store/difficulty-projected.csv           | tr '\t' ',' >>store/difficulty.csv ; 
 wc store/difficulty.csv
