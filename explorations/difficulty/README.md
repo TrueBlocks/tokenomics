@@ -7,7 +7,7 @@ is currently in the folder containing this README file (./explorations/difficuly
 First, download the data to the current folder:
 
 ```
-curl --output difficulty.csv.gz https://gateway.pinata.cloud/ipfs/QmdmkCJ7iRbmSLJzhEq3Cg6cPQj3oFStvAoE3G1rbhgmUw
+curl --output difficulty.csv.gz https://gateway.pinata.cloud/ipfs/QmWbdS1dcQZjYBDLaB7jmRet6fQMNPaN4R1bxcoopQHb8K
 ```
 
 Next, unzip the downloaded file:
@@ -16,14 +16,7 @@ Next, unzip the downloaded file:
 gunzip difficulty.csv.gz
 ```
 
-Next, move the data to where it belongs:
-
-```
-mkdir -p store/difficulty/
-mv difficulty.csv store/difficulty
-```
-
-Finally, open the R script:
+Finally, open the R script (you may have to edit the path to the data)
 
 ```
 open difficulty.R
