@@ -44,7 +44,7 @@ const.DANGER_ZONE  <- 38
 # block.fake - the fake block number as per the difficulty calc
 # period     - the difficulty bomb's current period (relative to block.fake)
 # bomb       - the actual bomb's value at the block
-df <- read_csv('/Volumes/Tokenomics Data/difficulty/difficulty.csv') %>%
+df <- read_csv('difficulty.csv') %>%
   #  filter(blocknumber >= bn.HOMESTEAD) %>%
   mutate(block.bin = floor(blocknumber / const.BIN_SIZE) * const.BIN_SIZE) %>%
   mutate(fake.block =
@@ -128,11 +128,17 @@ fakeBlock <- blockBinSample %>%
   geom_line(aes(y = period.scaled, color='period')) +
   geom_hline(yintercept = (const.DANGER_ZONE * 100000), color="darkgray", linetype="dashed") +
   geom_vline(xintercept = ts.BYZANTIUM, color="lightgray", linetype="dashed") +
+  geom_label(x = ts.BYZANTIUM, y = 10000000, label = "Byzantium", size=3) +
   geom_vline(xintercept = ts.CONSTANTINOPLE, color="lightgray", linetype="dashed") +
+  geom_label(x = ts.CONSTANTINOPLE, y = 10000000, label = "Constantinople", size=3) +
   geom_vline(xintercept = ts.ISTANBUL, color="lightgray", linetype="dashed") +
+  geom_label(x = ts.ISTANBUL, y = 10000000, label = "Istanbul", size=3) +
   geom_vline(xintercept = ts.MUIRGLACIER, color="lightgray", linetype="dashed") +
+  geom_label(x = ts.MUIRGLACIER, y = 10000000, label = "Muirglacier", size=3) +
   geom_vline(xintercept = ts.BERLIN, color="lightgray", linetype="dashed") +
+  geom_label(x = ts.BERLIN, y = 10000000, label = "Berlin", size=3) +
   geom_vline(xintercept = ts.LONDON, color="lightgray", linetype="dashed") +
+  geom_label(x = ts.LONDON, y = 10000000, label = "London", size=3) +
   geom_vline(xintercept = latest, color="blue", linetype="dashed") +
   labels + anno1 + anno2 +
   theme + xaxis + yaxis
