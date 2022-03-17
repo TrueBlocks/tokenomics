@@ -15,19 +15,24 @@ library(knitr)
 
 ## INTRODUCTION
 
-Like other cryptocurrency networks, Ethereum relies on a consensus  mechanism which mainly uses large amount of energy and computational power, that encourages scalability and centralization of the technology into large mining farms created by individuals or groups with significant assets. however, this centralization goes against the original tenets behind cryptocurrency.
+Like other cryptocurrency networks, Ethereum relies on a Proof of work consensus mechanism which requires miners to expend energy and computational power, in order to secure the network. This is Ethereum in its current form; however, the shift to Proof of Stake seeks to switch the network over to a validator controlled network where stakes, not hashpower, secure the network. The hope is that it encourages scalability and decentralization of the technology. This change will likely come, but not without some resistance, and it's here where the transition requires a more delecate approach.
 
-Ethereum's "difficulty bomb" simply refers to the intentional and sudden increase in mining difficulty that will occur when ETH 2.0 and PoW updates is released to the Ethereum network.
-Why difficulty bomb? it's simple. it's main intent is to exponentially increase the amount of time it takes to mine a new block on the Ethereum blockchain such that it:
+Ethereum's "Difficulty Bomb" refers to a mechanism that, at a predefined block number, sharply increases the difficulty of the puzzles in the Proof of Work mining algorithm resulting in longer than normal block times (and thus less ETH rewards for miners). This mechanism increases the difficulty exponentially over time and eventually leads to what is referred to as the "Ice Age" - that is, the chain becomes so difficult to mine that it grinds to a halt and stops producing blocks (freezes). Why a difficulty bomb? It's simple. It's main intent is to exponentially increase the amount of time it takes to mine a new block on the Ethereum blockchain such that it:
 
-a. Encourages crypto miners to move away from energy -intensive PoW mining by removing the Incentives.
-b. Takes away the ability to centralize currency creation and ownership
-c. Discourage blockchain forks, and
-d. Force node upgrades.
+a. Encourages crypto miners to move away from energy-intensive PoW mining by removing the incentives.
+b. Takes away (hopefully) the ability to capture an over sized influence over the blockchain.
+c. Discourages blockchain forks.
+d. Forces node operators to upgrade to the latest software.
         
 ## AIM OF ANALYZING THE DIFFICULTY BLOCK
 
-The main goal is to possibly predict (identify) when the bomb will explode (possibly how far back to set thte bomb too). in his article "Adventure in difficulty bombing", Thomas Jay Rush (TjayRush) performed an exercise in predicting the effect of EIP4345. he gave two parts to the difficulty calculation based on his other article "It's not too difficult". these are, Part A (for adjustment) snd Part B (for bomb), as shown in the diagram below. 
+In his article, "Adventure in Difficulty Bombing", Thomas Jay Rush (tjayrush) performed an exercise in predicting the effect of EIP4345. The main goal of this analysis is to:
+
+1. Double check the current estimation procedure to unearth inconsistencies, if any.
+2. Return and possibly optimize their outputs so that the intuitiveness of the graphs are improved.
+3. Provide an intuitive interpretation of the results and when the bomb is expected to blow next.
+
+To this end, we reviewed Thomas's code to create the follow expostulation of Ethereum's next diffculty bomb.  In his aforementioned text, Thomas previously derived two parts to the difficulty calculation based on another article, "It's not that Difficult". In that article, he refers to Part (A) for adjustments and Part (B) for the bomb itself as shown in the diagram below. 
 
 ![](equation.png)
 
@@ -125,12 +130,12 @@ df <- read_csv('store/difficulty.csv') %>%
      )
 ```
 
-The article opined that the adjustment part is the every-block adjustment that keeps blocks time hovering around 13.5seconds and that the bomb or part B is a step-function that doubles every 100,000 blocks. (further readings can be found here https://medium.com/coinmonks/adventures-in-difficulty-bombing-837890476630)
+The article opined that the adjustment part, Part (A), is the every-block adjustment that keeps blocks time hovering around 13.5 seconds, and that the bomb part, Part (B), is a step-function that doubles every 100,000 blocks. Further reading can be found here: https://medium.com/coinmonks/adventures-in-difficulty-bombing-837890476630
 
-The dataset used consists of >1million rows and 3 columns. These columns are listed below:
+As pulled from historical on chain data sources, the final dataset (difficulty.csv) consists of > 14 million rows and 3 columns. These columns are listed below:
 
 a. blocknumber
-b. timestamp, and
+b. timestamp
 c. difficulty. 
    
 A sample of the raw data within the R-analysis environment is shown in the table below.
@@ -145,13 +150,13 @@ blockBinSample <- sample %>% group_by(block.bin)
 head(sample) %>% kable
 ```
 
-The code section started off with some named blocks, e.g homestead and byzantium. The the full sample_size was set to 50000 (this correlate to how the fake_block is been calculated, with fake_block = real_block -(fork_block -50,000). The period_size is set at 100,000 while the danger_zone is set at 38. variable names and constants used in the code is as above, with present time (period) indicated.
+## THE DIFFICULTY.R CODE ##
 
-Data was read in, blocks Prior to Homestead removed, additional columns were formulated, viz; block_bin, block_fake, period, bomb, parent.difficulty, difficulty_sensitivity, and so on. 
+The code section started off with some named blocks, e.g., homestead and byzantium. The full sample_size was set to 50000 (which is a size chosen from the 14,000,000 block sample). The period_size is set at 100,000 while the danger_zone is set to period 38. The "danger zone" is a period Rush identifies where the bomb starts to make its effects known.
 
-The first chart in the code indicates the block number/fake block number/ bomb period.
+Variable names and constants used in the code as below with present time (period) indicated. After the data was read in, pre-processing it involved removing blocks prior to Homestead and creaating additional columns for the visualizaions including: block_bin, block_fake, period, bomb, parent.difficulty, difficulty_sensitivity. 
 
-NB: three iterated epoch of the codes with its graphical visualizations will be posted in this report.
+The first chart in the code indicates the block number / fake block number / bomb period.
 
 ```{r, fig.width=8}
 latest <- max(sample$timestamp)
@@ -197,10 +202,9 @@ fakeBlock <- blockBinSample %>%
 fakeBlock
 ```
 
-The real(true) block number is indicated with the red line above, with its range from 0 to >10,000,000. The green line which indicates the fake block number tracks the real block number until when it somewhat resets at just above the 4,000,000 blocks. it turns to a downhill (parallel) to the true blocks till it resets at about <1,000,000 blocks. Here, the reset seem to happen at a constant block number, just below the 4,000,000 block.
-Note: the three graphs above was drawn using same scale and the outputs are identical.
+The real (actual) block number is indicated with the red line above, with its range from 0 to > 14,000,000. The green line indicates the fake block number which tracks the real block number until it was reset at the Byzantium hard fork. It then parallels to the actual block number, until it was reset again at the Constantinople hard fork. Subsequent hard forks reset the difficulty bomb as needed by adjusting the offset between the actual block number and the fake block number.
 
-The second chart in the code indicates the difficulty and difficulty bomb per block. 
+The second chart indicates the difficulty level and superimposes the difficulty bomb at each block. 
 
 ```{r, fig.height=7}
 #------------------------------------------------------------
@@ -234,9 +238,9 @@ plot_DeltaDiffPerBlock
 
 ```
 
-in the charts above, the height of the red line depicts the difficulty at the period of a particular given block. it is noticed that the uproar (jump) in the difficulty bomb is towards the tail end of the block number, which seem to somewhat exponentially rise as block number increases. worthy of note is that the three iterated epochs of the above charts are also identical.
+In the charts above, the height of the yellow line depicts the difficulty level of a particular block. Note that rises in the hash rate equate to increasing difficulty. In fact, increasing difficulty is a response to rising hash rate. Note the combined effect of the difficulty bomb and the increase in hash rate both of which will tend to increase the difficulty level. The large increase in the hash rate toward the more recent parts of the chain is, we beleive due to the increase in the USD price of Ether. If the increase of the price of Ether outstrips the increase in the price of energy (as it almost certainly did), more hash rate will be attracted to the chain.
 
-The third chart in the code is the difficulty delta and the difficulty bomb per block. 
+The third chart in the code is the difficulty delta (that is, the increase or decrease of the difficulty level between blocks) again with the difficulty bomb (in black) overlaid for comparison.
 
 ```{r, fig.height=7}
 chart_title <- "Difficulty Delta and Difficulty Bomb per Block"
@@ -268,10 +272,9 @@ plot_DeltaDiffPerBlock
 
 ```
 
-The chart above examines the change in difficulty between each successive block, with the black line indicating the bomb.
-the difficulty seems to obviously boomerang towards the tail end of the block number, with block numbers prior to that showing steady patterns. However, at a particular block number, the difficulty skyrocketed, possibly at the predicted time of the bomb explosion (in my opinion). 
+The chart above examines the change in difficulty between each successive block, where the growing wild swings in the difficulty delta is a function of the larger hash rate.The difficulty seems to obviously boomerang towards the tail end of the block number with block numbers prior to that showing steady patterns. We see at a particular block number, the difficulty skyrocketed.
 
-The fourth chat in the code indicates the difficulty per block.
+The fourth chart in the code indicates the difficulty when aggregated across 100,000 block periods. The views are separated into groups based on which hard fork they were part of (Byzantium, Constantinople, and so forth).
 
 ```{r}
 #------------------------------------------------------------
@@ -331,11 +334,10 @@ sample %>%
   geom_vline(xintercept = const.DANGER_ZONE)
 ```
 
-This is where it gets interesting.
 
-The three charts above indicates the difficulty sensitivity per block, i.e for pre-byzantium, post-byzantium, post-london, post-muir and post-arrow. insights form the pre-Byzantium and post-Byzantium shows that the bomb seem to begging its "roaring" just after or at period 39. The three charts shown above, which were compiled at different time intervals, are not identical, but almost pointing to one direction as to what can be inferred from them.
+The charts above indicate the difficulty sensitivity per block for pre-byzantium, post-byzantium, post-london, post-muir and post-arrow. Insights from the pre-Byzantium and post-Byzantium sections shows that the bomb begins to explode around period 39 or 40. This is inferred by the changing structure of the graph after the vertical black line which marks the 39th period in each chart. An increasingly sensitive difficulty level (i.e., a level that swing more widely) is indicitave of the bomb perterbing the normally more steady system.
 
-The last chart in the code indicates the difficulty sensitivity per block.
+The last chart in the code indicates the above mentioned sensitivity with each epoch laid on top of the others to make comparing them easier.
 
 ```{r}
 sample %>%
@@ -361,9 +363,63 @@ sample %>%
   geom_vline(linetype = 'dotdash', xintercept = latestPeriod)
 ```
 
-the chart above indicates the difficulty sensitivity per period.
-Like the aforementioned charts, it was iterated in at least three different epochs, with results shown above capping possibly all its outcomes. the dotdash (dotted line) indicates the present time, while the thick line indicates the "danger" zone. 
+The chart above indicates the difficulty sensitivity per period. Like the aforementioned charts, it was iterated in at least three different epochs, The dotted black line
+indicates the current period at the time of this writing (period 31 -- beginning of February 2022). THe solid black line indicates the "danger" zone at period 39. The
+larger, orange dot in the above chart represent more recent hard forks. Smaller, blue dots are from the earlier hard forks (Byzantium and Constantinople). Looking closely,
+one notices that the later (orange) dots "bend less" than the earlier dots. This is also the result of a higher hash rate as a system with more hash power will recover
+faster from the effect of the bomb and, in that sense, be less sensitive.
+
+```{r}
+library(lubridate)
+library(readr)
+library(tidyverse)
+
+data <- read_csv("difficulty.csv.gz")
+data <- data[-nrow(data),]
+
+## Make a x axis range
+result <- data.frame(date = seq(as_datetime("2015-09-01"),as_datetime("2022-12-22"), by="week"),num_blocks = NA)
+## Get stats for every value in range
+for(idx in 1:nrow(result))
+{
+    result$num_blocks[idx] <- diff(range(data$blocknumber[data$timestamp >= as.numeric(result$date[idx]-days(7)) & data$timestamp <= as.numeric(result$date[idx])]))
+    message(paste0(idx,"/",nrow(result)))
+}
+
+result2 <- result %>%
+    as_tibble() %>%
+    mutate(date = as_date(date)) %>%
+    filter(is.finite(num_blocks)) %>%
+    filter(date <= ymd("2021-12-27"))
+    
+time_stamps <- c(1508131331, 1551383524, 1575764709, 1577953849, 1618481223, 1628166822, 1639022046)
+time_dates <- as_date(as_datetime(time_stamps))
+
+time_blocks <- c(40320,
+                 30240,
+                 24192,
+                 20160)
+
+ggplot(result2, aes(x = date, y = num_blocks)) +
+    geom_line() +
+    geom_vline(xintercept = time_dates, linetype = "dashed", colour = "grey60") +
+    geom_hline(yintercept = time_blocks, linetype = "dashed", colour = "grey60") +
+    scale_x_date(breaks = seq.Date(ymd("2015-12-01"), ymd("2022-09-01"), by = "6 months"), date_labels = "%b %y",
+                 limits = c(ymd("2015-12-01", "2022-09-01"))) +
+    scale_y_continuous(breaks = seq(0, 150000, by = 5000),
+                       labels = scales::comma) +
+    labs(
+        y = "Number of Blocks per Week",
+        title = "Ethereum Weekly Block Production",
+        subtitle = "From September 2015 until December 2021"
+    ) +
+    theme_bw() +
+    theme(panel.grid = element_blank())
+```
+
+In an effort to generate a more intuitive understanding of what happens to the hash rate over time we generated a plot of the weekly block production from September 2015 until December 2021. This graph contains indicators for hard forks and the number of expected weekly blocks assuming various per-second block times. During the earlier bomb explosions, we see the both the doubling effect of the bomb as block times plummet and the increasingly ineffective attempt of the system to recover from the bomb with the upward trajectory of the block times after each doubling. One can also clearly see the return to normal block times once the difficulty bomb is reset. We see a clear trend over time that miner activity has steadily increased despite the known migration to proof of stake.
 
 ## CONCLUSION
 
-A lot has been discussed in literature about the difficulty bomb, with the articles by Thomas Jay Rush having some real good formulation as to how this can be calculated. After an exhaustive code iteration, bottom up re-coding (mainly on the formulations and graphs), the bomb is predicated to possibly go off by june, considering the rate of difficulty sensitivity experienced now.
+
+A lot has been discussed in literature about the difficulty bomb, with the articles by Thomas Jay Rush having solid formulation of the effects and timing of the difficulty bomb. After an exhaustive code review iteration, bottom up re-coding of the graphs, we can confidently state the bomb is predicated to go off by June considering the rate of difficulty sensitivity experienced now. In the final graph above, we see that block times have consistently been below 14s per block since 2019. Our expectation is that this will be consistent until the bomb goes off for which we'd see a rather swift deterioration of block times over the subsequent weeks until either a commitment to reset the bomb is made or the full migration to PoS is implemented and the difficulty mining the original Ethereum v1 shard is permanent.
