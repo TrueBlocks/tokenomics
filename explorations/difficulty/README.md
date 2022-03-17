@@ -7,7 +7,7 @@ is currently in the folder containing this README file (./explorations/difficuly
 First, download the data to the current folder:
 
 ```
-curl --output difficulty.csv.gz https://gateway.pinata.cloud/ipfs/QmWbdS1dcQZjYBDLaB7jmRet6fQMNPaN4R1bxcoopQHb8K
+curl --output difficulty.csv.gz https://gateway.pinata.cloud/ipfs/QmZtxjjbr5MPAPXMkrgi5rJb7fd3estAcUmMuWa5WVHcE4
 ```
 
 Next, unzip the downloaded file:
