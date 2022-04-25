@@ -17,15 +17,13 @@ adverb <- "Weekly"
 # period <- "day" # nolint
 # adverb <- "Daily" # nolint
 
-# THIS IS IMPORTANT - DON'T MISS IT
-# THIS IS IMPORTANT - DON'T MISS IT
 title <- paste("Ethereum", adverb, "Block Production")
 axis <- paste("Number of blocks per", period)
 
 #####################################################################
 # EDIT THIS
-#####################################################################
 lab <- " at block 14,603,591 - 2022-04-17 15:32:04 UTC "
+#####################################################################
 
 ## Make a x axis range
 result <- data.frame(date = seq(as_datetime("2015-09-01"), as_datetime("2022-09-01"), by = period), num_blocks = NA)
