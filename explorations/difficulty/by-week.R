@@ -17,9 +17,14 @@ adverb = "Weekly"
 #period = "day"
 #adverb = "Daily"
 
+# THIS IS IMPORTANT - DON'T MISS IT
+# THIS IS IMPORTANT - DON'T MISS IT
 title <- paste("Ethereum", adverb, "Block Production")
 axis = paste("Number of blocks per", period)
-lab <- " at block 14405939, 2022-03-17 19:43:26 "
+lab <- " at block 14,586,068 -- 2022-04-14 21:52:16 UTC "
+latest <- ymd("2022-04-14")
+# THIS IS IMPORTANT - DON'T MISS IT
+# THIS IS IMPORTANT - DON'T MISS IT
 
 ## Make a x axis range
 result <- data.frame(date = seq(as_datetime("2015-09-01"),as_datetime("2022-09-01"), by=period),num_blocks = NA)
@@ -33,7 +38,6 @@ for (idx in 1:nrow(result)) {
 result
 max(result$date)
 
-latest <- ymd("2022-03-01")
 secs <- ymd("2022-09-01")
 jun15 <- ymd("2022-06-15")
 
@@ -83,4 +87,3 @@ ggplot(result2, aes(x = date, y = num_blocks)) +
     labs(y = axis,x = "",title = title,subtitle = "From September 2015 until the Present") +
     theme_classic() +
     theme(panel.grid = element_blank())
-
