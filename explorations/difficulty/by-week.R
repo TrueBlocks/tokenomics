@@ -3,7 +3,7 @@ library(readr)
 library(tidyverse)
 library(ggthemes)
 
-setwd("/Users/jrush/Development/tokenomics/explorations/difficulty/")
+setwd("~/Development/tokenomics/explorations/difficulty/")
 data <- read_csv("store/difficulty.csv")
 data <- data[-nrow(data),]
 latest <- max(data$timestamp)
@@ -19,7 +19,11 @@ adverb = "Weekly"
 
 title <- paste("Ethereum", adverb, "Block Production")
 axis = paste("Number of blocks per", period)
-lab <- " at block 14405939, 2022-03-17 19:43:26 "
+
+#####################################################################
+# EDIT THIS
+#####################################################################
+lab <- " at block 14603591 - 2022-04-17 15:32:04 UTC "
 
 ## Make a x axis range
 result <- data.frame(date = seq(as_datetime("2015-09-01"),as_datetime("2022-09-01"), by=period),num_blocks = NA)
