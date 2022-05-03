@@ -6,23 +6,24 @@ library(ggthemes)
 setwd("~/Development/tokenomics/explorations/difficulty/")
 data <- read_csv("store/difficulty.csv")
 data <- data[-nrow(data), ]
-latest <- max(data$timestamp)
+latest <- 1650931200 # max(data$timestamp)
 as_datetime(latest)
 
 n_days <- 7
 period <- "week"
 adverb <- "Weekly"
 
-# n_days <- 1 # nolint
-# period <- "day" # nolint
-# adverb <- "Daily" # nolint
+#n_days <- 1
+#period <- "day"
+#adverb <- "Daily"
 
 title <- paste("Ethereum", adverb, "Block Production")
 axis <- paste("Number of blocks per", period)
 
 #####################################################################
 # EDIT THIS
-lab <- " at block 14,603,591 - 2022-04-17 15:32:04 UTC "
+lab <- " at block 14,679,531 - 2022-04-29 13:45:38 UTC "
+latestDate = "2022-04-28"
 #####################################################################
 
 ## Make a x axis range
@@ -44,7 +45,8 @@ result2 <- result %>%
     as_tibble() %>%
     mutate(date = as_date(date)) %>%
     filter(is.finite(num_blocks)) %>%
-    filter(date <= latest)
+    filter(date < latestDate)
+tail(result2)
 
 hard_fork_ts <- c(
     1508131331,

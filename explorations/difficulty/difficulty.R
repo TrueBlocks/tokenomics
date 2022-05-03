@@ -46,6 +46,7 @@ const.DANGER_ZONE  <- 38
 # block.fake - the fake block number as per the difficulty calc
 # period     - the difficulty bomb's current period (relative to block.fake)
 # bomb       - the actual bomb's value at the block
+setwd("~/Development/tokenomics/explorations/difficulty/")
 df <- read_csv('store/difficulty.csv') %>%
   #  filter(blocknumber >= bn.HOMESTEAD) %>%
   mutate(block.bin = floor(blocknumber / const.BIN_SIZE) * const.BIN_SIZE) %>%
@@ -250,6 +251,7 @@ sample %>%
   facet_wrap(facets = 'era', nrow = 3) +
   geom_vline(xintercept = const.DANGER_ZONE)
 
+latestPeriod
 sample %>%
   ggplot(aes(y = diff.sensitivity, x = period, color=block.bin)) +
   scale_colour_gradient2(low = "green",
