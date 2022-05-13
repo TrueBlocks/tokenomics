@@ -278,16 +278,3 @@ sample %>%
 data <- read_csv("./store/difficulty.csv")
 latest <- max(data$timestamp)
 as_datetime(latest)
-
-## Make a x axis range
-result <- data.frame(date = seq(as_datetime("2015-09-01"),as_datetime("2022-02-25"), by="month"),num_blocks = NA)
-
-## Get stats for every value in range
-for(idx in 1:nrow(result))
-{
-  result$num_blocks[idx] <- diff(range(data$blocknumber[data$timestamp >= as.numeric(result$date[idx]-days(7)) & data$timestamp <= as.numeric(result$date[idx])]))
-  message(paste0(idx,"/",nrow(result)))
-}
-
-plot(result,type="l")
-

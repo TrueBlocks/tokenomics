@@ -22,8 +22,8 @@ axis <- paste("Number of blocks per", period)
 
 #####################################################################
 # EDIT THIS
-lab <- " at block 14,679,531 - 2022-04-29 13:45:38 UTC "
-latestDate = "2022-04-28"
+lab <- " 14763782 2022-05-12 22:45:44 UTC "
+latestDate = "2022-05-12"
 #####################################################################
 
 ## Make a x axis range
@@ -60,15 +60,14 @@ hard_fork_ts <- c(
 
 hard_forks <- as_date(as_datetime(hard_fork_ts))
 
-per_31_ts <- c(
-    1485904756,
-    1533578575,
-    1562446275,
-    1616567660,
-    1616567660,
-    1639440039
+prev_per_ts <- c(
+    1499633567,
+    1546466952,
+    1574706444,
+    1638070201,
+    1651517664
 )
-per_31s <- as_date(as_datetime(per_31_ts))
+prev_pers <- as_date(as_datetime(prev_per_ts))
 
 time_blocks <- c(
     (n_days * 24 * 60 * 60) / 14,
@@ -93,12 +92,13 @@ ggplot(result2, aes(x = date, y = num_blocks)) +
     geom_line(colour = "darkblue") +
     geom_vline(xintercept = hard_forks, linetype = "dashed", colour = "grey60") +
     geom_vline(xintercept = jun15, linetype = "solid", colour = "red") +
-    geom_vline(xintercept = per_31s, linetype = "dashed", colour = "pink") +
+    geom_vline(xintercept = prev_pers, linetype = "dashed", colour = "pink") +
     geom_hline(yintercept = time_blocks, linetype = "dashed", colour = "grey60") +
-    annotate("text", x = secs, y = time_blocks[1] + 350, label = "14s") +
-    annotate("text", x = secs, y = time_blocks[3] + 350, label = "18s") +
-    annotate("text", x = secs, y = time_blocks[5] + 350, label = "22s") +
-    annotate("text", x = secs, y = time_blocks[7] + 350, label = "26s") +
+    annotate("text", x = secs, y = time_blocks[1] + 350, label = "14 secs") +
+    annotate("text", x = secs, y = time_blocks[2] + 350, label = "16 sesc") +
+    annotate("text", x = secs, y = time_blocks[3] + 350, label = "18 secs") +
+    annotate("text", x = secs, y = time_blocks[5] + 350, label = "22 secs") +
+    annotate("text", x = secs, y = time_blocks[7] + 350, label = "26 secs") +
     annotate("text", x = anno1, y = max * .2, label = "produced from on-chain data\nby TrueBlocks and OmniAnalytics", size = 3, fontface = "italic", hjust = 0) +
     geom_label(aes(x = anno2, y = max * .2, fontface = "italic", label = lab), fill = "#fafafa") +
     scale_x_date(breaks = seq.Date(ymd("2015-12-01"), ymd("2022-09-01"), by = "6 months"), date_labels = "%b %y", limits = c(ymd("2015-12-01", "2022-09-01"))) +
