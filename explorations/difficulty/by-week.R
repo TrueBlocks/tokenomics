@@ -6,8 +6,6 @@ library(ggthemes)
 setwd("~/Development/tokenomics/explorations/difficulty/")
 data <- read_csv("store/difficulty.csv")
 data <- data[-nrow(data), ]
-latest <- 1650931200 # max(data$timestamp)
-as_datetime(latest)
 
 n_days <- 7
 period <- "week"
@@ -22,8 +20,8 @@ axis <- paste("Number of blocks per", period)
 
 #####################################################################
 # EDIT THIS
-lab <- " 14763782 2022-05-12 22:45:44 UTC "
-latestDate = "2022-05-12"
+lab <- " 14,802,281 2022-05-19 01:56:50 UTC "
+latestDate <- "2022-05-19"
 #####################################################################
 
 ## Make a x axis range
@@ -45,8 +43,19 @@ result2 <- result %>%
     as_tibble() %>%
     mutate(date = as_date(date)) %>%
     filter(is.finite(num_blocks)) %>%
-    filter(date < latestDate)
+    filter(date <= latestDate)
 tail(result2)
+
+#prev_five <- head(tail(result2, 6), 5)
+#five_week_avg <- mean(prev_five$num_blocks)
+#five_week_avg
+#last_date <- tail(result, 1)$date
+#last_date
+#result2 <- result2 %>%
+#   arrange(date) %>%
+#    mutate(num_blocks = c(head(num_blocks, -1), num_blocks[length(num_blocks) - 1]))
+#tail(result2)
+write.table(result2, file = "data.csv", sep = "\t", row.names = F)
 
 hard_fork_ts <- c(
     1508131331,
@@ -85,8 +94,6 @@ max <- result2$num_blocks %>% max()
 
 anno1 <- ymd("2015-12-15")
 anno2 <- ymd("2021-10-15")
-
-write.table(result2, file = "data.csv", sep = "\t", row.names = F)
 
 ggplot(result2, aes(x = date, y = num_blocks)) +
     geom_line(colour = "darkblue") +
