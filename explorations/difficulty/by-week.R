@@ -20,19 +20,28 @@ axis <- paste("Number of blocks per", period)
 
 #####################################################################
 # EDIT THIS
-lab <- " 14,802,281 2022-05-19 01:56:50 UTC "
-latestDate <- "2022-05-19"
+lab <- " 14,821,309 2022-05-22 04:10:47 UTC "
+latestDate <- "2022-05-24"
+ts_at_end_of_last_period <- 1652745591
+ts_now <- 1653192647
+diff <- ts_now - ts_at_end_of_last_period
+diff
+fac <- diff / (n_days * 24 * 60 * 60)
+fac <- (1 / fac)
+fac
+
 #####################################################################
 
 ## Make a x axis range
 result <- data.frame(date = seq(as_datetime("2015-09-01"), as_datetime("2022-09-01"), by = period), num_blocks = NA)
+
 ## Get stats for every value in range
 for (idx in 1:nrow(result)) {
     date <- result$date[idx]
     result$num_blocks[idx] <- diff(range(data$blocknumber[data$timestamp >= as.numeric(date - days(n_days)) & data$timestamp <= as.numeric(date)])) # nolint
-    message(paste0(idx, "/", nrow(result)))
+    message(paste0(idx, "/", nrow(result), " ", date))
 }
-# plot(result,type="l",pch=19) # nolint
+
 result
 max(result$date)
 
@@ -45,10 +54,19 @@ result2 <- result %>%
     filter(is.finite(num_blocks)) %>%
     filter(date <= latestDate)
 tail(result2)
+len <- nrow(result2)
+len
+val <- result2$num_blocks[len]
+val
+val <- val * fac
+val
+result2 <- result2 %>%
+  arrange(date) %>%
+  mutate(num_blocks = c(head(num_blocks, -1), val)) #num_blocks[length(num_blocks) - 1]
+tail(result2)
 
 #prev_five <- head(tail(result2, 6), 5)
-#five_week_avg <- mean(prev_five$num_blocks)
-#five_week_avg
+#five_week_avg <- mean(prev_five$num_blocks)h
 #last_date <- tail(result, 1)$date
 #last_date
 #result2 <- result2 %>%
@@ -95,6 +113,7 @@ max <- result2$num_blocks %>% max()
 anno1 <- ymd("2015-12-15")
 anno2 <- ymd("2021-10-15")
 
+tail(result2)
 ggplot(result2, aes(x = date, y = num_blocks)) +
     geom_line(colour = "darkblue") +
     geom_vline(xintercept = hard_forks, linetype = "dashed", colour = "grey60") +
