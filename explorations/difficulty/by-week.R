@@ -20,11 +20,11 @@ axis <- paste("Number of blocks per", period)
 
 #####################################################################
 # EDIT THIS
-lab <- " 14,821,309 2022-05-22 04:10:47 UTC "
+lab <- " 14,832,900 2022-05-24 01:21:13 UTC "
 latestDate <- "2022-05-24"
-ts_at_end_of_last_period <- 1652745591
-ts_now <- 1653192647
-diff <- ts_now - ts_at_end_of_last_period
+ts_at_end_of_last_week <- 1652745591
+ts_now <- 1653355273
+diff <- ts_now - ts_at_end_of_last_week
 diff
 fac <- diff / (n_days * 24 * 60 * 60)
 fac <- (1 / fac)
