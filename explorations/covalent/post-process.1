@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+echo "Diffing A to B $1"
+diff store/one/$1.txt store/two/$1.txt | grep "<" >store/inAnotB/$1.txt
+
+echo "Diffing B to A $1"
+diff store/one/$1.txt store/two/$1.txt | grep ">" >store/inBnotA/$1.txt

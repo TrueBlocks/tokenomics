@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+echo "Processing $1"
+
+curl -X GET \
+    "https://api.covalenthq.com/v1/1/address/$1/transactions_v2/?key=ckey_9162b2e801e84cce993a19101eb&page-size=5000" \
+    -H "Accept: application/json" --output output.fil
+cat output.fil | jq | grep tx_hash | cut -f4 -d'"' | sort -u >store/one/$1.txt
+rm -f output.fil
+
+chifra export --no_header --cache $1 | cut -f10 | sort -u >store/two/$1.txt
+
+sleep 3

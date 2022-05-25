@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+#./get_block_nums $1
+chifra monitors --delete --remove $1 2>/dev/null
+chifra list $1 >/dev/null 2>&1
+./download.2 $1
+./post-process.1 $1
+./get_block_nums $1 | tee store/blocks/$1.txt
+echo $1 >>exclude.grep
+echo

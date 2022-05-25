@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+
+cd store/one
+
+#cp -fpv /Volumes/jrush/Development/trueblocks-core/build/one/0x0* .
+#cp -fpv /Volumes/jrush/Development/trueblocks-core/build/one/0x1* .
+#cp -fpv /Volumes/jrush/Development/trueblocks-core/build/one/0x2* .
+#cp -fpv /Volumes/jrush/Development/trueblocks-core/build/one/0x3* .
+#cp -fpv /Volumes/jrush/Development/trueblocks-core/build/one/0x4* .
+#cp -fpv /Volumes/jrush/Development/trueblocks-core/build/one/0x5* .
+#cp -fpv /Volumes/jrush/Development/trueblocks-core/build/one/0x6* .
+#cp -fpv /Volumes/jrush/Development/trueblocks-core/build/one/0x7* .
+#cp -fpv /Volumes/jrush/Development/trueblocks-core/build/one/0x8* .
+#cp -fpv /Volumes/jrush/Development/trueblocks-core/build/one/0x9* .
+#cp -fpv /Volumes/jrush/Development/trueblocks-core/build/one/0xa* .
+#cp -fpv /Volumes/jrush/Development/trueblocks-core/build/one/0xb* .
+#cp -fpv /Volumes/jrush/Development/trueblocks-core/build/one/0xc* .
+#cp -fpv /Volumes/jrush/Development/trueblocks-core/build/one/0xd* .
+cp -fpv /Volumes/jrush/Development/trueblocks-core/build/one/0xe* .
+cp -fpv /Volumes/jrush/Development/trueblocks-core/build/one/0xf* .
+
+cd ../two
+
+#cp -fpv /Volumes/jrush/Development/trueblocks-core/build/two/0x0* .
+#cp -fpv /Volumes/jrush/Development/trueblocks-core/build/two/0x1* .
+#cp -fpv /Volumes/jrush/Development/trueblocks-core/build/two/0x2* .
+#cp -fpv /Volumes/jrush/Development/trueblocks-core/build/two/0x3* .
+#cp -fpv /Volumes/jrush/Development/trueblocks-core/build/two/0x4* .
+#cp -fpv /Volumes/jrush/Development/trueblocks-core/build/two/0x5* .
+#cp -fpv /Volumes/jrush/Development/trueblocks-core/build/two/0x6* .
+#cp -fpv /Volumes/jrush/Development/trueblocks-core/build/two/0x7* .
+#cp -fpv /Volumes/jrush/Development/trueblocks-core/build/two/0x8* .
+#cp -fpv /Volumes/jrush/Development/trueblocks-core/build/two/0x9* .
+#cp -fpv /Volumes/jrush/Development/trueblocks-core/build/two/0xa* .
+#cp -fpv /Volumes/jrush/Development/trueblocks-core/build/two/0xb* .
+#cp -fpv /Volumes/jrush/Development/trueblocks-core/build/two/0xc* .
+#cp -fpv /Volumes/jrush/Development/trueblocks-core/build/two/0xd* .
+cp -fpv /Volumes/jrush/Development/trueblocks-core/build/two/0xe* .
+cp -fpv /Volumes/jrush/Development/trueblocks-core/build/two/0xf* .

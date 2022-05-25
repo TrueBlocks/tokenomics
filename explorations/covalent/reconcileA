@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+./reconcile.1 0x2ae5f36c77a736f76d61f3eec06f12caf2963fd6
+./reconcile.1 0x2ff2b86c156583b1135c584fd940a1996fa4230b
+./reconcile.1 0x99bc02c239025e431d5741cc1dba8ce77fc51ce3
+./reconcile.1 0xd498471e2216a42b5e4684dd3e7aabe1e135e0c5
+./reconcile.1 0xe81175546f554ca6ceb63b142f27de7557c5bf62
+./reconcile.1 0xef3c951e22c65f6256746f4e227e19a5bcbf393c
+./reconcile.1 0xb58f9800f74fea404b58f94ca3685d97e4fdfbed
