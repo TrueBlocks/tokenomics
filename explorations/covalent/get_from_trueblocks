@@ -6,3 +6,11 @@ cat store/raw/trueblocks/$1.txt | \
     cut -f1,2,10 | \
     awk -F'\t' '{print $3,$1,$2}' OFS='\t' | \
     sort >store/two/$1.txt
+
+./cleanup two $1 >x
+cat x >store/two/$1.txt
+
+gzip -f store/raw/trueblocks/$1.txt
+
+cat store/two/$1.txt | sort -k 2 -n | head -1
+cat store/two/$1.txt | sort -k 2 -n | tail -1

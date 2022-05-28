@@ -2,8 +2,10 @@
 
 curl -X GET \
     "https://api.covalenthq.com/v1/1/address/$1/transactions_v2/?key=ckey_9162b2e801e84cce993a19101eb&page-size=5000" \
-    -H "Accept: application/json" --output store/raw/$1.json
+    -H "Accept: application/json" --output x
 
+cat x | jq >store/raw/covalent/$1.json
+rm -f x
 
 cat store/raw/covalent/$1.json | \
     jq ".data.items[] | .tx_hash, .block_height, .tx_offset" | \
@@ -14,3 +16,11 @@ cat store/raw/covalent/$1.json | \
     sed 's/|$//g' | \
     tr '|' '\t' | \
     sort >store/one/$1.txt
+
+./cleanup one $1 >x
+cat x >store/one/$1.txt
+
+gzip -f store/raw/covalent/$1.json
+
+cat store/one/$1.txt | sort -k 2 -n | head -1
+cat store/one/$1.txt | sort -k 2 -n | tail -1
