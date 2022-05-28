@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+chifra export --no_header --cache $1 >store/raw/trueblocks/$1.txt
+
+cat store/raw/trueblocks/$1.txt | \
+    cut -f1,2,10 | \
+    awk -F'\t' '{print $3,$1,$2}' OFS='\t' | \
+    sort >store/two/$1.txt
