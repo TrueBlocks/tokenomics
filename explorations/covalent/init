@@ -10,3 +10,7 @@ mkdir -p store/reasons/covalent
 mkdir -p store/reasons/trueblocks
 mkdir -p store/recons/covalent
 mkdir -p store/recons/trueblocks
+
+cd tools
+make
+cd -
