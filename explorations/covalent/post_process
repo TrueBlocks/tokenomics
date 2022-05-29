@@ -4,10 +4,14 @@ echo "Diffing A to B $1"
 diff store/processed/covalent/$1.txt store/processed/trueblocks/$1.txt | grep "<" | sed 's/< //' >store/diff/in_cov_not_tb/$1.txt
 cat store/diff/in_cov_not_tb/$1.txt | sort -k 2 -k 3 -n | cut -f1 >x
 chifra transactions --reconcile $1 --file x 2>/dev/null | tee store/recons/covalent/$1.txt
+cat store/recons/covalent/$1.txt | cut -f4,5,25 | grep -v "\"\"" | sed 's/\t/./' | cut -f1 >y
+chifra transactions --no_header --articulate --file y 2>/dev/null | cut -f1,2,13 | tee store/reasons/covalent/$1.txt
 
 echo "Diffing B to A $1"
 diff store/processed/covalent/$1.txt store/processed/trueblocks/$1.txt | grep ">" | sed 's/> //' >store/diff/in_tb_not_cov/$1.txt
 cat store/diff/in_tb_not_cov/$1.txt | sort -k 2 -k 3 -n | cut -f1 >x
-chifra transactions --reconcile $1 --file x | tee store/recons/trueblocks/$1.txt
+chifra transactions --no_header --reconcile $1 --file x | tee store/recons/trueblocks/$1.txt
+cat store/recons/trueblocks/$1.txt | cut -f4,5,25 | grep -v "\"\"" | sed 's/\t/./' | cut -f1 >y
+chifra transactions --no_header --articulate --file y | cut -f1,2,13 | tee store/reasons/trueblocks/$1.txt
 
-rm -f x
+#rm -f x y
