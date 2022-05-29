@@ -1,7 +1,0 @@
-#!/usr/bin/env bash
-
-cat store/inAnotB/$1.txt | sed 's/< /chifra transactions --no_header /' | sed -f gbn.sed >task
-source task
-rm -f task
-#wc store/inAnotB/$1.txt
-

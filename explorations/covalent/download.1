@@ -1,8 +1,19 @@
 #!/usr/bin/env bash
 
-echo "Processing $1"
+echo
+echo "-------------------------------- $1 -------------------------------"
 
 ./get_from_trueblocks $1
 ./get_from_covalent $1
+./post_process $1
+
+#ls -l store/raw/covalent/$1.json.gz
+#ls -l store/raw/trueblocks/$1.txt.gz
+#ls -l store/processed/covalent/$1.txt
+#ls -l store/processed/trueblocks/$1.txt
+#ls -l store/diff/in_cov_not_tb/$1.txt
+#ls -l store/diff/in_tb_not_cov/$1.txt
+#ls -l store/recons/covalent/$1.txt
+#ls -l store/recons/trueblocks/$1.txt
 
 sleep 2

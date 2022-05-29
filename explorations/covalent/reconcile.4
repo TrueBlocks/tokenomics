@@ -1,8 +1,0 @@
-#!/usr/bin/env bash
-
-echo Processing $1
-cat store/inBnotA/$1.txt | sed 's/> //' >x
-chifra transactions --reconcile $1 --file x | tee store/recons.two/$1.txt
-wc store/recons.two/$1.txt
-rm -f x
-echo

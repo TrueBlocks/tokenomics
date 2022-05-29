@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+echo "Diffing A to B $1"
+diff store/processed/covalent/$1.txt store/processed/trueblocks/$1.txt | grep "<" | sed 's/< //' >store/diff/in_cov_not_tb/$1.txt
+cat store/diff/in_cov_not_tb/$1.txt | sort -k 2 -k 3 -n | cut -f1 >x
+chifra transactions --reconcile $1 --file x 2>/dev/null | tee store/recons/covalent/$1.txt
+
+echo "Diffing B to A $1"
+diff store/processed/covalent/$1.txt store/processed/trueblocks/$1.txt | grep ">" | sed 's/> //' >store/diff/in_tb_not_cov/$1.txt
+cat store/diff/in_tb_not_cov/$1.txt | sort -k 2 -k 3 -n | cut -f1 >x
+chifra transactions --reconcile $1 --file x | tee store/recons/trueblocks/$1.txt
+
+rm -f x

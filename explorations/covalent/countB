@@ -1,3 +1,0 @@
-#!/usr/bin/env bash
-
-wc store/inBnotA/* | sort -n | grep -v "0       0"

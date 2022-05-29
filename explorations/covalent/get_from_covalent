@@ -15,12 +15,12 @@ cat store/raw/covalent/$1.json | \
     tr '+' '\n' | \
     sed 's/|$//g' | \
     tr '|' '\t' | \
-    sort >store/one/$1.txt
+    sort >store/processed/covalent/$1.txt
 
-./cleanup one $1 >x
-cat x >store/one/$1.txt
+./cleanup processed/covalent $1 >x
+cat x >store/processed/covalent/$1.txt
 
 gzip -f store/raw/covalent/$1.json
 
-cat store/one/$1.txt | sort -k 2 -n | head -1
-cat store/one/$1.txt | sort -k 2 -n | tail -1
+cat store/processed/covalent/$1.txt | sort -k 2 -n | head -1
+cat store/processed/covalent/$1.txt | sort -k 2 -n | tail -1
