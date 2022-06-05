@@ -9,15 +9,9 @@ diff cov_sorted.txt tb_sorted.txt >diff.txt
 
 cat diff.txt | grep "<" | sed 's/< //' >store/diff/covalent_not_trueblocks/$ADDR.txt
 ./diff_datasets covalent trueblocks $ADDR
-find store/diff -type f -name "$ADDR*" -empty -print -delete
-find store/recons -type f -name "$ADDR*" -empty -print -delete
-find store/reasons -type f -name "$ADDR*" -empty -print -delete
 
 cat diff.txt | grep ">" | sed 's/> //' >store/diff/trueblocks_not_covalent/$ADDR.txt
 ./diff_datasets trueblocks covalent $ADDR
-find store/diff -type f -name "$ADDR*" -empty -print -delete
-find store/recons -type f -name "$ADDR*" -empty -print -delete
-find store/reasons -type f -name "$ADDR*" -empty -print -delete
 
 rm -f cov_sorted.txt
 rm -f tb_sorted.txt
