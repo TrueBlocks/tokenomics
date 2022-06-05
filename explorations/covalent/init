@@ -1,15 +1,19 @@
 #!/usr/bin/env bash
 
-mkdir -p store/diff/in_cov_not_tb
-mkdir -p store/diff/in_tb_not_cov
-mkdir -p store/processed/covalent
-mkdir -p store/processed/trueblocks
 mkdir -p store/raw/covalent
 mkdir -p store/raw/trueblocks
-mkdir -p store/reasons/covalent
-mkdir -p store/reasons/trueblocks
+
+mkdir -p store/processed/covalent
+mkdir -p store/processed/trueblocks
+
+mkdir -p store/diff/covalent_not_trueblocks
+mkdir -p store/diff/trueblocks_not_covalent
+
 mkdir -p store/recons/covalent
 mkdir -p store/recons/trueblocks
+
+mkdir -p store/reasons/covalent
+mkdir -p store/reasons/trueblocks
 
 cd tools
 make

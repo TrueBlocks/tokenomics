@@ -1,20 +1,31 @@
 #!/usr/bin/env bash
 
+echo
+echo "------------------------------------------------------------------------------------------------------------"
+echo "Running process_trueblocks"
+echo "------------------------------------------------------------------------------------------------------------"
+
 if [ -z "$1" ]
 then
     echo "Usage ./process_treublocks <address>"
     exit
 fi
 
+echo "Extracting fields from trueblocks data for $1"
+
+# unzip the already downloaded data
 gunzip -k store/raw/trueblocks/$1.txt.gz
 
+# remove three fields (hash, blockNumber, txid)
 cat store/raw/trueblocks/$1.txt | \
     cut -f1,2,10 | \
     awk -F'\t' '{print $3,$1,$2}' OFS='\t' | \
     sort >store/processed/trueblocks/$1.txt
 
+# removes records outside of range [3000000-14800000]
 ./cleanup processed/trueblocks $1 >x
 cat x >store/processed/trueblocks/$1.txt
 
+# cleanup
 rm -f x
 rm -f store/raw/trueblocks/$1.txt

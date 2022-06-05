@@ -1,24 +1,20 @@
 #!/usr/bin/env bash
 
+echo
+echo "------------------------------------------------------------------------------------------------------------"
+echo "Running get_from_trueblocks"
+echo "------------------------------------------------------------------------------------------------------------"
+
 if [ -z "$1" ]
 then
-    echo "Usage ./get_from_treublocks <address>"
+    echo "Usage ./get_from_trueblocks <address>"
     exit
 fi
 
-#chifra export --no_header --cache $1 >store/raw/trueblocks/$1.txt
-gunzip store/raw/trueblocks/$1.txt.gz
+echo "Downloading data from TrueBlocks for $1"
 
-cat store/raw/trueblocks/$1.txt | \
-    cut -f1,2,10 | \
-    awk -F'\t' '{print $3,$1,$2}' OFS='\t' | \
-    sort >store/processed/trueblocks/$1.txt
+# get trueblocks' version of the address's history
+chifra export --no_header --cache $1 >store/raw/trueblocks/$1.txt
 
-./cleanup processed/trueblocks $1 >x
-cat x >store/processed/trueblocks/$1.txt
-rm -f x
-
+# zip it so it doesn't take up so much room
 gzip -f store/raw/trueblocks/$1.txt
-
-#cat store/processed/trueblocks/$1.txt | sort -k 2 -n | head -1
-#cat store/processed/trueblocks/$1.txt | sort -k 2 -n | tail -1

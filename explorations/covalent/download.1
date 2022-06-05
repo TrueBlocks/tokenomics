@@ -1,21 +1,10 @@
 #!/usr/bin/env bash
 
-echo
-echo "-------------------------------- $1 -------------------------------"
-
-./get_from_trueblocks $1
-./get_from_covalent $1
-sleep 1
+# ./get_from_trueblocks $1
+# ./get_from_covalent $1
+# sleep 1
 
 ./process_trueblocks $1
 ./process_covalent $1
 
-#./post_process $1
-
-echo "Heads"
-cat store/processed/covalent/$1.txt | sort -k 2 -n | head -1
-cat store/processed/trueblocks/$1.txt | sort -k 2 -n | head -1
-
-echo "Tails"
-cat store/processed/covalent/$1.txt | sort -k 2 -n | tail -1
-cat store/processed/trueblocks/$1.txt | sort -k 2 -n | tail -1
+./post_process $1

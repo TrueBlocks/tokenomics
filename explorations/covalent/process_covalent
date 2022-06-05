@@ -1,13 +1,22 @@
 #!/usr/bin/env bash
 
+echo
+echo "------------------------------------------------------------------------------------------------------------"
+echo "Running process_covalent"
+echo "------------------------------------------------------------------------------------------------------------"
+
 if [ -z "$1" ]
 then
     echo "Usage ./process_covalent <address>"
     exit
 fi
 
+echo "Extracting fields from covalent data for $1"
+
+# unzip the already downloaded data
 gunzip -k store/raw/covalent/$1.json.gz
 
+# remove three fields (hash, blockNumber, txid)
 cat store/raw/covalent/$1.json | \
     jq ".data.items[] | .tx_hash, .block_height, .tx_offset" | \
     sed 's/"//g' | \
@@ -18,8 +27,10 @@ cat store/raw/covalent/$1.json | \
     tr '|' '\t' | \
     sort >store/processed/covalent/$1.txt
 
+# removes records outside of range [3000000-14800000]
 ./cleanup processed/covalent $1 >x
 cat x >store/processed/covalent/$1.txt
 
+# cleanup
 rm -f x
 rm -f store/raw/covalent/$1.json

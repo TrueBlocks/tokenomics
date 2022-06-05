@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+echo
+echo "------------------------------------------------------------------------------------------------------------"
+echo "Running get_from_covalent"
+echo "------------------------------------------------------------------------------------------------------------"
+
 KEY=`cat .env`
 if [ -z "$KEY" ]
 then
@@ -15,11 +20,16 @@ then
     exit
 fi
 
+echo "Downloading data from Covalent for $1"
+
+# get covalent's version of the address's history
 curl -X GET \
     "https://api.covalenthq.com/v1/1/address/$1/transactions_v2/?key=$KEY&page-size=5000" \
     -H "Accept: application/json" --output x
 
+# format it and cleanup
 cat x | jq >store/raw/covalent/$1.json
 rm -f x
 
+# zip it so it doesn't take up so much room
 gzip -f store/raw/covalent/$1.json
