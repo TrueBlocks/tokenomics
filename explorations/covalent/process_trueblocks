@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+if [ -z "$1" ]
+then
+    echo "Usage ./process_treublocks <address>"
+    exit
+fi
+
+gunzip -k store/raw/trueblocks/$1.txt.gz
+
+cat store/raw/trueblocks/$1.txt | \
+    cut -f1,2,10 | \
+    awk -F'\t' '{print $3,$1,$2}' OFS='\t' | \
+    sort >store/processed/trueblocks/$1.txt
+
+./cleanup processed/trueblocks $1 >x
+cat x >store/processed/trueblocks/$1.txt
+
+rm -f x
+rm -f store/raw/trueblocks/$1.txt

@@ -6,7 +6,7 @@ then
     echo "Covalent API key not found. Put it in .env in this folder. Quitting..."
     exit
 else
-      echo "Covalent key found $KEY"
+    echo "Covalent key found $KEY"
 fi
 
 if [ -z "$1" ]
@@ -22,20 +22,4 @@ curl -X GET \
 cat x | jq >store/raw/covalent/$1.json
 rm -f x
 
-cat store/raw/covalent/$1.json | \
-    jq ".data.items[] | .tx_hash, .block_height, .tx_offset" | \
-    sed 's/"//g' | \
-    tr '\n' '|' | \
-    sed 's/|0x/+0x/g' | \
-    tr '+' '\n' | \
-    sed 's/|$//g' | \
-    tr '|' '\t' | \
-    sort >store/processed/covalent/$1.txt
-
-./cleanup processed/covalent $1 >x
-cat x >store/processed/covalent/$1.txt
-
 gzip -f store/raw/covalent/$1.json
-
-cat store/processed/covalent/$1.txt | sort -k 2 -n | head -1
-cat store/processed/covalent/$1.txt | sort -k 2 -n | tail -1

@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+if [ -z "$1" ]
+then
+    echo "Usage ./process_covalent <address>"
+    exit
+fi
+
+gunzip -k store/raw/covalent/$1.json.gz
+
+cat store/raw/covalent/$1.json | \
+    jq ".data.items[] | .tx_hash, .block_height, .tx_offset" | \
+    sed 's/"//g' | \
+    tr '\n' '|' | \
+    sed 's/|0x/+0x/g' | \
+    tr '+' '\n' | \
+    sed 's/|$//g' | \
+    tr '|' '\t' | \
+    sort >store/processed/covalent/$1.txt
+
+./cleanup processed/covalent $1 >x
+cat x >store/processed/covalent/$1.txt
+
+rm -f x
+rm -f store/raw/covalent/$1.json
