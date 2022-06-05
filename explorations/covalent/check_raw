@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+echo "Listing covalent..."
+find store/raw | grep covalent | cut -d'/' -f4 | cut -f1 -d. | sort >file.cov
+wc file.cov
+
+echo "Listing trueblocks..."
+find store/raw | grep trueblocks | cut -d'/' -f4 | cut -f1 -d. | sort >file.tb
+wc file.tb
+
+echo "Comparing..."
+diff file.cov file.tb
+
+rm -f file.cov file.tb
