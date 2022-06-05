@@ -1,7 +1,19 @@
 #!/usr/bin/env bash
 
 KEY=`cat .env`
-echo $KEY
+if [ -z "$KEY" ]
+then
+    echo "Covalent API key not found. Put it in .env in this folder. Quitting..."
+    exit
+else
+      echo "Covalent key found $KEY"
+fi
+
+if [ -z "$1" ]
+then
+    echo "Usage ./get_from_covalent <address>"
+    exit
+fi
 
 curl -X GET \
     "https://api.covalenthq.com/v1/1/address/$1/transactions_v2/?key=$KEY&page-size=5000" \

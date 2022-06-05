@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
+if [ -z "$1" ]
+then
+    echo "Usage ./get_from_treublocks <address>"
+    exit
+fi
+
 chifra export --no_header --cache $1 >store/raw/trueblocks/$1.txt
 
 cat store/raw/trueblocks/$1.txt | \
