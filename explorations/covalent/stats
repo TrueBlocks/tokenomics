@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+mkdir -p store/stats
+
+echo
+echo "------------------------------------------------------------------------------------------------------------"
+echo "Running stats"
+echo "------------------------------------------------------------------------------------------------------------"
+
+./stats.raw raw/covalent | tee store/stats/counts.txt
+./stats.raw raw/trueblocks | tee -a store/stats/counts.txt
+echo
+
+./stats.1 processed/covalent | tee -a store/stats/counts.txt
+./stats.1 processed/trueblocks | tee -a store/stats/counts.txt
+echo
+
+./stats.1 diff/covalent_not_trueblocks | tee -a store/stats/counts.txt
+./stats.1 diff/trueblocks_not_covalent | tee -a store/stats/counts.txt
+echo
+
+./stats.1 recons/covalent | tee -a store/stats/counts.txt
+./stats.1 recons/trueblocks | tee -a store/stats/counts.txt
+echo
+
+./stats.1 reasons/covalent | tee -a store/stats/counts.txt
+./stats.1 reasons/trueblocks | tee -a store/stats/counts.txt
+echo
+
+./stats.2

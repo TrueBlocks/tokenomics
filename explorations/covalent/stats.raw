@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+echo -n "nfiles" $1
+find store/$1/* | wc
+echo "nrows $1 -"
+

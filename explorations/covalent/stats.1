@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+echo -n "nfiles" $1
+find store/$1/* | wc
+
+echo -n "nrows" $1
+wc store/$1/* | grep total
