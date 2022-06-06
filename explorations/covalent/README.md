@@ -1,42 +1,32 @@
 # Covalent / TrueBlocks Comparison
 
-Using this repo:
+# Using the repo
 
 1. Put your covalent key in a file called .env
 2. Run `./init` to create folders and build a simple tool (requires go 1.18 or later)
 3. Add your addresses to the file ./download (the addresses we used are listed in ./addresses.txt)
 4. All the results will be placed in appropriate-named subfolders in ./store
 
+# Data pipeline
+
 A detailed description of [the data pipeline is here](https://github.com/TrueBlocks/tokenomics/blob/main/explorations/covalent/PROCESS.md).
 
 # Performance
 
-## Covalent Extraction
+## Extraction from Covalent
 
-```
-1,249 files extracted between
-    10:38 pm and 11:09 pm on May 28, 2020 - 31 minutes
-     5:24 am and  5:47 pm on May 29, 2020 - 12 hours 23 minutes
-    total: 12 hours 54 minutes - 0.619695756605284 minutes per address
-                                37.181745396317040 seconds per address (probably invalid data)
+| started       | ended   | elapsed        | addresses | seconds per address                            |
+| ------------- | ------- | -------------- | --------- | ---------------------------------------------- |
+| 4:53am May 29 | 5:47am  | 12 hrs 54 mins | 1,249     | 37.18 secs / addr (probably invalid)           |
+| 5:29pm Jun 5  | 11:20pm | 5 hrs 51 mins  | 3,752     | 5.61 secs per addr (includes one second sleep) |
 
-3,752 files extracted between
-    5:29 pm and 11:20 pm on Jun 5 - 5 hours 51 minutes
-    total: 5 hours 51 minutes - 0.093550106609808 minutes per address
-                                5.613006396588486 seconds per address (includes one second sleep)
-```
+## Extraction from Trueblocks
 
-The second one is way more accurate.
+| started      | ended  | elapsed      | addresses | seconds per address |
+| ------------ | ------ | ------------ | --------- | ------------------- |
+| 1:31am Jun 5 | 3:39am | 2 hrs 7 mins | 5,001     | 1.52 secs / addr    |
 
-## Trueblocks Extraction
-
-```
-126.91 minutes for un-cached - 2 hours 6.91 minutes
-5,001 records - 0.025376924615077 minutes per address
-                1.522615476904619 seconds per address
-```
-
-# Statistics
+# Summary of results
 
 |            | Covalent | TrueBlocks | Difference | Description                                                             |
 | ---------- | -------- | ---------- | ---------- | ----------------------------------------------------------------------- |
