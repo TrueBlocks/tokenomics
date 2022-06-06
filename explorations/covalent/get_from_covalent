@@ -32,4 +32,4 @@ cat x | jq >store/raw/covalent/$1.json
 rm -f x
 
 # zip it so it doesn't take up so much room
-gzip -f store/raw/covalent/$1.json
+gzip -f -n store/raw/covalent/$1.json

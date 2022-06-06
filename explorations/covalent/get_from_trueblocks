@@ -17,4 +17,4 @@ echo "Downloading data from TrueBlocks for $1"
 chifra export --no_header --cache $1 >store/raw/trueblocks/$1.txt
 
 # zip it so it doesn't take up so much room
-gzip -f store/raw/trueblocks/$1.txt
+gzip -f -n store/raw/trueblocks/$1.txt
