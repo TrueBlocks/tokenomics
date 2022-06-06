@@ -1,19 +1,12 @@
 # Covalent / TrueBlocks Comparison
 
-This study is intended to show a few of the quite significant advantages to using TrueBlocks to extract transactional histories
-for any Ethereum address, which include:
+This study is intended to show a few of the significant advantages one would realize from using TrueBlocks
+to extract transactional histories for any Ethereum address. These advantages include:
 
-1. Speed
-2. Accuracy
-3. Privacy
-4. Flexibility
-
-# Using the repo
-
-1. Put your covalent key in a file called .env
-2. Run `./init` to create folders and build a simple tool (requires go 1.18 or later)
-3. Add your addresses to the file ./download (the addresses we used are listed in ./addresses.txt)
-4. All the results will be placed in appropriate-named subfolders in ./store
+1. Speed - TrueBlocks is much faster
+2. Accuracy - TrueBlocks is much more accurate
+3. Privacy - TrueBlocks runs locally, therefore there is no possibility of privacy invasion
+4. Flexibility - TrueBlocks is programmable and presents many options
 
 # Data pipeline
 
@@ -36,54 +29,50 @@ A detailed description of [the data pipeline is here](https://github.com/TrueBlo
 
 # Summary of results
 
-|            | Covalent | TrueBlocks | Difference | Description                                                             |
-| ---------- | -------- | ---------- | ---------- | ----------------------------------------------------------------------- |
-| test cases | 5,000    | 5,000      | -          | We processed this many addresses against both systems                   |
-|            |          |            |            |                                                                         |
-| received   | 609,092  | 707,559    | +98,467    | We received this many 'appearances' for those 5,000 addresses           |
-|            |          |            |            |                                                                         |
-| difference | -        | 1,426      | -          | This many addresses had more records in one system than the other...    |
-|            | -        | 98,467     | -          | ...representing this many appearances                                   |
-|            |          |            |            |                                                                         |
-| material   | -        | 512        | -          | This many addresses had  material transactions missing from Covalent... |
-|            | -        | 21,307     | -          | ...consisting of this many appearances                                  |
+|            | Covalent  | TrueBlocks | Description                                                                |
+| ---------- | --------- | ---------- | -------------------------------------------------------------------------- |
+| test cases | 5,001     | 5,001      | We processed this many addresses against both systems...                   |
+| difference | -         | 3,174      | This many addresses had more records from TrueBlocks than from Covalent... |
+| material   | -         | 1,133      | This many addresses with missing records had missing "material" records.   |
+|            |           |            |                                                                            |
+| received   | 1,336,508 | 1,534,997  | The endpoint returneds this many records...                                |
+| difference | -         | 198,489    | ...representing this many appearances...                                   |
+| material   | -         | 45,328     | ...of which this many had material change in ETH balance.                  |
 
 ## What's missing?
 
-There were 122 different known function calls missing and 106 different unknown (i.e. four-bytes) missing with 19,241 and 2,066 records respectivefully.
+There were 253 different known material function calls missing from Covalent. Additionally, there were 183 different
+unknown (i.e. four-bytes) missing function calls representing 41,483 and 3,845 transactions respectively.
+
+The top 15 known function calls were:
 
 | Function                  | Count      | Percent | Cumulative  |
 | ------------------------- | ---------- | ------- | ----------- |
-| donate                    | 12447      | 64.69%  | 64.69%      |
-| purchase                  | 802        | 4.17    | 68.86       |
-| mintBuilding              | 796        | 4.14    | 73.00       |
-| mintBatch                 | 685        | 3.56    | 76.56       |
-| assembleUnicorn           | 646        | 3.36    | 79.91       |
-| buyOrIncreaseContribution | 586        | 3.05    | 82.96       |
-| buy                       | 434        | 2.26    | 85.21       |
-| execute                   | 427        | 2.22    | 87.43       |
-| bid                       | 270        | 1.40    | 88.84       |
-| invoke1CosignerSends      | 202        | 1.05    | 89.89       |
-| placeBid                  | 193        | 1.00    | 90.89       |
-| swapToETH                 | 148        | 0.77    | 91.66       |
-| execTransaction           | 131        | 0.68    | 92.34       |
-| buyOffer                  | 128        | 0.67    | 93.00       |
-| draw                      | 127        | 0.66    | 93.66       |
-| acceptFulfillment         | 83         | 0.43    | 94.10       |
-| buyoutAndSetReferrer      | 76         | 0.39    | 94.49       |
-| withdraw                  | 74         | 0.38    | 94.88       |
-| buyout                    | 70         | 0.36    | 95.24       |
-| disperseEther             | 60         | 0.31    | 95.55       |
+| donate                    | 29746      | 71.7%   | 71.7%       |
+| purchase                  | 840        | 2.0%    | 73.7%       |
+| mintBuilding              | 796        | 1.9%    | 75.7%       |
+| bid                       | 775        | 1.9%    | 77.5%       |
+| contract-deployment       | 696        | 1.7%    | 79.2%       |
+| mintBatch                 | 689        | 1.7%    | 80.9%       |
+| assembleUnicorn           | 646        | 1.6%    | 82.4%       |
+| buyOrIncreaseContribution | 586        | 1.4%    | 83.8%       |
+| getFreeShrimp             | 584        | 1.4%    | 85.2%       |
+| execute                   | 481        | 1.2%    | 86.4%       |
+| buy                       | 472        | 1.1%    | 87.5%       |
+| adminWithdraw             | 410        | 1.0%    | 88.5%       |
+| placeBid                  | 326        | 0.8%    | 89.3%       |
+| execTransaction           | 298        | 0.7%    | 90.0%       |
+| withdraw                  | 239        | 0.6%    | 90.6%       |
 |                           |            |         |             |
-| **Total**                 | **19,241** | **-**   | **100.00%** |
+| **Total**                 | **41,483** | **-**   | **100.00%** |
 
 # Sources of Error
 
-## Predominance of GitCoin related addresses in the dataset
+## Predominance of GitCoin-related addresses in the dataset
 
 A large proportion of the addresses we studied have interacted with (by either being 
 a recipient or sending a donation) on GitCoin. For this reason, a large proportion of 
-the missing transacitons are 'dontate'. While it is accurate to say that TrueBlocks
+the missing transacitons are 'dontate' (71%). While it is accurate to say that TrueBlocks
 found these transactions but Covalent didn't, and Covelent could, if they wish, add
 this four-byte signature to their special processing list, TrueBlocks finds this
 transaciton without such a list -- the long tail problem.
@@ -96,17 +85,31 @@ Also, we limited out data set to those records that had less than 5,000 transact
 as of the date of our study. While TrueBlocks easily handles addresses with more
 than 5,000 transactions due to the utter lack of rate limiting. We did this
 because Covalent has rate limiting and if we asked for address with more than 5,000
-we had two problems: (1) too slow, (2) we would get banned from their site.
+we had two problems: (1) Covalent was too slow to be practicable, (2) we would
+assumed we would have been banned from their site.
 
-## Range limited
+## Block range limit
 
-We limited the range of transactions to betwen 3,000,000 and 14,800,000 because
-covalent does not provide any transactions in the range XXX to XXX which is
-the Sept. 2016 dDos attack. If we had included these transactions, it would
-have included over 29,000,000 additional records -- none of which had a material
-effect.
+Even if one of the addresses had transactions prior to block 3,000,000 or
+after 14,800,000, we removed these records. While it would have been totally
+fair to keep the transactions prior to block 3,000,000 we find that Covalent
+has chosen to remove a large collection of transactions that happened during the
+2016 dDos attack on Ethereum. This is justfieable is those transactions had no
+"matieral" value. If we had included those records, the results of this study
+would have been significantly more in favor of TrueBlocks.
 
 ## Only studied addresses with less than 5,000 records
 
-Otherwise, Covalent would rate limit us and exclude us from their API.
-Not your node, not your data!
+FOr similar issues, we chose to remove from our study any address with more than
+5,000 records. Again, while TrueBlocks could have easily handled this many records,
+Covalent may have rate limited us, so we chose not to include those addresses.
+
+Upshot: Not your node, not your data!
+
+# Using this repo
+
+1. Put your covalent key in a file called .env
+2. Run `./init` to create folders and build a simple tool (requires go 1.18 or later)
+3. Add your addresses to the file ./download (the addresses we used are listed in ./addresses.txt)
+4. All the results will be placed in appropriate-named subfolders in ./store
+
