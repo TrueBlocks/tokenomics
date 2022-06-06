@@ -105,3 +105,8 @@ covalent does not provide any transactions in the range XXX to XXX which is
 the Sept. 2016 dDos attack. If we had included these transactions, it would
 have included over 29,000,000 additional records -- none of which had a material
 effect.
+
+## Only studied addresses with less than 5,000 records
+
+Otherwise, Covalent would rate limit us and exclude us from their API.
+Not your node, not your data!
