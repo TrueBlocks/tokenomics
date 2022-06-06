@@ -1,5 +1,13 @@
 # Covalent / TrueBlocks Comparison
 
+This study is intended to show a few of the quite significant advantages to using TrueBlocks to extract transactional histories
+for any Ethereum address, which include:
+
+1. Speed
+2. Accuracy
+3. Privacy
+4. Flexibility
+
 # Using the repo
 
 1. Put your covalent key in a file called .env
