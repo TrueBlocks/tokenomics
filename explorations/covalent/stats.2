@@ -1,9 +1,19 @@
 #!/usr/bin/env bash
 
-cat store/reasons/covalent/* | sed 's/0x60806040/contract-deployment/' | cut -f3 | cut -f2 -d: | sort | uniq -c | sort -n | grep 0x >store/stats/covalent_fourbytes.txt
-cat store/reasons/trueblocks/* | sed 's/0x60806040/contract-deployment/' | cut -f3 | cut -f2 -d: | sort | uniq -c | sort -n | grep 0x >store/stats/trueblocks_fourbytes.txt
+cat store/stats/counts.txt | \
+    sed 's/nfiles/|nfiles/' | \
+    tr '|' '\n' | \
+    tr '\n' '|' | \
+    sed 's/total||nfiles/total|nfiles/' | \
+    sed 's/-||nfiles/-|nfiles/' | \
+    tr '|' '\n' >x
+cat x >store/stats/counts.txt
+rm -f x
 
-cat store/reasons/covalent/* | sed 's/0x60806040/contract-deployment/' | cut -f3 | cut -f2 -d: | sort | uniq -c | sort -n | grep -v 0x >store/stats/covalent_functions.txt
-cat store/reasons/trueblocks/* | sed 's/0x60806040/contract-deployment/' | cut -f3 | cut -f2 -d: | sort | uniq -c | sort -n | grep -v 0x >store/stats/trueblocks_functions.txt
+cat store/reasons/covalent/* | sed 's/0x60806040/contract-deployment/' | cut -f3 | cut -f2 -d: | sed 's/}//' | sort | uniq -c | sort -n | grep 0x >store/stats/covalent_fourbytes.txt
+cat store/reasons/trueblocks/* | sed 's/0x60806040/contract-deployment/' | cut -f3 | cut -f2 -d: | sed 's/}//' | sort | uniq -c | sort -n | grep 0x >store/stats/trueblocks_fourbytes.txt
+
+cat store/reasons/covalent/* | sed 's/0x60806040/contract-deployment/' | cut -f3 | cut -f2 -d: | sed 's/}//' | sort | uniq -c | sort -n | grep -v 0x >store/stats/covalent_functions.txt
+cat store/reasons/trueblocks/* | sed 's/0x60806040/contract-deployment/' | cut -f3 | cut -f2 -d: | sed 's/}//' | sort | uniq -c | sort -n | grep -v 0x >store/stats/trueblocks_functions.txt
 
 tail -4 store/stats/*

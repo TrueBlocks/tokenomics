@@ -19,7 +19,7 @@ cat store/diff/$DIFF_FOLDER/$ADDR.txt | grep -v blockNumber | cut -f1 >txs
 chifra transactions --reconcile $ADDR --file txs 2>/dev/null | tee store/recons/$FIRST/$ADDR.txt
 
 cat store/recons/$FIRST/$ADDR.txt | cut -f4,5,25 | grep -v "\"\"" | sed 's/\t/./' | grep -v blockNumber | cut -f1 >txs
-chifra transactions --no_header --articulate --file txs 2>/dev/null | cut -f1,2,13 | cut -f1 -d'|' | cut -f1 -d'(' | sed 's/{name://' | tee store/reasons/$FIRST/$ADDR.txt
+chifra transactions --no_header --articulate --file txs 2>/dev/null | cut -f1,2,13 | cut -f1 -d'|' | cut -f1 -d'(' | sed 's/{name://' | sed 's/}//' | tee store/reasons/$FIRST/$ADDR.txt
 
 rm -f txs
 find store/diff -type f -name "$ADDR*" -empty -print -delete
