@@ -8,13 +8,13 @@ In this document, we discuss the process
 
 For each of 5,001 addresses, we did this:
 
-| Script               | Action                                                                                   | Fields Extracted...  | Result Stored In...                |
-| -------------------- | ---------------------------------------------------------------------------------------- | -------------------- | ---------------------------------- |
-| get\_from_covalent   | Using Covalent API, query the address for all records<br>- pretty prints and zips result |                      | `./raw/covalent/$ADDR.json.gz`     |
-| process_covalent     | Process results to extract fields<br>- clamps range to 3000000-14800000                  | `<hash> <bn> <txId>` | `./processed/covalent/$ADDR.txt`   |
-|                      |                                                                                          |                      |                                    |
-| get\_from_trueblocks | Using TrueBlocks API, query the address for all records                                  |                      | `./raw/trueblocks/$ADDR.txt.gz`    |
-| process_trueblocks   | Process results to extract fields<br>- clamps range to 3000000-14800000                  | `<hash> <bn> <txId>` | `./processed/trueblocks/$ADDR.txt` |
+| Script                                                                                                                      | Action                                                                                   | Fields Extracted...  | Result Stored In...                |
+| --------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- | -------------------- | ---------------------------------- |
+| [get\_from_covalent](https://github.com/TrueBlocks/tokenomics/blob/main/explorations/covalent/PROCESS.md#get_from_covalent) | Using Covalent API, query the address for all records<br>- pretty prints and zips result |                      | `./raw/covalent/$ADDR.json.gz`     |
+| process_covalent                                                                                                            | Process results to extract fields<br>- clamps range to 3000000-14800000                  | `<hash> <bn> <txId>` | `./processed/covalent/$ADDR.txt`   |
+|                                                                                                                             |                                                                                          |                      |                                    |
+| get\_from_trueblocks                                                                                                        | Using TrueBlocks API, query the address for all records                                  |                      | `./raw/trueblocks/$ADDR.txt.gz`    |
+| process_trueblocks                                                                                                          | Process results to extract fields<br>- clamps range to 3000000-14800000                  | `<hash> <bn> <txId>` | `./processed/trueblocks/$ADDR.txt` |
 
 After the above four scripts have run, we have four files for each address. Two `.gz` files and two files containing `hash.bn.txId`.
 
