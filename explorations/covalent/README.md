@@ -7,6 +7,8 @@ Using this repo:
 3. Add your addresses to the file ./download (the addresses we used are listed in ./addresses.txt)
 4. All the results will be placed in appropriate-named subfolders in ./store
 
+A detailed description of [the data pipeline is here](https://github.com/TrueBlocks/tokenomics/blob/main/explorations/covalent/PROCESS.md).
+
 # Performance
 
 ## Covalent Extraction
