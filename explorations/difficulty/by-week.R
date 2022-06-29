@@ -20,14 +20,16 @@ axis <- paste("Number of blocks per", period)
 
 #####################################################################
 # EDIT THIS
-lab <- "14,881,479 2022-05-31 23:14:36 "
-latestDate <- "2022-05-31"
-ts_at_end_of_last_week <- 1653355273
-ts_now <- 1654038876
+lab <- "15000000	2022-06-21 02:28:20"
+latestDate <- "2022-06-21"
+ts_at_end_of_last_week <- 1655164782
+ts_now <- 1655778500
 diff <- ts_now - ts_at_end_of_last_week
 diff
 fac <- diff / (n_days * 24 * 60 * 60)
 #fac <- (1 / fac)
+fac
+fac <- 1.0 / fac
 fac
 
 #####################################################################
@@ -46,7 +48,7 @@ result
 max(result$date)
 
 secs <- ymd("2022-09-01")
-jun15 <- ymd("2022-06-15")
+jun15 <- ymd("2022-06-29")
 
 result2 <- result %>%
     as_tibble() %>%
@@ -88,11 +90,7 @@ hard_fork_ts <- c(
 hard_forks <- as_date(as_datetime(hard_fork_ts))
 
 prev_per_ts <- c(
-    1499633567,
-    1546466952,
-    1574706444,
-    1638070201,
-    1651517664
+  1646793870
 )
 prev_pers <- as_date(as_datetime(prev_per_ts))
 
