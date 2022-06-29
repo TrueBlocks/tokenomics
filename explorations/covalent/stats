@@ -28,3 +28,5 @@ echo
 echo
 
 ./stats.2
+
+./stats.3

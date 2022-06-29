@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+wc -l store/processed/**/* | \
+    sed 's/store/\/store/' | \
+    cut -d'/' -f1,4,5 | \
+    cut -f1 -d. | \
+    tr '/' '\t' | \
+    grep -v total | \
+    awk -F'\t' '{print $3,$2,$1}' OFS='\t' >all
+
+cat all | grep covalent >cov
+cat all | grep trueblocks >tru
+
+echo "address|covalent|trueblocks" | tr '|' '\t' | tee store/stats/summary_processed.txt
+join cov tru | tr ' ' '\t' | cut -f1,3,5 | tee -a store/stats/summary_processed.txt
