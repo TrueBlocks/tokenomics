@@ -5,7 +5,9 @@ library(ggthemes)
 
 setwd("~/Development/tokenomics/explorations/difficulty/")
 data <- read_csv("store/difficulty.csv")
+tail(data)
 data <- data[-nrow(data), ]
+tail(data)
 
 n_days <- 7
 period <- "week"
@@ -19,13 +21,21 @@ title <- paste("Ethereum", adverb, "Block Production")
 axis <- paste("Number of blocks per", period)
 
 #####################################################################
-# EDIT THIS
-lab <- "15000000	2022-06-21 02:28:20"
-latestDate <- "2022-06-21"
-ts_at_end_of_last_week <- 1655164782
-ts_now <- 1655778500
+# EDIT THIS BY RUNNING chifra when latest which returns <bn ts date>
+# lab = <bn date>
+lab <- "15421889 2022-08-27 13:45:14"
+# latestDate = <date>
+latestDate <- "2022-08-27"
+# ts_now = <ts>
+ts_now <- 1661607914
+# ts_at_end_of_last_week = ???
+ts_at_end_of_last_week <- 1660953587
+
+# the difference between now and the end of last week
 diff <- ts_now - ts_at_end_of_last_week
 diff
+
+# the partial ratio needed to estimate a full week
 fac <- diff / (n_days * 24 * 60 * 60)
 #fac <- (1 / fac)
 fac
@@ -47,8 +57,8 @@ for (idx in 1:nrow(result)) {
 result
 max(result$date)
 
-secs <- ymd("2022-09-01")
-jun15 <- ymd("2022-06-29")
+secs <- ymd("2022-10-01")
+jun15 <- ymd("2022-09-15")
 
 result2 <- result %>%
     as_tibble() %>%
@@ -84,13 +94,14 @@ hard_fork_ts <- c(
     1577953849,
     1618481223,
     1628166822,
-    1639022046
+    1639022046,
+    1656586444
 )
 
 hard_forks <- as_date(as_datetime(hard_fork_ts))
 
 prev_per_ts <- c(
-  1646793870
+  1656586444
 )
 prev_pers <- as_date(as_datetime(prev_per_ts))
 
@@ -130,3 +141,4 @@ ggplot(result2, aes(x = date, y = num_blocks)) +
     labs(y = axis, x = "", title = title, subtitle = "From September 2015 until the Present") +
     theme_classic() +
     theme(panel.grid = element_blank())
+

@@ -3,23 +3,22 @@ library(lubridate)
 
 setwd("/Users/jrush/Development/tokenomics/explorations/performance")
 
-df <- read.csv("./store/performance.csv", sep=",", header=TRUE) %>%
-    mutate(date = ymd_hms(str_replace(date, "T", " "))) %>%
-    mutate(node.epoch = paste(node, "-", epoch))
-df1 <- read.csv("./store/performance_failed.csv", sep=",", header=TRUE) %>%
-  mutate(date = ymd_hms(str_replace(date, "T", " ")))
-#df <- df1
+desktop <- read.csv("./store/performance.csv", sep=",", header=TRUE)
+web3 <- read.csv("./store/web3.csv", sep=",", header=TRUE)
 
-#df <- rbind(df,df1)
+#df <- rbind(desktop, web3) %>%
+df <- web3
+#df <- desktop
 
 df <- df %>%
+  mutate(date = ymd_hms(str_replace(date, "T", " "))) %>%
+  mutate(node.epoch = paste(node, "-", epoch)) %>%
+  mutate(cmd.machine = paste(cmd, "-", machine)) %>%
   mutate(id = row_number()) %>%
   mutate(totSecs = ifelse(group == "all", totSecs / 18, totSecs)) %>%
   filter(cmd != "getBloom") %>%
   filter(cmd != "whereBlock")
-#%>%
-#  filter(cmd == "acctExport")
-  
+
 df <- df %>% filter(epoch != "E-01")
 df <- df %>% filter(epoch != "E-02")
 df <- df %>% filter(epoch != "E-03")
@@ -43,9 +42,9 @@ df <- df %>% filter(epoch != "E-20")
 df <- df %>% filter(epoch != "E-21")
 df <- df %>% filter(epoch != "E-22")
 df <- df %>% filter(epoch != "E-23")
-df <- df %>% filter(epoch != "E-24")
-df <- df %>% filter(epoch != "E-25")
-df <- df %>% filter(epoch != "E-26")
+#df <- df %>% filter(epoch != "E-24")
+#df <- df %>% filter(epoch != "E-25")
+#df <- df %>% filter(epoch != "E-26")
 #df <- df %>% filter(epoch != "E-27")
 #df <- df %>% filter(epoch != "E-28")
 #df <- df %>% filter(epoch != "E-29")
@@ -70,20 +69,7 @@ df <- df %>% filter(cmd != "pinMan")
 #df <- df %>% filter(type != "cmd")
 #df <- df %>% filter(id > 10000)
 
-#df <- df %>% filter(date > ymd_hms("2021-05-10 00:00:00"))
-head(df)
-tail(df)
-
 df %>% ggplot(aes(alpha = .1)) +
   geom_smooth(aes(x = id, y = avgSecs * 200, fill = type, col = node.epoch), span = 1, method = "loess", formula  = "y ~ x") +
   geom_point(aes(x = id, y = totSecs * 2 + 100, fill = type, color = node.epoch)) +
   facet_wrap(~cmd)
-
-#two_builds <- df %>% filter(git_hash == "git_f8bb7ac31" | git_hash == "git_4dbb9276c") %>% filter(cmd != "all")
-#head(two_builds,2)
-
-#geom_smooth(aes(x = id, y = avgSecs * 200, fill = epoch, col = type), method = "loess", formula  = "y ~ x") +
-#two_builds %>% ggplot() +
-#  geom_bar(aes(x = git_hash, fill = type, color = type)) +
-#  facet_wrap(~cmd)
-
