@@ -1,13 +1,13 @@
 library(tidyverse)
 library(lubridate)
 
-setwd("/Users/jrush/Development/tokenomics/explorations/performance")
+# setwd("/Users/jrush/Development/tokenomics/explorations/performance")
 
 desktop <- read.csv("./store/performance.csv", sep=",", header=TRUE)
 web3 <- read.csv("./store/web3.csv", sep=",", header=TRUE)
 
-#df <- rbind(desktop, web3) %>%
-df <- web3
+df <- rbind(desktop, web3)
+#df <- web3
 #df <- desktop
 
 df <- df %>%
@@ -32,23 +32,23 @@ df <- df %>% filter(epoch != "E-10")
 df <- df %>% filter(epoch != "E-11")
 df <- df %>% filter(epoch != "E-12")
 df <- df %>% filter(epoch != "E-13")
-df <- df %>% filter(epoch != "E-14")
-df <- df %>% filter(epoch != "E-15")
-df <- df %>% filter(epoch != "E-16")
-df <- df %>% filter(epoch != "E-17")
-df <- df %>% filter(epoch != "E-18")
-df <- df %>% filter(epoch != "E-19")
-df <- df %>% filter(epoch != "E-20")
-df <- df %>% filter(epoch != "E-21")
-df <- df %>% filter(epoch != "E-22")
-df <- df %>% filter(epoch != "E-23")
+#df <- df %>% filter(epoch != "E-14")
+#df <- df %>% filter(epoch != "E-15")
+#df <- df %>% filter(epoch != "E-16")
+#df <- df %>% filter(epoch != "E-17")
+#df <- df %>% filter(epoch != "E-18")
+#df <- df %>% filter(epoch != "E-19")
+#df <- df %>% filter(epoch != "E-20")
+#df <- df %>% filter(epoch != "E-21")
+#df <- df %>% filter(epoch != "E-22")
+#df <- df %>% filter(epoch != "E-23")
 #df <- df %>% filter(epoch != "E-24")
 #df <- df %>% filter(epoch != "E-25")
 #df <- df %>% filter(epoch != "E-26")
 #df <- df %>% filter(epoch != "E-27")
 #df <- df %>% filter(epoch != "E-28")
 #df <- df %>% filter(epoch != "E-29")
-df <- df %>% filter(node == "TG")
+#df <- df %>% filter(node == "TG")
 
 df <- df %>% filter(epoch != "E-27") # this was a bogus test
 df <- df %>% filter(epoch != "F-01")
