@@ -27,7 +27,7 @@ cat store/raw/covalent/$1.json | \
     tr '|' '\t' | \
     sort >store/processed/covalent/$1.txt
 
-# removes records outside of range [3000000-14800000]
+# removes records outside of range [3000000-15300000]
 ./cleanup processed/covalent $1 >x
 cat x >store/processed/covalent/$1.txt
 

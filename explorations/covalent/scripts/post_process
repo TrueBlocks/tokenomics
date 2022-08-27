@@ -8,10 +8,10 @@ sort -k 2 -k 3 -n store/processed/trueblocks/$ADDR.txt >tb_sorted.txt
 diff cov_sorted.txt tb_sorted.txt >diff.txt
 
 cat diff.txt | grep "<" | sed 's/< //' >store/diff/covalent_not_trueblocks/$ADDR.txt
-./diff_datasets covalent trueblocks $ADDR
+./scripts/diff_datasets covalent trueblocks $ADDR
 
 cat diff.txt | grep ">" | sed 's/> //' >store/diff/trueblocks_not_covalent/$ADDR.txt
-./diff_datasets trueblocks covalent $ADDR
+./scripts/diff_datasets trueblocks covalent $ADDR
 
 rm -f cov_sorted.txt
 rm -f tb_sorted.txt

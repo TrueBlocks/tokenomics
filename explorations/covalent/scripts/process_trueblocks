@@ -7,7 +7,7 @@ echo "--------------------------------------------------------------------------
 
 if [ -z "$1" ]
 then
-    echo "Usage ./process_treublocks <address>"
+    echo "Usage ./process_trueblocks <address>"
     exit
 fi
 
@@ -22,7 +22,7 @@ cat store/raw/trueblocks/$1.txt | \
     awk -F'\t' '{print $3,$1,$2}' OFS='\t' | \
     sort >store/processed/trueblocks/$1.txt
 
-# removes records outside of range [3000000-14800000]
+# removes records outside of range [3000000-15300000]
 ./cleanup processed/trueblocks $1 >x
 cat x >store/processed/trueblocks/$1.txt
 

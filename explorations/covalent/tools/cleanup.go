@@ -19,7 +19,7 @@ func main() {
 		parts := strings.Split(line, "\t")
 		bn, err := strconv.ParseInt(parts[1], 10, 64)
 		if err == nil {
-			if bn >= 3000000 && bn < 14800000 {
+			if bn >= 3000000 && bn < 15300000 {
 				fmt.Println(line)
 				cnt++
 			}
