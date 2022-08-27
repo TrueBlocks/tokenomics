@@ -15,3 +15,4 @@ chifra when --no_header 2021-01-01 2>/dev/null
 chifra when --no_header 2021-07-01 2>/dev/null
 chifra when --no_header 2022-01-01 2>/dev/null
 chifra when --no_header 2022-07-01 2>/dev/null
+chifra when --no_header 2023-01-01 2>/dev/null

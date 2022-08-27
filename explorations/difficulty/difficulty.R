@@ -33,6 +33,13 @@ bn.ARROW           <- 13773000
 ts.ARROW           <- 1639022046
 off.ARROW          <- off.LONDON + 1000000
 
+bn.GRAYGLACIER     <- 15050000
+ts.GRAYGLACIER     <- 1656586444
+off.GRAYGLACIER    <- off.ARROW + 700000
+  
+bn.SEPT15          <- 15546017
+ts.SEPT15          <- 1663243200
+
 # some constants
 const.BIN_SIZE     <- 200
 const.PERIOD_SIZE  <- 100000
@@ -51,22 +58,25 @@ df <- read_csv('store/difficulty.csv') %>%
   #  filter(blocknumber >= bn.HOMESTEAD) %>%
   mutate(block.bin = floor(blocknumber / const.BIN_SIZE) * const.BIN_SIZE) %>%
   mutate(fake.block =
-           ifelse(blocknumber >= bn.ARROW,
-                  blocknumber - off.ARROW,
-                  ifelse(blocknumber >= bn.LONDON,
-                         blocknumber - off.LONDON,
-                         ifelse(blocknumber >= bn.MUIRGLACIER,
-                                blocknumber - off.MUIRGLACIER,
-                                ifelse(blocknumber >= bn.CONSTANTINOPLE,
-                                       blocknumber - off.CONSTANTINOPLE,
-                                       ifelse(blocknumber >= bn.BYZANTIUM,
-                                              blocknumber - off.BYZANTIUM,
-                                              blocknumber) + 1
-                                             )
-                                       )
-                               )
-                        )
-                  ) %>%
+           ifelse(blocknumber >= bn.GRAYGLACIER,
+                  blocknumber - off.GRAYGLACIER,
+                  ifelse(blocknumber >= bn.ARROW,
+                         blocknumber - off.ARROW,
+                         ifelse(blocknumber >= bn.LONDON,
+                                blocknumber - off.LONDON,
+                                ifelse(blocknumber >= bn.MUIRGLACIER,
+                                       blocknumber - off.MUIRGLACIER,
+                                       ifelse(blocknumber >= bn.CONSTANTINOPLE,
+                                              blocknumber - off.CONSTANTINOPLE,
+                                              ifelse(blocknumber >= bn.BYZANTIUM,
+                                                     blocknumber - off.BYZANTIUM,
+                                                     blocknumber) + 1
+                                              )
+                                        )
+                                )
+                          )
+                  )
+           ) %>%
   mutate(period = floor(fake.block / const.PERIOD_SIZE)) %>%
   mutate(period.scaled = period * 100000) %>%
   mutate(bomb = 2 ^ period) %>%
@@ -89,7 +99,10 @@ df <- read_csv('store/difficulty.csv') %>%
                                 'timeframe 3 (post-muir)',
                                 ifelse(blocknumber <= bn.ARROW,
                                        'timeframe 3 (post-london)',
-                                       'timeframe 4 (post-arrow)'
+                                       ifelse(blocknumber <= bn.GRAYGLACIER,
+                                              'timeframe 3 (post-arrow)',
+                                              'timeframe 4 (post-grayglacier)'
+                                       )
                                 )
                          )
                   )
@@ -107,8 +120,11 @@ head(blockBinSample)
 tail(blockBinSample)
 
 latest <- max(sample$timestamp)
+latest
 curFake <- tail(sample$fake.block, n=1)
+curFake
 latestPeriod <- floor(curFake / 100000)
+latestPeriod
 
 #------------------------------------------------------------
 chart_title <- "Block Number / Fake Block Number / Bomb Period"
@@ -136,7 +152,10 @@ fakeBlock <- blockBinSample %>%
   geom_vline(xintercept = ts.MUIRGLACIER, color="lightgray", linetype="dashed") +
   geom_vline(xintercept = ts.BERLIN, color="lightgray", linetype="dashed") +
   geom_vline(xintercept = ts.LONDON, color="lightgray", linetype="dashed") +
+  geom_vline(xintercept = ts.ARROW, color="lightgray", linetype="dashed") +
+  geom_vline(xintercept = ts.GRAYGLACIER, color="lightgray", linetype="dashed") +
   geom_vline(xintercept = latest, color="blue", linetype="dashed") +
+  geom_vline(xintercept = ts.SEPT15, color="red", linetype="dotted") +
   labels + anno1 + anno2 +
   theme + xaxis + yaxis
 fakeBlock
@@ -166,6 +185,9 @@ plot_DeltaDiffPerBlock <- blockBinSample %>%
   geom_vline(xintercept = bn.MUIRGLACIER, color="lightgray", linetype="dashed") +
   geom_vline(xintercept = bn.BERLIN, color="lightgray", linetype="dashed") +
   geom_vline(xintercept = bn.LONDON, color="lightgray", linetype="dashed") +
+  geom_vline(xintercept = bn.ARROW, color="lightgray", linetype="dashed") +
+  geom_vline(xintercept = bn.GRAYGLACIER, color="lightgray", linetype="dashed") +
+  geom_vline(xintercept = bn.SEPT15, color="red", linetype="dotted") +
   labels + anno1 + anno2 +
   theme + xaxis + yaxis
 plot_DeltaDiffPerBlock
@@ -190,6 +212,7 @@ plot_DeltaDiffPerBlock <- blockBinSample %>%
   geom_vline(xintercept = bn.MUIRGLACIER, color="lightgray", linetype="dashed") +
   geom_vline(xintercept = bn.BERLIN, color="lightgray", linetype="dashed") +
   geom_vline(xintercept = bn.LONDON, color="lightgray", linetype="dashed") +
+  geom_vline(xintercept = bn.SEPT15, color="red", linetype="dotted") +
   geom_line(aes(y=bomb), colour='black') + 
   labels + anno1 + anno2 +
   theme + xaxis + yaxis
@@ -278,3 +301,4 @@ sample %>%
 data <- read_csv("./store/difficulty.csv")
 latest <- max(data$timestamp)
 as_datetime(latest)
+
