@@ -1,0 +1,210 @@
+---
+title: "True Blocks Insight"
+author: "Matthieu Fournier"
+date: "2022-08-16"
+output: pdf_document
+---
+
+## Data Entry
+```{r}
+sepol <- read.csv("sepolia.csv")  #naming and loading csv
+N = nrow(sepol)                   #assigning the number of rows to value N
+sepol$X <- c(1:N)     #creating new column named X with values 1 through N in order by the vector c(1:N)
+head(sepol)                       #preview first 6 rows of data frame
+
+main <- read.csv("mainnet.csv")
+N = nrow(main)
+main$X <- c(1:N)
+head(main)
+
+gnosis <- read.csv("gnosis.csv")
+N = nrow(gnosis)
+gnosis$X <- c(1:N)
+head(gnosis)
+
+# This data is clean and has no N/A values to replace
+```
+# Checking for correlations by Block
+
+## Sepolia
+
+```{r}
+par(mfrow=c(2,2))
+
+lm.sep <- lm(appsPerBlock ~ X, data = sepol)
+summary(lm.sep)
+plot(sepol$X, sepol$appsPerBlock)
+abline(lm.sep, col="red")
+
+
+lm.sep2 <- lm(addrsPerBlock ~ X, data = sepol)
+summary(lm.sep2)
+plot(sepol$X, sepol$addrsPerBlock)
+abline(lm.sep2, col="blue")
+
+
+hist(sepol$nApps)
+
+hist(sepol$nAddrs)
+
+```
+
+## MainNet
+```{r}
+par(mfrow=c(2,2))
+
+lm.main <- lm(appsPerBlock ~ X, data = main)
+summary(lm.main)
+plot(main$X, main$appsPerBlock)
+abline(lm.main, col="red")
+
+
+lm.main2 <- lm(addrsPerBlock ~ X, data = main)
+summary(lm.main2)
+plot(main$X, main$addrsPerBlock)
+abline(lm.main2, col="blue")
+
+hist(main$nApps)
+
+hist(main$nAddrs)
+```
+## Gnosis
+```{r}
+par(mfrow=c(2,2))
+
+lm.gnosis <- lm(appsPerBlock ~ X, data = gnosis)
+summary(lm.gnosis)
+plot(gnosis$X, gnosis$appsPerBlock)
+abline(lm.gnosis, col="red")
+
+
+lm.gnosis2 <- lm(addrsPerBlock ~ X, data = gnosis)
+summary(lm.gnosis2)
+plot(gnosis$X, gnosis$addrsPerBlock)
+abline(lm.gnosis2, col="blue")
+
+hist(gnosis$nApps)
+
+hist(gnosis$nAddrs)
+```
+
+# Ideas for further Visulization
+
+## Dot Plot
+```{r}
+require(ggplot2)
+#data(sepol, package="ggplot2")
+par(mfrow=c(2,2))
+# Scatterplot
+theme_set(theme_bw())  
+g <- ggplot(sepol, aes(X, nApps))
+g + geom_count(col="red", show.legend=F) +
+  labs(subtitle="Sepol: _______", 
+       y="total address appearances", 
+       x="total unique addresses", 
+       title="Counts Plot")
+
+
+theme_set(theme_bw())  
+g <- ggplot(sepol, aes(X, appsPerBlock))
+g + geom_count(col="blue", show.legend=F) +
+  labs(subtitle="Sepol: _____", 
+       y="total blocks", 
+       x="total unique addresses", 
+       title="Counts Plot")
+
+```
+
+## histogram and boxplot addition to scatterplot
+```{r}
+# This will code a bubble plot with histograms on both axies
+library(ggplot2)
+library(ggExtra)
+
+
+# Scatterplot
+theme_set(theme_bw())  # pre-set the bw theme.
+mpg_select <- mpg[mpg$hwy >= 35 & mpg$cty > 27, ]
+g <- ggplot(mpg, aes(cty, hwy)) + 
+  geom_count() + 
+  geom_smooth(method="lm", se=F)
+
+ggMarginal(g, type = "histogram", fill="transparent")
+ggMarginal(g, type = "boxplot", fill="transparent")
+```
+
+
+
+
+# Pie Chart (would benefit from categorical or $$ amounts)
+```{r}
+library(ggplot2)
+theme_set(theme_classic())
+
+# Source: Frequency table
+df <- as.data.frame(table(mpg$class))
+colnames(df) <- c("class", "freq")
+pie <- ggplot(df, aes(x = "", y=freq, fill = factor(class))) + 
+  geom_bar(width = 1, stat = "identity") +
+  theme(axis.line = element_blank(), 
+        plot.title = element_text(hjust=0.5)) + 
+  labs(fill="class", 
+       x=NULL, 
+       y=NULL, 
+       title="Pie Chart of class", 
+       caption="Source: mpg")
+
+pie + coord_polar(theta = "y", start=0)
+
+# Source: Categorical variable.
+# mpg$class
+pie <- ggplot(mpg, aes(x = "", fill = factor(class))) + 
+  geom_bar(width = 1) +
+  theme(axis.line = element_blank(), 
+        plot.title = element_text(hjust=0.5)) + 
+  labs(fill="class", 
+       x=NULL, 
+       y=NULL, 
+       title="Pie Chart of class", 
+       caption="Source: mpg")
+  
+pie + coord_polar(theta = "y", start=0)
+
+```
+
+# Bar Chart (need categorical data)
+```{r}
+g <- ggplot(main, aes(X))
+g + geom_bar(aes(fill=nAddrs), width = 0.25) + 
+  theme(axis.text.x = element_text(angle=45, vjust=0.6)) +
+  labs(title="Title of Bar Chart", 
+       subtitle="Subtitle", 
+       caption="Caption")
+
+```
+
+# Time Series, monthly (need dates)
+```{r}
+library(ggplot2)
+library(lubridate)
+theme_set(theme_bw())
+
+economics_m <- economics[1:24, ]
+
+# labels and breaks for X axis text
+lbls <- paste0(month.abb[month(economics_m$date)], " ", lubridate::year(economics_m$date))
+brks <- economics_m$date
+
+# plot
+ggplot(economics_m, aes(x=date)) + 
+  geom_line(aes(y="returns_perc")) + 
+  labs(title="Monthly Time Series", 
+       subtitle="Returns Percentage from Economics Dataset", 
+       caption="Source: Economics", 
+       y="Returns %") +  # title and caption
+  scale_x_date(labels = lbls, 
+               breaks = brks) +  # change to monthly ticks and labels
+  theme(axis.text.x = element_text(angle = 90, vjust=0.5),  # rotate x axis text
+        panel.grid.minor = element_blank())  # turn off minor grid
+
+```
