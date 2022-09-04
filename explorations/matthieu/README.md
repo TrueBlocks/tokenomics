@@ -1,5 +1,3 @@
 # Data Analytics
-We are defining new outlooks of the ethereum landscape, through exploration in numbers. Developing ways to make ethereum more navigable to all.
+We are understanding trends of the ethereum block chains: Main Net, Sepolia and Gnosis.
 
-## Project Description
-tockenomics is a utility that allows ethereum users to navigate the market smoother.
