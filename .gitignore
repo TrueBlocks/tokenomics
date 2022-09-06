@@ -1,3 +1,58 @@
+44-top-ICOs
+ENS
+# addresses
+alvaro
+articulation
+balhistory
+block-difficulty
+block-scraper
+bloom-study
+chifra-pipeline
+chifralistlogs
+chunks
+common
+# covalent
+data
+data-exploration
+deposit-contract
+# difficulty
+errors
+etherTip
+etherum-tip-jar
+exported_data
+fiat-contract
+# gitcoin
+# giveth
+goroutines
+grants
+# heatmap
+index-times
+indexing
+node-sync
+# per chain scraping
+# performance
+pinata
+prices
+rpc-usage
+saitamainu
+scrapers
+size-of-blooms
+status
+stuff
+tally-daos
+tmp-images
+tokenlists
+tokenomics-other-data
+trueblocks
+trueblocks-core-viz
+trueblocks-filemakerpro-demo
+trueblocks-parity-stats
+turbo-geth-syncing
+turbo-geth-syncing2
+uniswap-usd
+vitalik
+yearn
+
 store
 stash
 
@@ -35,7 +90,6 @@ tmp-images
 /*.Rcheck/
 
 # RStudio files
-.Rproj.user/
 
 # produced vignettes
 vignettes/*.html
@@ -54,4 +108,3 @@ vignettes/*.pdf
 
 # Shiny token, see https://shiny.rstudio.com/articles/shinyapps.html
 rsconnect/
-.Rproj.user
