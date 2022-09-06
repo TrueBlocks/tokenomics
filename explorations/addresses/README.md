@@ -7,13 +7,13 @@ This data set contains two collections of data.
 In the present folder, create a new folder called `./store/`. Then,
 
 ```
-cd store
-curl -o data.tar.gz https://ipfs.unchainedindex.io/ipfs/
-gunzip data.tar.gz
-tar -xvf data.tar
+curl -o store.tar.gz https://ipfs.unchainedindex.io/ipfs/
+gunzip store.tar.gz
+tar -xvf store.tar
+rm -f store.tar
 ```
 
-This should create the following file.
+This should create the following files in the `./store` folder.
 
 ## ./store/addressesPerTransCount.csv
 
@@ -45,8 +45,12 @@ There are 28,175 records in this file. My guess is that the data is "tri-modal" 
 
 Some preliminary charts are shown in the [attached spreadsheet](./nApps.xlsx).
 
+## ./store/addressesPerTransCount.csv
+
+An excel spreadsheet with a few preliminary charts.
+
 ## ./store/addressesNumberOfTransactions/
 
-This folder contains the raw data used to produce the summary statistics. I don't suppose we will analize this data directly.
+This folder contains the raw data used to produce the summary statistics. I don't suppose we will need to analyze this data directly.
 
-It consists of 16 files (seperated only to keep the size of each file smaller) with one record for each address followed by the number of times that address appears.
+It consists of 16 files (separated only in order to keep the size of each file smaller). There is one record for each address we found during the scan followed by the number of times that address appears in a transaction across its history.
