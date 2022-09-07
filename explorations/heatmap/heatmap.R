@@ -3,27 +3,33 @@ require(jsonlite)
 
 endpoint <- "http://localhost:8080/"
 route <- "status?"
-options <- "mode=index&details"
-call <- paste0(endpoint, route, options);
+options <- "modes=index&details"
+call <- paste0(endpoint, route, options)
 call
 
 resp <- fromJSON(call)
 df <- as.data.frame(as.data.frame(resp$data$caches)$items)
-# View(df)
+names(df)
 
-df <- df %>% select(nAddresses, nAppearances, firstAppearance, firstTs, indexSizeBytes, bloomSizeBytes);
-df %>% plot()
+df <- df %>% select(nAddrs, nApps, firstApp, firstTs, indexSizeBytes, bloomSizeBytes)
+df <- df %>% filter(nApps >= 2000000)
+# df %>% plot()
+head(df)
 
-idxSizeToApps <- df %>% select(indexSizeBytes, nAppearances)
-bloomSizeToApps <- df %>% select(bloomSizeBytes, nAppearances)
-firstAppToAddrs <- df %>% select(firstAppearance, nAddresses)
-addrsToApps <- df %>% select(nAddresses, nAppearances)
-tsToApps <- df %>% select(firstTs, nAppearances)
-blkToApps <- df %>% select(firstAppearance, nAppearances)
+idx_size_to_apps <- df %>% select(indexSizeBytes, nApps)
+idx_size_to_apps %>% plot()
 
-idxSizeToApps %>% plot()
-bloomSizeToApps %>% plot()
-firstAppToAddrs %>% plot()
-addrsToApps %>% plot()
-tsToApps %>% plot()
-blkToApps %>% plot()
+bloom_size_to_apps <- df %>% select(bloomSizeBytes, nApps)
+bloom_size_to_apps %>% plot()
+
+first_app_to_addrs <- df %>% select(firstApp, nAddrs)
+first_app_to_addrs %>% plot()
+
+addrs_to_apps <- df %>% select(nAddrs, nApps)
+addrs_to_apps %>% plot()
+
+ts_to_apps <- df %>% select(firstTs, nApps)
+ts_to_apps %>% plot()
+
+blk_to_apps <- df %>% select(firstApp, nApps)
+blk_to_apps %>% plot()

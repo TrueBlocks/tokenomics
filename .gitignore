@@ -1,6 +1,14 @@
+# addresses
+# covalent
+# difficulty
+# gitcoin
+# giveth
+# heatmap
+# per chain scraping
+# performance
+
 44-top-ICOs
 ENS
-# addresses
 alvaro
 articulation
 balhistory
@@ -11,26 +19,19 @@ chifra-pipeline
 chifralistlogs
 chunks
 common
-# covalent
 data
 data-exploration
 deposit-contract
-# difficulty
 errors
 etherTip
 etherum-tip-jar
 exported_data
 fiat-contract
-# gitcoin
-# giveth
 goroutines
 grants
-# heatmap
 index-times
 indexing
 node-sync
-# per chain scraping
-# performance
 pinata
 prices
 rpc-usage
