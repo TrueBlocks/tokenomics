@@ -4,10 +4,8 @@ alvaro
 articulation
 block-difficulty
 block-scraper
-chifra-pipeline
 chifralistlogs
 chunks
-common
 data
 data-exploration
 deposit-contract
@@ -45,6 +43,7 @@ yearn
 
 store
 stash
+cache
 
 # No data!
 *.json
