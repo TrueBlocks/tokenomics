@@ -69,6 +69,24 @@ The top 15 "known" function calls were:
 
 Purusing that table, it becomes relatively easy to see why accounting doesn't work on Ethereum Mainnet. Most of these function names have a clear monitary value assocaited with the name.
 
+Here's a word cloud. You should be able to easily see what's being missed by other methods. All these come from transactions that TrueBlocks found, but other methods don't. Notice the "financial" nature of many of the words.
+
+<img src="./Word%20Cloud.png" width="600px">
+
+**Upshot:** You can't do perfect accounting if you're missing material transactions.
+
+# Privacy - TrueBlocks is private
+
+All of the above code, including the locally-running Erigon node, is running on a laptop, happily hidden behind our firewall. We call this "running behind the node." We think of the node as a shield that not only sheilds us from incorrect or inaccurate data (see the word "Consensus") but also shields us from prying eyes. No-one can see what we're doing. We don't ask anyone for any data at all (other than Covalent of course, but I hope we've shown that we don't really need them). Why would we need them. TrueBlocks gives better data faster.
+
+**Upshot:** TrueBlocks gives better data faster.
+
+# Flexibility - TrueBlocks is a platform
+
+TrueBlocks is a software package that consists of many parts. An API server, a docker package, a monitoring/indexing system, a robust collection of well-documented and stable command-line tools, but most importantly it's a wonderful collection of GoLang packages and React SDKs. You can program against it, as we've done here. Dive in.
+
+Upshot: TrueBlocks is a platform that works locally, privately, accurately, and flexibally.
+
 # Sources of Error
 
 ## Predominance of GitCoin-related addresses in the dataset
