@@ -1,50 +1,51 @@
 # Covalent / TrueBlocks Comparison
 
-This study is intended to show a few of the significant advantages one would realize from using TrueBlocks
-to extract transactional histories for any Ethereum address. These advantages include:
+This study is intended to show some of the many significant advantages one can realize using TrueBlocks over other methods of blockchain data extraction. These advantages include:
 
-1. Speed - TrueBlocks is much faster
-2. Accuracy - TrueBlocks is much more accurate
-3. Privacy - TrueBlocks runs locally, therefore there is no possibility of privacy invasion
-4. Flexibility - TrueBlocks is programmable and presents many options
+1. Speed - TrueBlocks is much faster than traditional APIs,
+2. Accuracy - TrueBlocks is (currently) more accurate than other APIs,
+3. Privacy - TrueBlocks runs locally on your machine, therefore there is no possibility of privacy invasion,
+4. Flexibility - TrueBlocks is programmable and presents a large number of options.
+
+We completed this study using TrueBlocks running locally on a "beefy" Mac laptop. This laptop was also running an Erigon Ethereum Mainnet node locally. We use the Covalent APIs described in [this documentation](https://www.covalenthq.com/docs/api/#/0/Get%20transactions%20for%20address/USD/1) to extract the corresponding Covalent data. The Covalent endpoint was running remotely and is likely being shared by other users and therefore rate-limited.
 
 # Data pipeline
 
-A detailed description of [the data pipeline is here](https://github.com/TrueBlocks/tokenomics/blob/main/explorations/covalent/PROCESS.md).
+A detailed description of [the data pipeline used is here](https://github.com/TrueBlocks/tokenomics/blob/main/explorations/covalent/PROCESS.md).
 
-# Performance
+# Speed - TrueBlocks is faster
 
 ## Extraction from Covalent
 
-| started       | ended   | elapsed        | addresses | seconds per address                            |
-| ------------- | ------- | -------------- | --------- | ---------------------------------------------- |
-| 4:53am May 29 | 5:47am  | 12 hrs 54 mins | 1,249     | 37.18 secs / addr (probably invalid)           |
-| 5:29pm Jun 5  | 11:20pm | 5 hrs 51 mins  | 3,752     | 5.61 secs per addr (includes one second sleep) |
+Here we present the amount of time that was needed to extract effectively the same data from the two sources. Note that in the case of Covalent, we had to slow down the processing otherwise our requests would time out. This is the downside of sharing an API server with others.
 
-## Extraction from Trueblocks
+| source     | addresses | elapsed minutes | elapsed time | addresses / minute |
+| ---------- | --------- | --------------- | ------------ | ------------------ |
+| Covalent   | 5000      | 743.31 mins     | 12.3 hours   | 6.7                |
+| TrueBlocks | 5000      | 336.29          | 5.6 hours    | 14.9               |
 
-| started      | ended  | elapsed      | addresses | seconds per address |
-| ------------ | ------ | ------------ | --------- | ------------------- |
-| 1:31am Jun 5 | 3:39am | 2 hrs 7 mins | 5,001     | 1.52 secs / addr    |
+**Upshot:** TrueBlocks is more than twice as fast even though it's running on a laptop.
 
-# Summary of results
+# Accuracy - TrueBlocks is more accurate
 
-|            | Covalent  | TrueBlocks | Description                                                                |
-| ---------- | --------- | ---------- | -------------------------------------------------------------------------- |
-| test cases | 5,001     | 5,001      | We processed this many addresses against both systems...                   |
-| difference | -         | 3,174      | This many addresses had more records from TrueBlocks than from Covalent... |
-| material   | -         | 1,133      | This many addresses with missing records had missing "material" records.   |
-|            |           |            |                                                                            |
-| received   | 1,336,508 | 1,534,997  | The endpoint returneds this many records...                                |
-| difference | -         | 198,489    | ...representing this many appearances...                                   |
-| material   | -         | 45,328     | ...of which this many had material change in ETH balance.                  |
+|           | Covalent  | TrueBlocks | Description                                                                |
+| --------- | --------- | ---------- | -------------------------------------------------------------------------- |
+| count     | 5,000     | 5,000      | We processed this many addresses...                                        |
+| different | -         | 3,174      | - this many addresses had records that were in TrueBlocks but not Covalent |
+| material  | -         | 1,133      | - this many addresses had missing transactions that were "material".       |
+|           |           |            |                                                                            |
+| count     | 1,336,508 | 1,534,997  | The endpoint returneded this many transactional records...                 |
+| different | -         | 198,489    | ...this many more were returned by TrueBlocks...                           |
+| material  | -         | 45,328     | ...of which this many had material change in ETH balance.                  |
+
+**Upshot:** TrueBlocks is more accurate. It, quite literally, finds more data. In the above table, "material" means that one of the missing transactions contained a change in the ETH balance for the account. This is why accounting doesn't work on Ethereum Mainnet. You can't accurately account for something if you're missing data.
 
 ## What's missing?
 
-There were 253 different known material function calls missing from Covalent. Additionally, there were 183 different
-unknown (i.e. four-bytes) missing function calls representing 41,483 and 3,845 transactions respectively.
+We studied the list of transactions that were missing from Covalent. We found 253 different "known" transaction types with TrueBlocks but not Covalent. Additionally, we found 183 different
+unknown transction types (i.e. unknown four-bytes values) missing function calls representing 41,483 and 3,845 transactions respectively.
 
-The top 15 known function calls were:
+The top 15 "known" function calls were:
 
 | Function                  | Count      | Percent | Cumulative  |
 | ------------------------- | ---------- | ------- | ----------- |
@@ -66,50 +67,52 @@ The top 15 known function calls were:
 |                           |            |         |             |
 | **Total**                 | **41,483** | **-**   | **100.00%** |
 
+Purusing that table, it becomes relatively easy to see why accounting doesn't work on Ethereum Mainnet. Most of these function names have a clear monitary value assocaited with the name.
+
 # Sources of Error
 
 ## Predominance of GitCoin-related addresses in the dataset
 
-A large proportion of the addresses we studied have interacted with (by either being 
-a recipient or sending a donation) on GitCoin. For this reason, a large proportion of 
-the missing transacitons are 'dontate' (71%). While it is accurate to say that TrueBlocks
-found these transactions but Covalent didn't, and Covelent could, if they wish, add
-this four-byte signature to their special processing list, TrueBlocks finds this
-transaciton without such a list -- the long tail problem.
+A large proportion of the addresses we studied have interacted with (by either being a recipient or sending a donation) on GitCoin. For this reason, a large proportion of the missing transacitons are 'dontate' (71%). While it is accurate to say that TrueBlocks found these transactions but Covalent didn't, and Covelent could, if they wish, add this four-byte signature to their special processing list, TrueBlocks finds this transaciton without such a list. In other words, we look at everything regardless of its meaning. If the address appears on the chain for any reason, we find it. We call this the "Long Tail Problem." By this, we mean we do not want to create a "list" of know behaviour becuase such a list invariably excludes the "long tail of creativity" that the blockchain engenders.
+
+**Upshot:** Our data may skew towards a certain type of address.
 
 ## Misuse of Covalent APIs
 
-We did our best to study the Covalent APIs and found XYZ. This public API may not
-deliver exactly the same data as certain for-pay APIs (but this is a bad thing).
-Also, we limited out data set to those records that had less than 5,000 transactions
-as of the date of our study. While TrueBlocks easily handles addresses with more
-than 5,000 transactions due to the utter lack of rate limiting. We did this
-because Covalent has rate limiting and if we asked for address with more than 5,000
-we had two problems: (1) Covalent was too slow to be practicable, (2) we would
-assumed we would have been banned from their site.
+We did our best to study the Covalent APIs but we may have missed something. Please let us know if we did. This public API may not deliver exactly the same data as certain for-pay APIs (but this is a bad thing). Also, we limited out data set to those records that had less than 5,000 transactions as of the date of our study. While TrueBlocks easily handles addresses with more than 5,000 transactions due to the utter lack of rate limiting. We did this because Covalent has rate limiting and if we asked for address with more than 5,000 we had two problems: (1) Covalent was too slow to be practicable, (2) we would assumed we would have been banned from their site.
+
+**Upshot:** We may have misused the Covalent APIs.
 
 ## Block range limit
 
-Even if one of the addresses had transactions prior to block 3,000,000 or
-after 14,800,000, we removed these records. While it would have been totally
-fair to keep the transactions prior to block 3,000,000 we find that Covalent
-has chosen to remove a large collection of transactions that happened during the
-2016 dDos attack on Ethereum. This is justfieable is those transactions had no
-"matieral" value. If we had included those records, the results of this study
+Even if one of the addresses in our study had transactions prior to block 3,000,000 or after 14,800,000, we removed these records. While it would have been totally fair to keep the transactions prior to block 3,000,000 we find that Covalent
+has chosen to remove a large collection of transactions that happened during the 2016 dDos attack on Ethereum. This is justfieable is those transactions had no "matieral" value. If we had included those records, the results of this study
 would have been significantly more in favor of TrueBlocks.
+
+**Upshot:** Older and some newer block ranges were ignored in this study.
 
 ## Only studied addresses with less than 5,000 records
 
-FOr similar issues, we chose to remove from our study any address with more than
-5,000 records. Again, while TrueBlocks could have easily handled this many records,
-Covalent may have rate limited us, so we chose not to include those addresses.
+For similar issues, we chose to remove from our study any address with more than 5,000 records. Again, while TrueBlocks could have easily handled this many records, Covalent may have rate limited us, so we chose not to include those addresses. In this particular case of very large data sets, Covalent may outperform us (ignoring rate limiting). TrueBlocks is better at mid-sized to small data sets.
 
-Upshot: Not your node, not your data!
+**Upshot:** If you're sharing a node, you're going to get rate limited.
 
-# Using this repo
+## Using this repo
 
-1. Put your covalent key in a file called .env
-2. Run `./init` to create folders and build a simple tool (requires go 1.18 or later)
-3. Add your addresses to the file ./download (the addresses we used are listed in ./addresses.txt)
-4. All the results will be placed in appropriate-named subfolders in ./store
+1. Get a Covalent API key, and put it in a file called .env in the local folder.
+2. Run `./init` to create folders and build a simple tool (requires go language version 1.18 or later).
+3. Add your list of addresses to the file `./download` calling into `./download.1` for each address (we build this script with `cat` and `sed` by piping `./addresses.txt`)
+4. The results will be placed in appropriate-named subfolders in local folder called `./store`.
 
+## Obtaining the data
+
+The data may be recreated if you have (a) a Covalent API key, (b) a locally-running version of the TrueBlocks command line tools, and (b) a day or two to wait. See the [data pipeline](./PROCESS.md) document for more information.
+
+Alternatively, you may download the data into the `store` folder from IPFS using these commands:
+
+```
+curl -o store.tar.gz "https://ipfs.unchainedindex.io/ipfs/QmQK2mEmNNjJe6neWMjHeBaQdvDiGrNYTP7KU93s3oBWym"
+gzunip store.tar.gz
+tar -xvf store.tar
+rm -f store.tar
+```
