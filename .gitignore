@@ -1,19 +1,47 @@
-.RDataTmp
-store
-proj.xcodeproj
-store
-
-.Rproj.user
-.Rhistory
-.Rapp.history
-.RData
-.Ruserdata
-.DS_Store
+44-top-ICOs
+ENS
+alvaro
+articulation
+block-difficulty
+block-scraper
+chifralistlogs
+chunks
 data
-output.html
-old-stuff
+data-exploration
+deposit-contract
+errors
+etherTip
+etherum-tip-jar
+exported_data
+fiat-contract
+goroutines
+grants
+index-times
+indexing
+node-sync
+pinata
+prices
+rpc-usage
+saitamainu
+scrapers
+size-of-blooms
+status
+stuff
+tally-daos
+tokenlists
+trueblocks
+trueblocks-core-viz
+trueblocks-filemakerpro-demo
+trueblocks-parity-stats
+turbo-geth-syncing
+turbo-geth-syncing2
+uniswap-usd
+vitalik
+yearn
 
-tmp-images
+store
+stash
+cache
 
 # No data!
 *.json
@@ -25,6 +53,16 @@ tmp-images
 *.log
 *.pdf
 *.tab
+
+.RDataTmp
+.Rproj.user
+.Rhistory
+.Rapp.history
+.RData
+.Ruserdata
+.DS_Store
+data
+tmp-images
 
 # and what the hell are DS_Store files good for anyway
 .DS_Store
@@ -39,7 +77,6 @@ tmp-images
 /*.Rcheck/
 
 # RStudio files
-.Rproj.user/
 
 # produced vignettes
 vignettes/*.html
@@ -58,4 +95,3 @@ vignettes/*.pdf
 
 # Shiny token, see https://shiny.rstudio.com/articles/shinyapps.html
 rsconnect/
-.Rproj.user
