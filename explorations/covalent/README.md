@@ -134,3 +134,5 @@ gzunip store.tar.gz
 tar -xvf store.tar
 rm -f store.tar
 ```
+
+The download is about 2.6 GB big, however, once you download the data, you may remove the 'raw' folder which is about 2.4 GB of that. Simply comment out the lines in the scripts that reference the `raw` data.

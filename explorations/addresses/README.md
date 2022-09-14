@@ -13,7 +13,7 @@ tar -xvf store.tar
 rm -f store.tar
 ```
 
-This should create two files in the `./store` folder.
+This should create two files in the `./store` folder. The data is about 500 K big.
 
 ## ./store/addressesPerTransCount.csv
 
