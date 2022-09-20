@@ -1,3 +1,9 @@
+---------
+This article is published to Medium. Please see that version.
+---------
+
+THE FOLLOWING ARTICLE IS OUTDATED. PLEASE SEE THE MEDIUM VERSION.
+
 # Covalent / TrueBlocks Comparison
 
 This study is intended to show some of the many significant advantages one can realize using TrueBlocks over other methods of blockchain data extraction. These advantages include:
