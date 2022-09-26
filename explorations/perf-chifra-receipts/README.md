@@ -11,7 +11,8 @@ I created three executables:
 
 ### Shell Script
 
-I generated a collection of shell scripts that call `chifra receipts` from the command line, the API, and rendining from a file visiting about 5,500 randomly-selected (but evenly-spaced) blocks.
+I generated a collection of shell scripts that call `chifra receipts` from the command line, the API, and rendining from a file visiting about 
+5,500 (every 2,874 block between 0 and 15,000,000) randomly-selected (but evenly-spaced) blocks.
 
 I always queried the first transaction in the block. In some cases, there are no transactions, but this is okay, since it represents error cases.
 
