@@ -2,7 +2,7 @@ library(jsonlite)
 library(tidyverse)
 library(ggplot2)
 
-setwd("/Users/jrush/Development/trueblocks-giveth/data/")
+# setwd("/Users/jrush/Development/trueblocks-giveth/data/")
 cols <- c(
   rep("character", 2),
   "numeric",
@@ -10,7 +10,7 @@ cols <- c(
   "numeric",
   rep("character", 7)
 )
-df <- read.table("summaries/all_donations.csv",
+df <- read.table("data/types/eligible.csv",
   sep = ",",
   quote = "\"",
   header = TRUE,
@@ -92,4 +92,3 @@ p
 png()
 ggsave("plots/donations-per-round-per-currency-no-giv-no-xdai.png")
 dev.off()
-

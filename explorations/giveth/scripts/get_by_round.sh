@@ -2,6 +2,7 @@
 
 mkdir -p rounds/Round$1
 
+echo "---- Getting data for round $1 -------"
 ./scripts/get_details.sh purple-list     $1
 ./scripts/get_details.sh not-eligible    $1
 ./scripts/get_details.sh eligible        $1
