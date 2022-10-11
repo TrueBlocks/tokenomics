@@ -15,7 +15,7 @@ echo "Last:  " $LAST
 
 echo "exporting..."
 chifra export $ADDR --chain $CHAIN --logs --emitter $TOKEN --first_block $FIRST --last_block $LAST --cache --articulate $TOPIC >x
-
-echo "cutting..."
-cat x | cut -f1-5,11 | tr ':' '\t' | tr '|' '\t' | tr '{' '\t' | cut -f1-5,8,12,14,16 | cut -f1 -d'}' | grep "\t"$ADDR$ | tee zz
-cat zz | cut -f8 | sort -u
+cat x
+#echo "cutting..."
+#cat x | cut -f1-5,11 | tr ':' '\t' | tr '|' '\t' | tr '{' '\t' | cut -f1-5,8,12,14,16 | cut -f1 -d'}' | grep "\t"$ADDR$ | tee zz
+#cat zz | cut -f8 | sort -u
