@@ -1,2 +1,2 @@
 all:
-	@cd ~/Development/trueblocks-giveth ; make -j 12 ; cd - >/dev/null 2>&1
+	@cd ~/Development/trueblocks-giveth/src ; make -j 12
