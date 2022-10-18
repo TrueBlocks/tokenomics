@@ -1,0 +1,9 @@
+*.tab
+*.sh
+*.sh.1
+*.txt
+*.csv
+*.json
+*.tsv
+*.fil
+NOTES.md
