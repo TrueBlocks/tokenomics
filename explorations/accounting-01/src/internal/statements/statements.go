@@ -72,44 +72,43 @@ type internalStatement struct {
 }
 
 type Statement struct {
-	BlockNumber      uint64
-	TransactionIndex uint64
-	TransactionHash  common.Hash
-	// Timestamp        uint64
-	Date        string
-	Sender      common.Address
-	Recipient   common.Address
-	AssetAddr   common.Address
-	AssetSymbol string
-	Decimals    uint64
-	PrevBlk     uint64
-	PrevBlkBal  float64
-	BegBal      float64
-	EndBal      float64
-	// AmountIn            big.Int
-	// InternalIn          big.Int
-	// SelfDestructIn      big.Int
-	// MinerBaseRewardIn   big.Int
-	// MinerNephewRewardIn big.Int
-	// MinerTxFeeIn        big.Int
-	// MinerUncleRewardIn  big.Int
-	// PrefundIn           big.Int
-	// AmountOut           big.Int
-	// InternalOut         big.Int
-	// SelfDestructOut     big.Int
-	// GasCostOut          big.Int
-	// SpotPrice           float64
-	// PriceSource         string
-	// BegBalDiff          big.Int
-	// EndBalCalc          big.Int
-	// EndBalDiff          big.Int
-	TotalIn         float64
-	TotalOut        float64
-	TotalOutLessGas float64
-	AmountNet       float64
-	// Reconciled is true if the statement is reconciled, false otherwise.
-	Reconciled         bool
-	ReconciliationType string
+	BlockNumber      uint64      `json:"blockNumber"`
+	TransactionIndex uint64      `json:"transactionIndex"`
+	TransactionHash  common.Hash `json:"transactionHash"`
+	// Timestamp        uint64 `json:"timestamp"`
+	Date        string         `json:"date"`
+	Sender      common.Address `json:"sender"`
+	Recipient   common.Address `json:"recipient"`
+	AssetAddr   common.Address `json:"assetAddr"`
+	AssetSymbol string         `json:"assetSymbol"`
+	Decimals    uint64         `json:"decimals"`
+	PrevBlk     uint64         `json:"prevBlock"`
+	PrevBlkBal  float64        `json:"prevBal"`
+	BegBal      float64        `json:"begBal"`
+	EndBal      float64        `json:"endBal"`
+	// AmountIn            big.Int `json:""`
+	// InternalIn          big.Int `json:""`
+	// SelfDestructIn      big.Int `json:""`
+	// MinerBaseRewardIn   big.Int `json:""`
+	// MinerNephewRewardIn big.Int `json:""`
+	// MinerTxFeeIn        big.Int `json:""`
+	// MinerUncleRewardIn  big.Int `json:""`
+	// PrefundIn           big.Int `json:""`
+	// AmountOut           big.Int `json:""`
+	// InternalOut         big.Int `json:""`
+	// SelfDestructOut     big.Int `json:""`
+	// GasCostOut          big.Int `json:""`
+	// SpotPrice           float64 `json:""`
+	// PriceSource         string `json:""`
+	// BegBalDiff          big.Int `json:""`
+	// EndBalCalc          big.Int `json:""`
+	// EndBalDiff          big.Int `json:""`
+	TotalIn            float64 `json:"totalIn"`
+	TotalOut           float64 `json:"totalOut"`
+	TotalOutLessGas    float64 `json:"totalOutLessGas"`
+	AmountNet          float64 `json:"amountNet"`
+	Reconciled         bool    `json:"reconciled"`
+	ReconciliationType string  `json:"reconcilationType"`
 }
 
 func (s *Statement) String() string {
