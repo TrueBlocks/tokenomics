@@ -18,7 +18,7 @@ func RunStatements(cmd *cobra.Command, args []string) {
 	first := true
 	fmt.Println("[")
 	for _, statement := range statements {
-		if statement.AssetAddr == "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984" {
+		if statement.passesFilter() {
 			s := statement.ToStatement()
 			if first {
 				first = false
@@ -29,6 +29,10 @@ func RunStatements(cmd *cobra.Command, args []string) {
 		}
 	}
 	fmt.Println("]")
+}
+
+func (s *internalStatement) passesFilter() bool {
+	return s.AssetSymbol == "ETH"
 }
 
 type internalStatement struct {
