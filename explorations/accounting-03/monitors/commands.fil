@@ -1,0 +1,7 @@
+export --ether --articulate --fmt json --cache
+export --ether --logs  --fmt json --articulate --relevant
+export --ether --statements --fmt json --no_header
+
+export --chain gnosis --ether --articulate --fmt json --cache
+export --chain gnosis --ether --logs  --fmt json --articulate --relevant
+export --chain gnosis --ether --statements --fmt json --no_header
