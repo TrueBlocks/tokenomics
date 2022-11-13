@@ -9,4 +9,5 @@ file
 *.json
 *.tsv
 *.fil
+*.ofx
 NOTES.md
