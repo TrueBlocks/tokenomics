@@ -15,6 +15,8 @@
 | AccountedFor | 0x65b0d5e1dc0dee0704f53f660aa865c72e986fc7                         |
 | Asset        |                                                                    |
 
+This mint of interest does not generate a Transfer event.
+
 ![image](https://user-images.githubusercontent.com/5417918/202073709-926cc373-3218-44ee-9e44-c08b52ae33c0.png)
 
 
