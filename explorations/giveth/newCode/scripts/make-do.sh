@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+./scripts/make-do.1.sh 1
+./scripts/make-do.1.sh 2
+./scripts/make-do.1.sh 3
+./scripts/make-do.1.sh 4
+./scripts/make-do.1.sh 5
+./scripts/make-do.1.sh 6
+./scripts/make-do.1.sh 7
+./scripts/make-do.1.sh 8
+./scripts/make-do.1.sh 9
+./scripts/make-do.1.sh 10
+./scripts/make-do.1.sh 11
+./scripts/make-do.1.sh 12
+./scripts/make-do.1.sh 13
+./scripts/make-do.1.sh 14
+./scripts/make-do.1.sh 15
+./scripts/make-do.1.sh 16
+./scripts/make-do.1.sh 17
+./scripts/make-do.1.sh 18
