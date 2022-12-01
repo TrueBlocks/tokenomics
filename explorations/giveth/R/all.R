@@ -12,7 +12,7 @@ cols <- c(
   "numeric",
   rep("character", 7)
 )
-df <- read.table("all/all.csv",
+df <- read.table("../all/all.csv",
   sep = ",",
   quote = "\"",
   header = TRUE,

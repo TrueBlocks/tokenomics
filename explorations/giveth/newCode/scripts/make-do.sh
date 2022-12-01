@@ -18,3 +18,10 @@
 ./scripts/make-do.1.sh 16
 ./scripts/make-do.1.sh 17
 ./scripts/make-do.1.sh 18
+./scripts/make-do.1.sh 19
+./scripts/make-do.1.sh 20
+./scripts/make-do.1.sh 21
+./scripts/make-do.1.sh 22
+./scripts/make-do.1.sh 23
+./scripts/make-do.1.sh 24
+./scripts/make-do.1.sh 25

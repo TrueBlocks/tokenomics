@@ -10,13 +10,14 @@ cols <- c(
   "numeric",
   rep("character", 7)
 )
-df <- read.table("data/types/eligible.csv",
+df <- read.table("../data/types/eligible.csv",
   sep = ",",
   quote = "\"",
   header = TRUE,
   colClasses = cols
 )
 head(df)
+tail(df)
 
 #  filter(type=="eligible") %>%
 #  filter(round<"Round15") %>%
