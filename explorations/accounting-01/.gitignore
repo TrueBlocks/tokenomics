@@ -3,8 +3,6 @@ fix*
 file
 *.xlsx
 *.tab
-*.sh
-*.sh.1
 *.txt
 *.csv
 *.json
