@@ -1,3 +1,5 @@
+accounting-01/newThing/accounting
+counts
 file.1
 fix*
 file
@@ -10,3 +12,6 @@ file
 *.fil
 *.ofx
 NOTES.md
+doAll.sh
+getAll.sh
+sumAll.sh
