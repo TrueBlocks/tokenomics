@@ -59,8 +59,8 @@ df <- df %>% filter(epoch != "E-38")
 df <- df %>% filter(epoch != "E-40")
 df <- df %>% filter(epoch != "E-41")
 df <- df %>% filter(epoch != "E-42")
-#df <- df %>% filter(epoch != "E-43")
-#df <- df %>% filter(epoch != "E-44")
+df <- df %>% filter(epoch != "E-43")
+df <- df %>% filter(epoch != "E-44")
 #df <- df %>% filter(node == "TG")
 
 df <- df %>% filter(epoch != "E-27") # this was a bogus test
