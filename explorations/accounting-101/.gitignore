@@ -1,0 +1,14 @@
+file.1
+fix*
+file
+*.xlsx
+*.tab
+*.txt
+*.csv
+*.json
+*.tsv
+*.fil
+*.ofx
+NOTES.md
+doAll.sh
+doSome.sh
