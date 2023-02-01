@@ -17,7 +17,7 @@ type CountByAsset struct {
 	Values map[string]uint64
 }
 
-func (c *CountByAsset) Accumulate(r *mytypes.RawReconciliation) {
+func (c *CountByAsset) Traverse(r *mytypes.RawReconciliation) {
 	if len(c.Values) == 0 {
 		c.Values = make(map[string]uint64)
 	}

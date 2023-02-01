@@ -5,7 +5,7 @@ import (
 	"os"
 )
 
-func GetAccumulators(opts traverser.Options) []traverser.Traverser[float64] {
+func GetTraversers(opts traverser.Options) []traverser.Traverser[float64] {
 	ret := make([]traverser.Traverser[float64], 0)
 	for _, a := range os.Args {
 		if a == "stats.counter" || a == "counters" || a == "stats" {

@@ -15,7 +15,7 @@ type Average struct {
 	Total float64
 }
 
-func (c *Average) Accumulate(val float64) {
+func (c *Average) Traverse(val float64) {
 	c.Value += 1
 	c.Total += val
 }

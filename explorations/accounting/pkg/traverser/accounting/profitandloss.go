@@ -27,7 +27,7 @@ type ProfitAndLoss struct {
 	w        *tabwriter.Writer
 }
 
-func (c *ProfitAndLoss) Accumulate(r *mytypes.RawReconciliation) {
+func (c *ProfitAndLoss) Traverse(r *mytypes.RawReconciliation) {
 	if len(c.Ledgers) == 0 {
 		c.w = tabwriter.NewWriter(os.Stdout, 0, 0, 1, ',', 0)
 		if c.Ledgers == nil { // order matters

@@ -14,7 +14,7 @@ type Counter struct {
 	Value float64
 }
 
-func (c *Counter) Accumulate(val float64) {
+func (c *Counter) Traverse(val float64) {
 	c.Value += 1
 }
 

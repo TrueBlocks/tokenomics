@@ -14,7 +14,7 @@ type Max struct {
 	Value float64
 }
 
-func (c *Max) Accumulate(val float64) {
+func (c *Max) Traverse(val float64) {
 	if val > c.Value {
 		c.Value = val
 	}

@@ -37,13 +37,15 @@ func main() {
 	}
 
 	opts := traverser.GetOptions(addressFn)
-	statAccumulators := stats.GetAccumulators(opts)
-	reconAccumulators := accounting.GetAccumulators(opts)
+	statTraversers := stats.GetTraversers(opts)
+	reconTraversers := accounting.GetTraversers(opts)
 
 	filepath.Walk(summaryFolder, func(path string, info fs.FileInfo, err error) error {
-		if !strings.HasSuffix(path, ".csv") || err != nil {
+		if !strings.Contains(path, "all_recons.csv") { // !strings.HasSuffix(path, ".csv") || err != nil {
 			return err
 		}
+
+		log.Println("Reading file", path)
 
 		var theFile *os.File
 		theFile, err = os.OpenFile(path, os.O_RDWR|os.O_CREATE, os.ModePerm)
@@ -61,23 +63,23 @@ func main() {
 			return nil
 		}
 
-		log.Println(colors.Yellow, "Loaded", len(records), "records from", path, colors.Off)
+		log.Println(colors.Yellow+"Loaded", len(records), "records from", path, colors.Off)
 		for _, r := range records {
-			for _, a := range statAccumulators {
-				a.Accumulate(float64(r.BlockNumber))
+			for _, a := range statTraversers {
+				a.Traverse(float64(r.BlockNumber))
 			}
-			for _, a := range reconAccumulators {
-				a.Accumulate(r)
+			for _, a := range reconTraversers {
+				a.Traverse(r)
 			}
 		}
 		return nil
 	})
 
-	for _, a := range statAccumulators {
+	for _, a := range statTraversers {
 		fmt.Println(a.Result())
 	}
 
-	for _, a := range reconAccumulators {
+	for _, a := range reconTraversers {
 		fmt.Println(a.Result())
 	}
 }

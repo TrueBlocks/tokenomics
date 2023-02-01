@@ -19,7 +19,7 @@ type GroupByAddress struct {
 	Values map[string]uint64
 }
 
-func (c *GroupByAddress) Accumulate(r *mytypes.RawReconciliation) {
+func (c *GroupByAddress) Traverse(r *mytypes.RawReconciliation) {
 	if len(c.Values) == 0 {
 		c.Values = make(map[string]uint64)
 	}

@@ -18,7 +18,7 @@ type AssetStatement struct {
 	Values map[string]*mytypes.RawReconciliation
 }
 
-func (c *AssetStatement) Accumulate(r *mytypes.RawReconciliation) {
+func (c *AssetStatement) Traverse(r *mytypes.RawReconciliation) {
 	if len(c.Values) == 0 {
 		c.Values = make(map[string]*mytypes.RawReconciliation)
 	}

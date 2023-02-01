@@ -13,7 +13,7 @@ import (
 )
 
 type Traverser[T mytypes.RawType] interface {
-	Accumulate(t T)
+	Traverse(t T)
 	GetKey(t T) string
 	Result() string
 	Name() string
@@ -47,7 +47,7 @@ func GetOptions(addressFn string) Options {
 
 	ret.Names, _ = names.LoadNamesMap("mainnet")
 	ret.Names[common.HexToAddress("0x")] = names.Name{Name: "Creation/Mint"}
-	log.Println(colors.Yellow, "Loaded", len(ret.Names), "names...", colors.Off)
+	log.Println(colors.Yellow+"Loaded", len(ret.Names), "names...", colors.Off)
 
 	lines := AsciiFileToLines(addressFn)
 	for _, line := range lines {
@@ -64,7 +64,7 @@ func GetOptions(addressFn string) Options {
 			}
 		}
 	}
-	log.Println(colors.Yellow, "Loaded", len(lines), "addresses...", colors.Off)
+	log.Println(colors.Yellow+"Loaded", len(lines), "addresses...", colors.Off)
 
 	lines = AsciiFileToLines("/Users/jrush/Development/tokenomics/explorations/accounting-01/filter.csv")
 	if len(lines) > 0 {
@@ -73,7 +73,7 @@ func GetOptions(addressFn string) Options {
 			ret.Filters[mytypes.Address(line)] = true
 		}
 	}
-	log.Println(colors.Yellow, "Loaded", len(lines), "filters...", colors.Off)
+	log.Println(colors.Yellow+"Loaded", len(lines), "filters...", colors.Off)
 
 	return ret
 }

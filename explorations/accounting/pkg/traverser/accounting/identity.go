@@ -16,7 +16,7 @@ type Identity struct {
 	Count    uint64
 }
 
-func (c *Identity) Accumulate(val *mytypes.RawReconciliation) {
+func (c *Identity) Traverse(val *mytypes.RawReconciliation) {
 	c.Count++
 	if c.NotFirst {
 		fmt.Println(",")

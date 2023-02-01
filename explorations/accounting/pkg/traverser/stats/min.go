@@ -14,7 +14,7 @@ type Min struct {
 	Value float64
 }
 
-func (c *Min) Accumulate(val float64) {
+func (c *Min) Traverse(val float64) {
 	if val < c.Value {
 		c.Value = val
 	}

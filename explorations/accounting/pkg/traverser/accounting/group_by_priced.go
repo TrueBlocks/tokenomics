@@ -17,7 +17,7 @@ type GroupByPriced struct {
 	Values map[string]uint64
 }
 
-func (c *GroupByPriced) Accumulate(r *mytypes.RawReconciliation) {
+func (c *GroupByPriced) Traverse(r *mytypes.RawReconciliation) {
 	if len(c.Values) == 0 {
 		c.Values = make(map[string]uint64)
 	}

@@ -17,7 +17,7 @@ type CountByFunction struct {
 	Values map[string]uint64
 }
 
-func (c *CountByFunction) Accumulate(r *mytypes.RawReconciliation) {
+func (c *CountByFunction) Traverse(r *mytypes.RawReconciliation) {
 	if len(c.Values) == 0 {
 		c.Values = make(map[string]uint64)
 	}
@@ -46,21 +46,28 @@ func (c *CountByFunction) reportValues(msg string, m map[string]uint64) string {
 	nTransfers := 0
 	nEthTransfers := 0
 	nNamed := 0
+	nMessages := 0
 
 	arr := make([]stats, 0, len(m))
 	for k, v := range m {
 		parts := strings.Split(k, "_")
 		status := "unnamed"
 		if len(parts[1]) > 0 && parts[0] != parts[1] {
-			status = "named"
+			if strings.HasPrefix(parts[1], "message:") {
+				status = "message"
+			} else {
+				status = "named"
+			}
 		}
 		arr = append(arr, stats{Count: v, Encoding: parts[0], Name: parts[1], Status: status})
+
 		nTransfers += int(v)
 		if parts[0] == "0x" {
 			nEthTransfers += int(v)
-		}
-		if status == "named" {
+		} else if status == "named" {
 			nNamed += int(v)
+		} else if status == "message" {
+			nMessages += int(v)
 		}
 	}
 	sort.Slice(arr, func(i, j int) bool {
@@ -76,14 +83,6 @@ func (c *CountByFunction) reportValues(msg string, m map[string]uint64) string {
 	ret := fmt.Sprintf("Number of %s: %d\n", msg, len(c.Values))
 	ret += fmt.Sprintf("Number of Transfers: %d\n", nTransfers)
 
-	ret += ExportHeader("Eth Transfers", nEthTransfers)
-	ret += "Count,Encoding,Name\n"
-	for _, val := range arr {
-		if val.Encoding == "0x" {
-			ret += fmt.Sprintf("%d,%s,%s\n", val.Count, val.Encoding, val.Name)
-		}
-	}
-
 	ret += ExportHeader("Calls to Named Functions", nNamed)
 	ret += "Count,Encoding,Name\n"
 	for _, val := range arr {
@@ -92,11 +91,27 @@ func (c *CountByFunction) reportValues(msg string, m map[string]uint64) string {
 		}
 	}
 
-	ret += ExportHeader("Calls to Unnamed Functions", nTransfers-nNamed)
+	ret += ExportHeader("Calls to Unnamed Functions", nTransfers-nNamed-nMessages-nEthTransfers)
 	ret += "Count,Encoding,Name\n"
 	for _, val := range arr {
-		if val.Status != "named" && val.Encoding != "0x" {
+		if val.Status != "named" && val.Status != "message" && val.Encoding != "0x" {
 			ret += fmt.Sprintf("%d,%s,%s\n", val.Count, val.Encoding, val.Name)
+		}
+	}
+
+	ret += ExportHeader("Eth Transfers", nEthTransfers)
+	ret += "Count,Encoding,Name\n"
+	for _, val := range arr {
+		if val.Encoding == "0x" {
+			ret += fmt.Sprintf("%d,%s,%s\n", val.Count, val.Encoding, val.Name)
+		}
+	}
+
+	ret += ExportHeader("Messages", nMessages)
+	ret += "Count,Message\n"
+	for _, val := range arr {
+		if val.Status == "message" {
+			ret += fmt.Sprintf("%d,%s\n", val.Count, val.Name)
 		}
 	}
 

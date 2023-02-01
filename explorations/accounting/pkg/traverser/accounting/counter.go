@@ -15,7 +15,7 @@ type Counter struct {
 	Value uint64
 }
 
-func (c *Counter) Accumulate(r *mytypes.RawReconciliation) {
+func (c *Counter) Traverse(r *mytypes.RawReconciliation) {
 	c.Value += 1
 }
 

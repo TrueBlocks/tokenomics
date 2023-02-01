@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-func GetAccumulators(opts traverser.Options) []traverser.Traverser[*mytypes.RawReconciliation] {
+func GetTraversers(opts traverser.Options) []traverser.Traverser[*mytypes.RawReconciliation] {
 	ret := make([]traverser.Traverser[*mytypes.RawReconciliation], 0)
 	for _, a := range os.Args {
 		if a == "accounting.counter" || a == "counters" {

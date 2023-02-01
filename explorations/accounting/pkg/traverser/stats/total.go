@@ -14,7 +14,7 @@ type Total struct {
 	Value float64
 }
 
-func (c *Total) Accumulate(val float64) {
+func (c *Total) Traverse(val float64) {
 	c.Value += val
 }
 
