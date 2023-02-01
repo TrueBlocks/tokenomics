@@ -77,7 +77,7 @@ func (c *AssetStatement) reportValues(msg string, m map[string]*mytypes.RawRecon
 	ret := fmt.Sprintf("Number of %s: %d\n", msg, len(c.Values))
 
 	ret += ExportHeader("Non-Zero Units Priced", hasPriced)
-	ret += "Date,Asset,Symbol,Price Source,Spot Price,Uints,Usd\n"
+	ret += "Date,Asset,Symbol,Price Source,Spot Price,Units,Usd\n"
 	for _, val := range arr {
 		hasUnits := val.Recon.EndBal.Cmp(utils.Zero()) != 0
 		priced := val.Recon.SpotPrice > 0
@@ -87,7 +87,7 @@ func (c *AssetStatement) reportValues(msg string, m map[string]*mytypes.RawRecon
 	}
 
 	ret += ExportHeader("Non-Zero Units Unpriced", hasNotPriced)
-	ret += "Date,Asset,Symbol,Price Source,Spot Price,Uints,Usd\n"
+	ret += "Date,Asset,Symbol,Price Source,Spot Price,Units,Usd\n"
 	for _, val := range arr {
 		hasUnits := val.Recon.EndBal.Cmp(utils.Zero()) != 0
 		priced := val.Recon.SpotPrice > 0
@@ -97,7 +97,7 @@ func (c *AssetStatement) reportValues(msg string, m map[string]*mytypes.RawRecon
 	}
 
 	ret += ExportHeader("Zero Units Priced", zeroPriced)
-	ret += "Date,Asset,Symbol,Price Source,Spot Price,Uints,Usd\n"
+	ret += "Date,Asset,Symbol,Price Source,Spot Price,Units,Usd\n"
 	for _, val := range arr {
 		hasUnits := val.Recon.EndBal.Cmp(utils.Zero()) != 0
 		priced := val.Recon.SpotPrice > 0
@@ -107,7 +107,7 @@ func (c *AssetStatement) reportValues(msg string, m map[string]*mytypes.RawRecon
 	}
 
 	ret += ExportHeader("Zero Units Unpriced", zeroNotPriced)
-	ret += "Date,Asset,Symbol,Price Source,Spot Price,Uints,Usd\n"
+	ret += "Date,Asset,Symbol,Price Source,Spot Price,Units,Usd\n"
 	for _, val := range arr {
 		hasUnits := val.Recon.EndBal.Cmp(utils.Zero()) != 0
 		priced := val.Recon.SpotPrice > 0

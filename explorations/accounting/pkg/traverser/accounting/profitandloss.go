@@ -31,7 +31,7 @@ func (c *ProfitAndLoss) Accumulate(r *mytypes.RawReconciliation) {
 	if len(c.Ledgers) == 0 {
 		c.w = tabwriter.NewWriter(os.Stdout, 0, 0, 1, ',', 0)
 		if c.Ledgers == nil { // order matters
-			c.ReportHeader(r)
+			c.ReportHeader(c.Opts.Verbose, r)
 		}
 		c.Ledgers = make(map[string]*mytypes.RawReconciliation)
 		c.LastKey = ""
@@ -46,7 +46,7 @@ func (c *ProfitAndLoss) Accumulate(r *mytypes.RawReconciliation) {
 	l := c.Ledgers[key]
 	if l != nil {
 		// We have this ledger, so first report on the current reconciliation...
-		if c.Opts.Verbose {
+		if c.Opts.Verbose > 0 {
 			c.Report("Tx", colors.BrightCyan, r.SpotPrice, r)
 		}
 		// ...then accumulate it into the ledger
@@ -59,7 +59,7 @@ func (c *ProfitAndLoss) Accumulate(r *mytypes.RawReconciliation) {
 				fmt.Fprintln(c.w)
 			}
 		}
-		if c.Opts.Verbose {
+		if c.Opts.Verbose > 0 {
 			c.Report("Tx", colors.BrightCyan, r.SpotPrice, r)
 		}
 		// Remember the current ledger
@@ -99,7 +99,7 @@ func ToFmtStrFloat(denom string, decimals uint64, spot float64, x string) string
 func ToFmtStr(denom string, decimals uint64, spot float64, x *big.Float) string {
 	v := *x
 	switch denom {
-	case "ether":
+	case "units":
 		one := big.Float{}
 		one.SetFloat64(1)
 		v = *utils.PriceUsd(v.String(), decimals, &one)
@@ -121,7 +121,7 @@ func (c *ProfitAndLoss) UpdateLedger(key string, r *mytypes.RawReconciliation) {
 	c.Ledgers[key].EndBal = r.EndBal
 }
 
-func Display(color string, a mytypes.Address, aF *mytypes.Address, verbose bool, nMap names.NamesMap) string {
+func Display(color string, a mytypes.Address, aF *mytypes.Address, verbose int, nMap names.NamesMap) string {
 	n := nMap[common.HexToAddress(a.String())].Name
 	n = strings.Replace(strings.Replace(n, ",", "", -1), "#", "", -1)
 	if len(n) > 0 {
@@ -135,7 +135,7 @@ func Display(color string, a mytypes.Address, aF *mytypes.Address, verbose bool,
 		return colors.Green + ad + colors.Off + n
 	}
 
-	if verbose {
+	if verbose > 0 {
 		return color + ad + colors.Off + n
 	}
 
@@ -146,6 +146,10 @@ func Display(color string, a mytypes.Address, aF *mytypes.Address, verbose bool,
 }
 
 func (c *ProfitAndLoss) Report(msg, color string, spot float64, r *mytypes.RawReconciliation) {
+	if len(c.Opts.Filters) > 0 && !c.Opts.Filters[r.AssetAddress] {
+		return
+	}
+
 	f := func(x big.Float) uint64 {
 		v, _ := x.Uint64()
 		return v
@@ -189,85 +193,152 @@ func (c *ProfitAndLoss) Report(msg, color string, spot float64, r *mytypes.RawRe
 
 	var row string
 	if msg == "Summary" {
-		row = fmt.Sprintf(
-			"%s\t\t\t\t\t%s\t%s\t%s\t%s\t\t\t\t\t\t\t%d\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t\t\t%s%s",
-			msg,
-			date,
-			r.AccountedFor,
-			symbol,
-			asset,
-			r.Decimals,
-			denom,
-			beg,
-			net,
-			end,
-			totIn,
-			gasOut,
-			totOutLessGas,
-			check,
-			colors.Off)
+		if c.Opts.Verbose > 1 {
+			row = fmt.Sprintf(
+				"%s\t\t\t\t\t%s\t%s\t%s\t%s\t\t\t\t\t\t\t%d\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t\t\t%s%s",
+				msg,
+				date,
+				r.AccountedFor,
+				symbol,
+				asset,
+				r.Decimals,
+				denom,
+				beg,
+				net,
+				end,
+				totIn,
+				gasOut,
+				totOutLessGas,
+				check,
+				colors.Off)
+		} else {
+			row = fmt.Sprintf(
+				"%s\t\t\t%s\t%s\t%s\t\t\t\t\t\t\t%d\t%s\t%s\t%s\t%s\t\t\t%s%s",
+				msg,
+				date,
+				symbol,
+				asset,
+				r.Decimals,
+				denom,
+				beg,
+				net,
+				end,
+				check,
+				colors.Off)
+		}
 	} else {
-		row = fmt.Sprintf(
-			"%s\t%d\t%d\t%d\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%f\t%d\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s%s",
-			msg,
-			r.BlockNumber,
-			r.TransactionIndex,
-			r.LogIndex,
-			hash,
-			date,
-			r.AccountedFor,
-			symbol,
-			asset,
-			sender,
-			recipient,
-			r.PriceSource,
-			r.SpotPrice,
-			r.Decimals,
-			denom,
-			beg,
-			net,
-			end,
-			totIn,
-			gasOut,
-			totOutLessGas,
-			sig,
-			r.ReconciliationType,
-			check,
-			colors.Off)
+		if c.Opts.Verbose > 1 {
+			row = fmt.Sprintf(
+				"%s\t%d\t%d\t%d\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%f\t%d\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s%s",
+				msg,
+				r.BlockNumber,
+				r.TransactionIndex,
+				r.LogIndex,
+				hash,
+				date,
+				r.AccountedFor,
+				symbol,
+				asset,
+				sender,
+				recipient,
+				r.PriceSource,
+				r.SpotPrice,
+				r.Decimals,
+				denom,
+				beg,
+				net,
+				end,
+				totIn,
+				gasOut,
+				totOutLessGas,
+				sig,
+				r.ReconciliationType,
+				check,
+				colors.Off)
+		} else {
+			row = fmt.Sprintf(
+				"%s\t%d\t%d\t%s\t%s\t%s\t%s\t%s\t%s\t%f\t%d\t%s\t%s\t%s\t%s\t%s\t%s\t%s%s",
+				msg,
+				r.BlockNumber,
+				r.TransactionIndex,
+				date,
+				symbol,
+				asset,
+				sender,
+				recipient,
+				r.PriceSource,
+				r.SpotPrice,
+				r.Decimals,
+				denom,
+				beg,
+				net,
+				end,
+				sig,
+				r.ReconciliationType,
+				check,
+				colors.Off)
+		}
 	}
 	fmt.Fprintf(c.w, "%s\n", row)
 	c.w.Flush()
 }
 
-func (c *ProfitAndLoss) ReportHeader(r *mytypes.RawReconciliation) {
-	fields := []string{
-		"type",
-		"blockNumber",
-		"transactionIndex",
-		"logindex",
-		"transactionHash",
-		"date",
-		"accountedFor",
-		"assetSymbol",
-		"assetAddress",
-		"assetName",
-		"sender",
-		"senderName",
-		"recipient",
-		"recipientName",
-		"priceSource",
-		"spotPrice",
-		"decimals",
-		"denom",
-		"begBal",
-		"amountNet",
-		"endBal",
-		"totalIn",
-		"gasOut",
-		"totalOutLessGas",
-		"function",
-		"reconciliationType",
-		"reconciled",
+func (c *ProfitAndLoss) ReportHeader(verbose int, r *mytypes.RawReconciliation) {
+	var fields []string
+	if verbose > 1 {
+		fields = []string{
+			"type",
+			"blockNumber",
+			"transactionIndex",
+			"logindex",
+			"transactionHash",
+			"date",
+			"accountedFor",
+			"assetSymbol",
+			"assetAddress",
+			"assetName",
+			"sender",
+			"senderName",
+			"recipient",
+			"recipientName",
+			"priceSource",
+			"spotPrice",
+			"decimals",
+			"denom",
+			"begBal",
+			"amountNet",
+			"endBal",
+			"totalIn",
+			"gasOut",
+			"totalOutLessGas",
+			"function",
+			"reconciliationType",
+			"reconciled",
+		}
+	} else {
+		fields = []string{
+			"type",
+			"blockNumber",
+			"transactionIndex",
+			"date",
+			"assetSymbol",
+			"assetAddress",
+			"assetName",
+			"sender",
+			"senderName",
+			"recipient",
+			"recipientName",
+			"priceSource",
+			"spotPrice",
+			"decimals",
+			"denom",
+			"begBal",
+			"amountNet",
+			"endBal",
+			"function",
+			"reconciliationType",
+			"reconciled",
+		}
 	}
 	for i, f := range fields {
 		if i > 0 {
