@@ -1,33 +1,32 @@
 all:
 #	@cd /Users/jrush/Development/trueblocks-core/build/ ; make ; cd - >/dev/null 2>&1
 	@cd ../accounting ; make ; cd - >/dev/null 2>&1
+	make data
 
-test:
+data:
 #	@cd ../accounting ; go test ./... ; cd -  >/dev/null 2>&1
-	@make
-	@rm -fR data/*.csv
-	@mkdir -p data
+	@rm -fR output/*.csv
+	@mkdir -p output
 	@echo "Testing stats..."
-	@accounting stats.counter total average max min --nocolor >data/stats.csv 2>/dev/null
+	@accounting stats.counter total average max min --nocolor >output/stats.csv 2>/dev/null
 	@echo "Testing counters..."
-	@accounting by_asset --nocolor >data/by_asset.csv 2>/dev/null
-	@accounting by_function --nocolor >data/by_function.csv 2>/dev/null
+	@accounting by_asset --nocolor >output/by_asset.csv 2>/dev/null
+	@accounting by_function --nocolor >output/by_function.csv 2>/dev/null
 	@echo "Testing groupers..."
-	@accounting by_priced --nocolor >data/by_priced.csv 2>/dev/null
-	@accounting by_address --nocolor >data/by_address.csv 2>/dev/null
-	@accounting statements --nocolor usd >data/statements.csv 2>/dev/null
-	@accounting senders --nocolor usd >data/senders.csv 2>/dev/null
-	@accounting recipients --nocolor usd >data/recipients.csv 2>/dev/null
-	@accounting pairings --nocolor usd >data/pairings.csv 2>/dev/null
+	@accounting by_priced --nocolor >output/by_priced.csv 2>/dev/null
+	@accounting by_address --nocolor >output/by_address.csv 2>/dev/null
+	@accounting statements --nocolor usd >output/recons.csv 2>/dev/null
+	@accounting senders --nocolor usd >output/senders.csv 2>/dev/null
+	@accounting recipients --nocolor usd >output/recipients.csv 2>/dev/null
+	@accounting pairings --nocolor usd >output/pairings.csv 2>/dev/null
 	@echo "Exporting..."
-	@accounting profit_and_loss monthly units --verbose --verbose --nocolor >data/p_and_l.csv
+	@accounting profit_and_loss monthly units --verbose --verbose --nocolor >output/p_and_l.csv
 
 tidy:
 	@cd ../accounting ; make tidy ; cd - >/dev/null 2>&1
 
-data:
-	@make all
-	@./buildOne.sh annually
-	@./buildOne.sh monthly
-	@./buildOne.sh daily
-	@./buildOne.sh blockly
+clean:
+	@rm -fR output raw summary
+	@mkdir -p output raw/txs raw/recons raw/logs summary
+#	@cat doAll.sh | grep -v doOne >x ; cat x >doAll.sh ; rm -f x
+#	@cat doSome.sh | grep -v doOne >x ; cat x >doSome.sh ; rm -f x
