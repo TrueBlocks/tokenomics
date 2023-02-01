@@ -20,11 +20,11 @@ test:
 	@accounting recipients --nocolor units >data/recipients.csv 2>/dev/null
 	@accounting pairings --nocolor units >data/pairings.csv 2>/dev/null
 	@echo "Exporting..."
-	@accounting profit_and_loss --daily units --verbose --verbose --nocolor >data/p_and_l.csv
+	@accounting profit_and_loss daily units --verbose --verbose --nocolor >data/p_and_l.csv
 	@echo "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984" >filter.csv
-	@accounting profit_and_loss --daily units --verbose --verbose --nocolor >data/p_and_l_uni.csv
+	@accounting profit_and_loss daily units --verbose --verbose --nocolor >data/p_and_l_uni.csv
 	@echo "0x77777feddddffc19ff86db637967013e6c6a116c" >filter.csv
-	@accounting profit_and_loss --daily units --verbose --verbose --nocolor >data/p_and_l_torn.csv
+	@accounting profit_and_loss daily units --verbose --verbose --nocolor >data/p_and_l_torn.csv
 	@rm -f filter.csv
 
 tidy:

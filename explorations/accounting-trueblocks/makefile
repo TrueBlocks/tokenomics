@@ -20,7 +20,7 @@ test:
 	@accounting recipients --nocolor usd >data/recipients.csv 2>/dev/null
 	@accounting pairings --nocolor usd >data/pairings.csv 2>/dev/null
 	@echo "Exporting..."
-	@accounting profit_and_loss --monthly units --verbose --verbose --nocolor >data/p_and_l.csv
+	@accounting profit_and_loss monthly units --verbose --verbose --nocolor >data/p_and_l.csv
 
 tidy:
 	@cd ../accounting ; make tidy ; cd - >/dev/null 2>&1
