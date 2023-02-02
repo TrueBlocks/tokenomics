@@ -4,6 +4,7 @@ import (
 	"accounting/pkg/mytypes"
 	"accounting/pkg/traverser"
 	"accounting/pkg/traverser/accounting"
+	"accounting/pkg/traverser/logs"
 	"accounting/pkg/traverser/stats"
 	"errors"
 	"fmt"
@@ -39,13 +40,15 @@ func main() {
 	opts := traverser.GetOptions(addressFn)
 	statTraversers := stats.GetTraversers(opts)
 	reconTraversers := accounting.GetTraversers(opts)
+	logTraversers := logs.GetTraversers(opts)
 
 	filepath.Walk(summaryFolder, func(path string, info fs.FileInfo, err error) error {
-		if !strings.Contains(path, "all_recons.csv") { // !strings.HasSuffix(path, ".csv") || err != nil {
-			return err
-		}
+		isRecon := strings.Contains(path, "all_recons.csv")
+		isLog := strings.Contains(path, "all_logs.csv")
 
-		log.Println("Reading file", path)
+		if !isRecon && !isLog {
+			return nil
+		}
 
 		var theFile *os.File
 		theFile, err = os.OpenFile(path, os.O_RDWR|os.O_CREATE, os.ModePerm)
@@ -54,24 +57,46 @@ func main() {
 		}
 		defer theFile.Close()
 
-		records := []*mytypes.RawReconciliation{}
-		if err := gocsv.UnmarshalFile(theFile, &records); err != nil {
-			if !errors.Is(err, gocsv.ErrEmptyCSVFile) {
-				logger.Log(logger.Error, colors.BrightYellow+"Path: "+path+colors.Off, err)
-				return err
+		log.Println("Reading file", path)
+		if isRecon {
+			recons := []*mytypes.RawReconciliation{}
+			if err := gocsv.UnmarshalFile(theFile, &recons); err != nil {
+				if !errors.Is(err, gocsv.ErrEmptyCSVFile) {
+					logger.Log(logger.Error, colors.BrightYellow+"Path: "+path+colors.Off, err)
+					return err
+				}
+				return nil
 			}
-			return nil
+
+			log.Println(colors.Yellow+"Loaded", len(recons), "recons from", path, colors.Off)
+			for _, r := range recons {
+				for _, a := range statTraversers {
+					a.Traverse(float64(r.BlockNumber))
+				}
+				for _, a := range reconTraversers {
+					a.Traverse(r)
+				}
+			}
+		} else if isLog {
+			logs := []*mytypes.RawLog{}
+			if err := gocsv.UnmarshalFile(theFile, &logs); err != nil {
+				if !errors.Is(err, gocsv.ErrEmptyCSVFile) {
+					logger.Log(logger.Error, colors.BrightYellow+"Path: "+path+colors.Off, err)
+					return err
+				}
+				return nil
+			}
+
+			log.Println(colors.Yellow+"Loaded", len(logs), "logs from", path, colors.Off)
+			for _, l := range logs {
+				for _, a := range logTraversers {
+					a.Traverse(l)
+				}
+			}
+		} else {
+			log.Panic("Should never get here")
 		}
 
-		log.Println(colors.Yellow+"Loaded", len(records), "records from", path, colors.Off)
-		for _, r := range records {
-			for _, a := range statTraversers {
-				a.Traverse(float64(r.BlockNumber))
-			}
-			for _, a := range reconTraversers {
-				a.Traverse(r)
-			}
-		}
 		return nil
 	})
 
@@ -80,6 +105,10 @@ func main() {
 	}
 
 	for _, a := range reconTraversers {
+		fmt.Println(a.Result())
+	}
+
+	for _, a := range logTraversers {
 		fmt.Println(a.Result())
 	}
 }

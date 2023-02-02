@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/TrueBlocks/trueblocks-core/src/apps/chifra/pkg/colors"
+	"github.com/ethereum/go-ethereum/common"
 )
 
 // --------------------------------
@@ -29,7 +30,7 @@ func (c *GroupByPriced) GetKey(r *mytypes.RawReconciliation) string {
 	if r.SpotPrice > 0 {
 		status = "priced"
 	}
-	return status + "_" + string(r.AssetAddress) + "_" + r.AssetSymbol
+	return status + "_" + string(r.AssetAddress) + "_" + r.AssetSymbol + "," + c.Opts.Names[common.HexToAddress(r.AssetAddress.String())].Name
 }
 
 func (c *GroupByPriced) Result() string {
@@ -73,7 +74,7 @@ func (c *GroupByPriced) reportValues(msg string, m map[string]uint64) string {
 	ret += fmt.Sprintf("Number of Transfers: %d\n", nTransfers)
 
 	ret += ExportHeader("Priced Assets", nPriced)
-	ret += "Count,Asset,Symbol\n"
+	ret += "Count,Asset,Symbol,Name\n"
 	for _, val := range arr {
 		if val.Status == "priced" {
 			ret += fmt.Sprintf("%d,%s,%s\n", val.Count, val.Address, val.Symbol)
@@ -81,7 +82,7 @@ func (c *GroupByPriced) reportValues(msg string, m map[string]uint64) string {
 	}
 
 	ret += ExportHeader("Unpriced Assets", nTransfers-nPriced)
-	ret += "Count,Address,Symbol\n"
+	ret += "Count,Address,Symbol,Name\n"
 	for _, val := range arr {
 		if val.Status == "unpriced" {
 			ret += fmt.Sprintf("%d,%s,%s\n", val.Count, val.Address, val.Symbol)

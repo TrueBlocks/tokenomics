@@ -55,9 +55,7 @@ func (c *GroupByAddress) reportValues(msg string, m map[string]uint64) string {
 		Status  string
 	}
 	nTransfers := 0
-	nSenders := 0
-	nRecipients := 0
-	nPairs := 0
+	counter := 0
 
 	arr := make([]stats, 0, len(m))
 	for k, v := range m {
@@ -70,14 +68,7 @@ func (c *GroupByAddress) reportValues(msg string, m map[string]uint64) string {
 		arr = append(arr, record)
 
 		nTransfers += int(v)
-		switch c.Source {
-		case "senders":
-			nSenders++
-		case "recipients":
-			nRecipients++
-		case "pairings":
-			nPairs++
-		}
+		counter++
 	}
 	sort.Slice(arr, func(i, j int) bool {
 		if arr[i].Count == arr[j].Count {
@@ -90,7 +81,7 @@ func (c *GroupByAddress) reportValues(msg string, m map[string]uint64) string {
 	})
 
 	proper := strings.ToUpper(c.Source[:1]) + c.Source[1:len(c.Source)]
-	ret := fmt.Sprintf("Number of %s: %d\n", proper, nSenders)
+	ret := fmt.Sprintf("Number of %s: %d\n", proper, counter)
 	ret += fmt.Sprintf("Number of Transfers: %d\n\n", nTransfers)
 
 	source := proper[:len(proper)-1]

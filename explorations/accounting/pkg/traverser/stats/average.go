@@ -25,6 +25,9 @@ func (c *Average) GetKey(unused float64) string {
 }
 
 func (c *Average) Result() string {
+	if c.Value == 0 {
+		return c.Name() + "\n\t" + c.reportValue("Average: ", 0)
+	}
 	return c.Name() + "\n\t" + c.reportValue("Average: ", c.Total/c.Value)
 }
 

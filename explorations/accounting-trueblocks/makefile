@@ -19,6 +19,7 @@ data:
 	@accounting senders --nocolor usd >output/senders.csv 2>/dev/null
 	@accounting recipients --nocolor usd >output/recipients.csv 2>/dev/null
 	@accounting pairings --nocolor usd >output/pairings.csv 2>/dev/null
+	@accounting by_topic --nocolor >output/topics.csv 2>/dev/null
 	@echo "Exporting..."
 	@accounting profit_and_loss monthly units --verbose --verbose --nocolor >output/p_and_l.csv
 

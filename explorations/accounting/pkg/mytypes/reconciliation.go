@@ -53,8 +53,7 @@ type RawReconciliation struct {
 
 func (r *RawReconciliation) String() string {
 	bytes, _ := json.MarshalIndent(r, "", "  ")
-	ret := string(bytes)
-	return ret
+	return string(bytes)
 }
 
 /*

@@ -15,10 +15,11 @@ data:
 	@echo "Testing groupers..."
 	@accounting by_priced --nocolor >output/by_priced.csv 2>/dev/null
 	@accounting by_address --nocolor >output/by_address.csv 2>/dev/null
-	@accounting statements --nocolor usd >output/statements.csv 2>/dev/null
+	@accounting statements --nocolor usd >output/recons.csv 2>/dev/null
 	@accounting senders --nocolor usd >output/senders.csv 2>/dev/null
 	@accounting recipients --nocolor usd >output/recipients.csv 2>/dev/null
 	@accounting pairings --nocolor usd >output/pairings.csv 2>/dev/null
+	@accounting by_topic --nocolor >output/topics.csv 2>/dev/null
 	@echo "Exporting..."
 	@accounting profit_and_loss daily units --verbose --verbose --nocolor >output/p_and_l.csv
 	@echo "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984" >filter.csv
@@ -32,6 +33,6 @@ tidy:
 
 clean:
 	@rm -fR output raw summary
-	@mkdir -p output raw/txs raw/statements raw/logs summary
+	@mkdir -p output raw/txs raw/recons raw/logs summary
 #	@cat doAll.sh | grep -v doOne >x ; cat x >doAll.sh ; rm -f x
 #	@cat doSome.sh | grep -v doOne >x ; cat x >doSome.sh ; rm -f x
