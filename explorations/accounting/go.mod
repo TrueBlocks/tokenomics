@@ -1,6 +1,6 @@
 module accounting
 
-go 1.19
+go 1.18
 
 require (
 	github.com/TrueBlocks/trueblocks-core/src/apps/chifra v0.0.0-20230122011356-0f002d7d797e
