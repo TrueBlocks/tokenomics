@@ -5,27 +5,38 @@ all:
 
 data:
 #	@cd ../accounting ; go test ./... ; cd -  >/dev/null 2>&1
-	@rm -fR output/*.csv
-	@mkdir -p output
+	@mkdir -p output/recons output/logs
+	@rm -fR output/**/*.csv
+
 	@echo "Testing stats..."
 	@accounting stats.counter total average max min --nocolor >output/stats.csv 2>/dev/null
+
 	@echo "Testing counters..."
-	@accounting by_asset --nocolor >output/by_asset.csv 2>/dev/null
-	@accounting by_function --nocolor >output/by_function.csv 2>/dev/null
+	@accounting by_asset --nocolor >output/recons/by_asset.csv 2>/dev/null
+	@accounting by_function --nocolor >output/recons/by_function.csv 2>/dev/null
+
 	@echo "Testing groupers..."
-	@accounting by_priced --nocolor >output/by_priced.csv 2>/dev/null
-	@accounting by_address --nocolor >output/by_address.csv 2>/dev/null
-	@accounting statements --nocolor usd >output/recons.csv 2>/dev/null
-	@accounting senders --nocolor usd >output/senders.csv 2>/dev/null
-	@accounting recipients --nocolor usd >output/recipients.csv 2>/dev/null
-	@accounting pairings --nocolor usd >output/pairings.csv 2>/dev/null
+	@accounting by_priced --nocolor >output/recons/by_priced.csv 2>/dev/null
+	@accounting by_address --nocolor >output/recons/by_address.csv 2>/dev/null
+	@accounting statements --nocolor usd >output/recons/recons.csv 2>/dev/null
+	@accounting senders --nocolor usd >output/recons/senders.csv 2>/dev/null
+	@accounting recipients --nocolor usd >output/recons/recipients.csv 2>/dev/null
+	@accounting pairings --nocolor usd >output/recons/pairings.csv 2>/dev/null
 	@accounting by_topic --nocolor >output/topics.csv 2>/dev/null
+
+	@echo "Token summaries..."
+	@accounting topic_only --nocolor >output/logs/topic_only.csv 2>/dev/null
+	@accounting contract_only --nocolor >output/logs/contract_only.csv 2>/dev/null
+	@accounting contract_last --nocolor >output/logs/contract_last.csv 2>/dev/null
+	@accounting contract_first --nocolor >output/logs/contract_first.csv 2>/dev/null
+	@accounting extract --nocolor >output/logs/logs.csv 2>/dev/null
+
 	@echo "Exporting..."
-	@accounting profit_and_loss daily units --verbose --verbose --nocolor >output/p_and_l.csv
+	@accounting profit_and_loss daily units --verbose --verbose --nocolor >output/recons/p_and_l.csv
 	@echo "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984" >filter.csv
-	@accounting profit_and_loss daily units --verbose --verbose --nocolor >output/p_and_l_uni.csv
+	@accounting profit_and_loss daily units --verbose --verbose --nocolor >output/recons/p_and_l_uni.csv
 	@echo "0x77777feddddffc19ff86db637967013e6c6a116c" >filter.csv
-	@accounting profit_and_loss daily units --verbose --verbose --nocolor >output/p_and_l_torn.csv
+	@accounting profit_and_loss daily units --verbose --verbose --nocolor >output/recons/p_and_l_torn.csv
 	@rm -f filter.csv
 
 tidy:
@@ -33,6 +44,6 @@ tidy:
 
 clean:
 	@rm -fR output raw summary
-	@mkdir -p output raw/txs raw/recons raw/logs summary
+	@mkdir -p output/logs output/recons raw/txs raw/recons raw/logs summary
 #	@cat doAll.sh | grep -v doOne >x ; cat x >doAll.sh ; rm -f x
 #	@cat doSome.sh | grep -v doOne >x ; cat x >doSome.sh ; rm -f x
