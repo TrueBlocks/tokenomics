@@ -1,10 +1,14 @@
-**Introduction**
+## Introduction
 
-We're going to extract what we call "everything that ever happened" to a given address on Ethereum mainnet. The address we've chosen is one the GitCoin smart contracts called the OSS Round 17 Implementation address. It has around 30,000 transactions in its entire history.
+In this data exploration, we use TrueBlocks to extract "everything that ever happened" to a single address on Ethereum mainnet.
 
-We're going to use a tool to extract "everything that ever happened" called `chifra`. `chifra` is the command line tool associated with TrueBlocks which is an indexing and data extraction tool being built by TrueBlocks the company. We will try to intersperse some of our ideas about why we built TrueBlocks the way we did to help you understand our view of decentralized data access.
+The address we've chosen for this study is the GitCoin smart contracts called the `OSS Round 17 Implementation` address. This address has approcimately 30,000 transactions in its history.
 
-Getting Started
+We will use a tool called `chifra`, which is the TrueBlocks command line tool. It gives access to all the sub-tools available through TrueBlocks.
+
+TrueBlocks which is an indexing and data extraction tool being built by TrueBlocks, LLC. In the following document, we intersperse ideas about why we built TrueBlocks the way we did as well as the data as a way to help you understand our view of decentralized data access.
+
+## Getting Started
 
 I'm going to skip over how to get started with TrueBlocks in this article, so I have time to discuss how to use TrueBlocks assuming you already have it installed and it's running. The article also assumes you're running your own Ethereum node. We say this even though you can use a remote node such as Infura. We will detail the consequences of that choice below.
 
