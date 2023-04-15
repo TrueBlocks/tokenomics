@@ -1,4 +1,14 @@
-==> gitcoin-txs.csv <==
+==> appearances.csv <==
+
+https://trueblocks.io/data-model/accounts/#appearance
+
+| Field            | Description                                               | Type   |
+| ---------------- | --------------------------------------------------------- | ------ |
+| address          | the address for whose appearances are included            | blknum |
+| blockNumber      | the number of the block                                   | blknum |
+| transactionIndex | the zero-indexed position of the transaction in the block | blknum |
+
+==> txs.csv <==
 
 https://trueblocks.io/data-model/chaindata/#transaction
 
@@ -18,7 +28,7 @@ https://trueblocks.io/data-model/chaindata/#transaction
 | encoding         | the first four bytes of the input data                             |
 | compressedTx     | truncated, more readable version of the articulation               | string    |
 
-==> gitcoin-logs.csv <==
+==> logs.csv <==
 
 https://trueblocks.io/data-model/chaindata/#log
 
@@ -34,7 +44,7 @@ https://trueblocks.io/data-model/chaindata/#log
 | data             | any remaining un-indexed parameters to the event                                                  | bytes     |
 | compressedLog    | a truncated, more readable version of the articulation                                            | string    |
 
-==> gitcoin-reciepts.csv <==
+==> reciepts.csv <==
 
 https://trueblocks.io/data-model/chaindata/#receipt
 
@@ -47,7 +57,7 @@ https://trueblocks.io/data-model/chaindata/#receipt
 | gasUsed          | the amount of gas actually used by the transaction                   | gas    |
 | isError          |                                                                      | bool   |
 
-==> gitcoin-traces.csv <==
+==> traces.csv <==
 
 https://trueblocks.io/data-model/chaindata/#trace
 
@@ -70,7 +80,7 @@ https://trueblocks.io/data-model/chaindata/#trace
 | result::output   | the result of the call of this trace                      | bytes     |
 | timestamp        | the timestamp of the block                                | timestamp |
 
-==> gitcoin-statements.csv <==
+==> statements.csv <==
 
 https://trueblocks.io/data-model/accounts/#reconciliation
 
