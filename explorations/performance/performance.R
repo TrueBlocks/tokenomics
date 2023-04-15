@@ -56,7 +56,12 @@ df <- df %>% filter(epoch != "E-35")
 df <- df %>% filter(epoch != "E-36")
 df <- df %>% filter(epoch != "E-37")
 df <- df %>% filter(epoch != "E-38")
-df <- df %>% filter(epoch != "E-40")
+#df <- df %>% filter(epoch != "E-40")
+#df <- df %>% filter(epoch != "E-41")
+#df <- df %>% filter(epoch != "E-42")
+#df <- df %>% filter(epoch != "E-43")
+#df <- df %>% filter(epoch != "E-44")
+#df <- df %>% filter(epoch != "E-50")
 #df <- df %>% filter(node == "TG")
 
 df <- df %>% filter(epoch != "E-27") # this was a bogus test
@@ -75,8 +80,7 @@ df <- df %>% filter(epoch != "F-12")
 
 df <- df %>% filter(cmd != "ethslurp")
 df <- df %>% filter(cmd != "pinMan")
-#df <- df %>% filter(type != "cmd")
-#df <- df %>% filter(id > 10000)
+#df <- df %>% filter(cmd == "getTrans")
 
 df %>% ggplot(aes(alpha = .1)) +
   geom_smooth(aes(x = id, y = avgSecs * 200, fill = type, col = node.epoch), span = 1, method = "loess", formula  = "y ~ x") +

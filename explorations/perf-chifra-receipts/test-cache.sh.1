@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+
+ADDR=$1
+
+chifra monitors --decache $ADDR >f 2>&1
+
+colorEcho -c green -t "Listing monitors for $ADDR"
+chifra list $ADDR --no_header 2>/dev/null | cut -f2,3 | tr '\t' '.' >file
+
+export MODE=CPP
+colorEcho -c green -t "Empty cache - cpp..."
+time chifra receipts --no_header --file file >f
+
+export MODE=No
+colorEcho -c green -t "Empty cache - no golang cache..."
+time chifra receipts --no_header --file file >f
+
+export MODE=NEW_CACHE
+colorEcho -c green -t "Empty cache - with golang code..."
+time chifra receipts --no_header --file file >f
+
+chifra transactions --cache --file file 2>/dev/null | cut -f1,2 >f
+
+export MODE=CPP
+colorEcho -c green -t "Full cache - ccp..."
+time chifra receipts --no_header --file file >f
+
+export MODE=No
+colorEcho -c green -t "Full cache - no gloang cache..."
+time chifra receipts --no_header --file file >f
+
+export MODE=NEW_CACHE
+colorEcho -c green -t "Full cache - with golang cache..."
+time chifra receipts --no_header --file file >f
+
+rm -f f
