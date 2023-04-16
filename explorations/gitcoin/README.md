@@ -165,7 +165,7 @@ chifra export <address> --neighbors --fmt csv
 
 ## Schemas
 
-Please see [./SCHEMAS.md](this file) for information on each individual data model.
+Please see [./DATA_MODELS.md](this file) for information on each individual data model.
 
 ## Publishing
 
