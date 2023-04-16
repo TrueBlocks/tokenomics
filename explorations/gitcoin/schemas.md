@@ -39,6 +39,7 @@ https://trueblocks.io/data-model/chaindata/#log
 | logIndex         | the zero-indexed position of this log relative to the block                                       | blknum    |
 | transactionHash  | the hash of the transction                                                                        | hash      |
 | timestamp        | the timestamp of the block this log appears in                                                    | timestamp |
+| date             | the date of the block this log appears in                                                         | date      |
 | address          | the smart contract that emitted this log                                                          | address   |
 | topics           | The first topic hashes event signature of the log, up to 3 additional index parameters may appear | topic[]   |
 | data             | any remaining un-indexed parameters to the event                                                  | bytes     |
@@ -127,25 +128,3 @@ https://trueblocks.io/data-model/accounts/#reconciliation
 | begBalDiff          | a calculated field – difference between expected beginning balance and balance at last reconciliation, if non-zero, the reconciliation failed | int256    |
 | endBalDiff          | a calculated field – endBal - endBalCalc, if non-zero, the reconciliation failed                                                              | int256    |
 | endBalCalc          | a calculated field – begBal + amountNet                                                                                                       | int256    |
-
-
-==> output/appearances.csv <==
-"address","blockNumber","transactionIndex"
-
-==> output/logs.csv <==
-"blockNumber","transactionIndex","logIndex","transactionHash","timestamp","date","address","topic0","topic1","topic2","topic3","data","compressedLog"
-
-==> output/neighbors.csv <==
-"address","blockNumber","transactionIndex","reason"
-
-==> output/reciepts.csv <==
-"blockNumber","transactionIndex","transactionHash","status","gasused","iserror"
-
-==> output/statements.csv <==
-"blockNumber","transactionIndex","logindex","transactionHash","timestamp","date","assetAddress","assetSymbol","decimals","spotPrice","priceSource","accountedFor","sender","recipient","begBal","amountNet","endBal","encoding","signature","reconciliationType","reconciled","totalIn","amountIn","internalIn","selfDestructIn","minerBaseRewardIn","minerNephewRewardIn","minerTxFeeIn","minerUncleRewardIn","prefundIn","totalOut","amountOut","internalOut","selfDestructOut","gasOut","totalOutLessGas","prevAppBlk","prevBal","begBalDiff","endBalDiff","endBalCalc"
-
-==> output/traces.csv <==
-"blockNumber","transactionIndex","traceAddress","action::calltype","error","action::from","action::to","action::value","action::ether","action::gas","result::gasUsed","action::input","compressedTrace","result::output","timestamp"
-
-==> output/txs.csv <==
-"blockNumber","transactionIndex","date","timestamp","from","to","ether","ethGasPrice","gasUsed","hash","isError","encoding","compressedTx"
