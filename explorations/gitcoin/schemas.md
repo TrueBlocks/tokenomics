@@ -128,3 +128,24 @@ https://trueblocks.io/data-model/accounts/#reconciliation
 | endBalDiff          | a calculated field – endBal - endBalCalc, if non-zero, the reconciliation failed                                                              | int256    |
 | endBalCalc          | a calculated field – begBal + amountNet                                                                                                       | int256    |
 
+
+==> output/appearances.csv <==
+"address","blockNumber","transactionIndex"
+
+==> output/logs.csv <==
+"blockNumber","transactionIndex","logIndex","transactionHash","timestamp","date","address","topic0","topic1","topic2","topic3","data","compressedLog"
+
+==> output/neighbors.csv <==
+"address","blockNumber","transactionIndex","reason"
+
+==> output/reciepts.csv <==
+"blockNumber","transactionIndex","transactionHash","status","gasused","iserror"
+
+==> output/statements.csv <==
+"blockNumber","transactionIndex","logindex","transactionHash","timestamp","date","assetAddress","assetSymbol","decimals","spotPrice","priceSource","accountedFor","sender","recipient","begBal","amountNet","endBal","encoding","signature","reconciliationType","reconciled","totalIn","amountIn","internalIn","selfDestructIn","minerBaseRewardIn","minerNephewRewardIn","minerTxFeeIn","minerUncleRewardIn","prefundIn","totalOut","amountOut","internalOut","selfDestructOut","gasOut","totalOutLessGas","prevAppBlk","prevBal","begBalDiff","endBalDiff","endBalCalc"
+
+==> output/traces.csv <==
+"blockNumber","transactionIndex","traceAddress","action::calltype","error","action::from","action::to","action::value","action::ether","action::gas","result::gasUsed","action::input","compressedTrace","result::output","timestamp"
+
+==> output/txs.csv <==
+"blockNumber","transactionIndex","date","timestamp","from","to","ether","ethGasPrice","gasUsed","hash","isError","encoding","compressedTx"
